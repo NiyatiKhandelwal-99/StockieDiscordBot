@@ -23,6 +23,9 @@ public class AlphaVantageService implements Service, AlphaVantageApi {
     @Override
     public void register() {
         log.info("AlphaVantageService > register");
+        if (apiKey == null || apiKey.isEmpty()) {
+            throw new IllegalArgumentException("ALPHA_VANTAGE_API_KEY is required");
+        }
     }
 
     @Inject
@@ -32,18 +35,24 @@ public class AlphaVantageService implements Service, AlphaVantageApi {
 
     @Override
     public AlphaVantageGlobalQuote getGlobalQuote(String symbol) throws AlphaVantageException {
-        String queryUrl = "function=GLOBAL_QUOTE&symbol=" + symbol + "&";
+        String queryUrl = "function=GLOBAL_QUOTE&symbol=" + symbol;
         String response = getRequest(queryUrl);
 
         Gson gson = new Gson();
-        return gson.fromJson(response, AlphaVantageGlobalQuoteResponse.class).getGlobalQuote();
+        AlphaVantageGlobalQuote quote =
+                gson.fromJson(response, AlphaVantageGlobalQuoteResponse.class).getGlobalQuote();
+        if (quote.getSymbol() == null) {
+            // This means the given symbol was not valid and no data was returned
+            return null;
+        }
+        return quote;
     }
 
     private String getRequest(String queryUrl) throws AlphaVantageException {
 
         StringBuilder val = new StringBuilder();
         try {
-            URL url = new URL(BASE_URL + queryUrl + apiKey);
+            URL url = new URL(BASE_URL + queryUrl + "&apikey=" + apiKey);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
