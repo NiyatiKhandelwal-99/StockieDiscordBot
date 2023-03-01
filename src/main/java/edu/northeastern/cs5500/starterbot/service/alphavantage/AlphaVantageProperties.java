@@ -1,4 +1,4 @@
-package edu.northeastern.cs5500.starterbot;
+package edu.northeastern.cs5500.starterbot.service.alphavantage;
 
 import java.io.IOException;
 import java.io.InputStream;
