@@ -43,4 +43,10 @@ public class CommandModule {
     public StringSelectHandler provideDropdownCommandMenuHandler(DropdownCommand dropdownCommand) {
         return dropdownCommand;
     }
+
+    @Provides
+    @IntoSet
+    public SlashCommandHandler providePriceCommand(PriceCommand priceCommand) {
+        return priceCommand;
+    }
 }
