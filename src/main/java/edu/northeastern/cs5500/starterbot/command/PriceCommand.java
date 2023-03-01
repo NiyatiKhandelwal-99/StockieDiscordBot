@@ -15,46 +15,47 @@ import org.jetbrains.annotations.NotNull;
 
 @Singleton
 @Slf4j
-public class PriceCommand implements SlashCommandHandler{
+public class PriceCommand implements SlashCommandHandler {
 
-  @Inject
-  public PriceCommand() {}
+    @Inject
+    public PriceCommand() {}
 
-  @NotNull
-  @Override
-  public String getName() {
-    return "price";
-  }
-
-  @NotNull
-  @Override
-  public CommandData getCommandData() {
-    return Commands.slash(getName(), "Ask the bot to reply with price")
-        .addOption(OptionType.STRING,
-            "ticker",
-            "The bot will reply to your command with the provided text",
-            true);
-  }
-
-  @Override
-  public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-    log.info("event: /price");
-    var option = event.getOption("ticker");
-
-    if (option == null) {
-      log.error("Received null value for mandatory parameter 'ticker'");
-      return;
+    @NotNull
+    @Override
+    public String getName() {
+        return "price";
     }
-    String response = callPriceAPI(Objects.requireNonNull(event.getOption("ticker")).getAsString());
-    if(response.equals("")){
-      event.reply("Invalid ticker passed! Please enter correct ticker").queue();
-      return;
+
+    @NotNull
+    @Override
+    public CommandData getCommandData() {
+        return Commands.slash(getName(), "Ask the bot to reply with price")
+                .addOption(
+                        OptionType.STRING,
+                        "ticker",
+                        "The bot will reply to your command with the provided text",
+                        true);
     }
-    event.reply(response).queue();
-  }
 
+    @Override
+    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
+        log.info("event: /price");
+        var option = event.getOption("ticker");
 
-  private String callPriceAPI(String ticker) {
-    return new PriceApi(new AlphaVantageApiCall(Function.GLOBAL_QUOTE.name())).getPrice(ticker);
-  }
+        if (option == null) {
+            log.error("Received null value for mandatory parameter 'ticker'");
+            return;
+        }
+        String response =
+                callPriceAPI(Objects.requireNonNull(event.getOption("ticker")).getAsString());
+        if (response.equals("")) {
+            event.reply("Invalid ticker passed! Please enter correct ticker").queue();
+            return;
+        }
+        event.reply(response).queue();
+    }
+
+    private String callPriceAPI(String ticker) {
+        return new PriceApi(new AlphaVantageApiCall(Function.GLOBAL_QUOTE.name())).getPrice(ticker);
+    }
 }
