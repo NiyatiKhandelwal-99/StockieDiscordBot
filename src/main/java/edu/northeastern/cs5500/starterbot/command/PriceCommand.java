@@ -3,6 +3,8 @@ package edu.northeastern.cs5500.starterbot.command;
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageApi;
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -57,7 +59,20 @@ public class PriceCommand implements SlashCommandHandler {
                     .queue();
             return;
         }
-
+        if (quote == null) {
+            event.reply("Invalid ticker passed! Please enter correct ticker.").queue();
+            return;
+        }
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        if (quote.getLatestTradingDay().equals(currentDate)) {
+            event.reply(
+                            "After Market Price: "
+                                    + quote.getPrice()
+                                    + "\tMarket Price: "
+                                    + quote.getPreviousClose())
+                    .queue();
+            return;
+        }
         event.reply("Current price: " + quote.getPrice()).queue();
     }
 }
