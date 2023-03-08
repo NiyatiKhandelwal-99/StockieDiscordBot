@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 public class PriceCommand implements SlashCommandHandler {
 
     @Inject AlphaVantageApi alphaVantageApi;
+    public static final String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
     @Inject
     public PriceCommand() {}
@@ -63,7 +64,7 @@ public class PriceCommand implements SlashCommandHandler {
             event.reply("Invalid ticker passed! Please enter correct ticker.").queue();
             return;
         }
-        String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
         if (quote.getLatestTradingDay().equals(currentDate)) {
             event.reply(
                             "After Market Price: "
