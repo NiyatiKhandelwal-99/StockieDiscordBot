@@ -18,16 +18,18 @@ class PriceCommandTest {
     }
 
     @Test
-    void getName() {
-        String name = priceCommand.getName();
+    void testGetName() {
+        String name = new PriceCommand().getName();
         assertThat(name).isEqualTo(commandData.getName());
     }
 
     @Test
-    void getCommandData() {
-        CommandData commandData = priceCommand.getCommandData();
+    void testGetCommandData() {
+        CommandData testPriceCommandData = new PriceCommand().getCommandData();
+        assertThat(testPriceCommandData).isNotNull();
+        assertThat(testPriceCommandData.getName()).isEqualTo(commandData.getName());
     }
 
     @Test
-    void onSlashCommandInteraction() {}
+    void testOnSlashCommandInteraction() {}
 }
