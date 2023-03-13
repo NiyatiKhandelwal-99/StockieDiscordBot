@@ -29,7 +29,4 @@ class PriceCommandTest {
         assertThat(testPriceCommandData).isNotNull();
         assertThat(testPriceCommandData.getName()).isEqualTo(commandData.getName());
     }
-
-    @Test
-    void testOnSlashCommandInteraction() {}
 }

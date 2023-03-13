@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.command;
 
+import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageApi;
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
@@ -47,7 +48,7 @@ public class PriceCommand implements SlashCommandHandler {
         var option = event.getOption("ticker");
 
         if (option == null) {
-            log.error("Received null value for mandatory parameter 'ticker'");
+            log.error(LogMessages.EMPTY_TICKER + event.getName());
             return;
         }
 
@@ -55,13 +56,12 @@ public class PriceCommand implements SlashCommandHandler {
         try {
             quote = alphaVantageApi.getGlobalQuote(option.getAsString());
         } catch (AlphaVantageException e) {
-            log.error("Error while calling AlphaVantage API", e);
-            event.reply("Unexpected error while calling our quote API, please try again later!")
-                    .queue();
+            log.error(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY.toString(), e);
+            event.reply(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY.toString()).queue();
             return;
         }
         if (quote == null) {
-            event.reply("Invalid ticker passed! Please enter correct ticker.").queue();
+            event.reply(LogMessages.INVALID_TICKER.toString()).queue();
             return;
         }
 
