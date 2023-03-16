@@ -46,7 +46,11 @@ public class MongoDBService implements Service {
                         .build();
 
         MongoClient mongoClient = MongoClients.create(mongoClientSettings);
-        mongoDatabase = mongoClient.getDatabase(connectionString.getDatabase());
+
+        // MongoClient mongoClient = MongoClients.create("mongodb+srv://stock_username:stock_password@stockie.ujsgrdy.mongodb.net/?retryWrites=true");
+        // log.info("Mongo client: " + mongoClient.getDatabase("stock"));
+        // log.info("Connection string: " + connectionString.getDatabase());
+        mongoDatabase = mongoClient.getDatabase("stock");
     }
 
     @Override

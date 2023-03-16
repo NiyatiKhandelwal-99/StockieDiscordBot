@@ -1,6 +1,7 @@
 package edu.northeastern.cs5500.starterbot.service.alphavantage;
 
 import com.google.gson.Gson;
+import edu.northeastern.cs5500.starterbot.service.MongoDBService;
 import edu.northeastern.cs5500.starterbot.service.Service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -15,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AlphaVantageService implements Service, AlphaVantageApi {
     private static final String BASE_URL = "https://www.alphavantage.co/query?";
     private final String apiKey;
+
+    @Inject MongoDBService mongoDBService;
 
     public AlphaVantageService(String alphaVantageApiKey) {
         this.apiKey = alphaVantageApiKey;
