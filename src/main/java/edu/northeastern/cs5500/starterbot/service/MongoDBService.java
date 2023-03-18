@@ -19,13 +19,16 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 @Slf4j
 public class MongoDBService implements Service {
 
+    private static final String DEFAULT_DB_NAME = "stock";
+    private static final String DEFAULT_DB_URI = "mongodb+srv://stock_username:stock_password@stockie.ujsgrdy.mongodb.net/?retryWrites=true";
+
     static String getDatabaseURI() {
         ProcessBuilder processBuilder = new ProcessBuilder();
         final String databaseURI = processBuilder.environment().get("MONGODB_URI");
         if (databaseURI != null) {
             return databaseURI;
         }
-        return "mongodb://localhost:27017/Stuff"; // connect to localhost by default
+        return DEFAULT_DB_URI; // connect to localhost by default
     }
 
     @Getter private MongoDatabase mongoDatabase;
@@ -47,10 +50,7 @@ public class MongoDBService implements Service {
 
         MongoClient mongoClient = MongoClients.create(mongoClientSettings);
 
-        // MongoClient mongoClient = MongoClients.create("mongodb+srv://stock_username:stock_password@stockie.ujsgrdy.mongodb.net/?retryWrites=true");
-        // log.info("Mongo client: " + mongoClient.getDatabase("stock"));
-        // log.info("Connection string: " + connectionString.getDatabase());
-        mongoDatabase = mongoClient.getDatabase("stock");
+        mongoDatabase = mongoClient.getDatabase(DEFAULT_DB_NAME);
     }
 
     @Override
