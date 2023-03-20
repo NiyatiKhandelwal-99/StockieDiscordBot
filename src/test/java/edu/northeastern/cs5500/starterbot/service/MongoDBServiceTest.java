@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
 class MongoDBServiceTest {
@@ -20,7 +21,12 @@ class MongoDBServiceTest {
     @Test 
     void testMongoDBCollections() {
         MongoDBService mongoDBService = getMongoDBService();
+        MongoClient mongoClient = mongoDBService.getMongoClient();
         MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
+
+        assertNotNull(mongoClient);
         assertNotNull(mongoDatabase);
+
+        mongoClient.close();
     }
 }
