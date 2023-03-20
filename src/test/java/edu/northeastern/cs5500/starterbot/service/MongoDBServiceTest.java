@@ -1,9 +1,10 @@
 package edu.northeastern.cs5500.starterbot.service;
 
-import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
+
+import com.mongodb.client.MongoDatabase;
 
 class MongoDBServiceTest {
 
@@ -14,5 +15,12 @@ class MongoDBServiceTest {
     @Test
     void testGetMongoDBService() {
         assertNotNull(getMongoDBService());
+    }
+
+    @Test 
+    void testMongoDBCollections() {
+        MongoDBService mongoDBService = getMongoDBService();
+        MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
+        assertNotNull(mongoDatabase);
     }
 }
