@@ -28,10 +28,11 @@ public class MongoDBService implements Service {
         if (databaseURI != null) {
             return databaseURI;
         }
-        return DEFAULT_DB_URI; // connect to localhost by default
+        return DEFAULT_DB_URI; // connect to hosted cluster by default
     }
 
     @Getter private MongoDatabase mongoDatabase;
+    @Getter private MongoClient mongoClient;
 
     @Inject
     public MongoDBService() {
@@ -48,7 +49,7 @@ public class MongoDBService implements Service {
                         .applyConnectionString(connectionString)
                         .build();
 
-        MongoClient mongoClient = MongoClients.create(mongoClientSettings);
+        mongoClient = MongoClients.create(mongoClientSettings);
 
         mongoDatabase = mongoClient.getDatabase(DEFAULT_DB_NAME);
     }
@@ -56,5 +57,9 @@ public class MongoDBService implements Service {
     @Override
     public void register() {
         log.info("MongoDBService > register");
+    }
+
+    public void close() {
+        mongoClient.close();
     }
 }
