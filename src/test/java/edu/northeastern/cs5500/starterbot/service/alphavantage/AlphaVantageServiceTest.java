@@ -15,18 +15,17 @@ class AlphaVantageServiceTest {
     }
 
     @Test
-    void testGetGlobalQuote() throws AlphaVantageException {
+    void testGetGlobalQuote() throws Exception {
         assertThat(getAlphaVantageService()).isNotNull();
-        AlphaVantageGlobalQuote quote = getAlphaVantageService().getGlobalQuote(EXAMPLE_SYMBOL);
+        AlphaVantageGlobalQuote quote = getAlphaVantageService().getQuote(EXAMPLE_SYMBOL);
         assertThat(quote).isNotNull();
         assertThat(quote.getSymbol()).isEqualTo("AAPL");
     }
 
     @Test
-    void testGetGlobalQuoteNonexistent() throws AlphaVantageException {
+    void testGetGlobalQuoteNonexistent() throws Exception {
         assertThat(getAlphaVantageService()).isNotNull();
-        AlphaVantageGlobalQuote quote =
-                getAlphaVantageService().getGlobalQuote(EXAMPLE_INVALID_SYMBOL);
+        AlphaVantageGlobalQuote quote = getAlphaVantageService().getQuote(EXAMPLE_INVALID_SYMBOL);
         assertThat(quote).isNull();
     }
 }
