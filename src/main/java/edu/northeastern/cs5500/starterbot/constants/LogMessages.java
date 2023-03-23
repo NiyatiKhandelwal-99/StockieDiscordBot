@@ -16,4 +16,9 @@ public enum LogMessages {
     public String getMessage(LogMessages logMessage) {
         return logMessage.message;
     }
+
+    @Override
+    public String toString() {
+        return this.message;
+    }
 }

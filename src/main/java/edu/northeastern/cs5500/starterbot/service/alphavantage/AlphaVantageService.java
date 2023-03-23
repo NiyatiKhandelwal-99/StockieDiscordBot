@@ -74,4 +74,21 @@ public class AlphaVantageService implements Service, AlphaVantageApi {
         }
         return val.toString();
     }
+
+    @Override
+    public AlphaVantageNewsFeed[] getNewsSentiment(String symbol, String fromTime)
+            throws AlphaVantageException {
+        String queryUrl = "function=NEWS_SENTIMENT&tickers=" + symbol + "&time_from=" + fromTime;
+        String response = getRequest(queryUrl);
+
+        System.out.println("response length = " + response.length());
+
+        Gson gson = new Gson();
+        var newsFeed = gson.fromJson(response, AlphaVantageNewsResponse.class).getFeed();
+        if (newsFeed == null) {
+            // This means the given symbol was not valid and no data was returned
+            return null;
+        }
+        return newsFeed;
+    }
 }
