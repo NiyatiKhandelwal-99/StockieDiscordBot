@@ -1,24 +1,20 @@
 package edu.northeastern.cs5500.starterbot.service;
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.UpdateResult;
-
+import org.bson.Document;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.Nested;
-
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Updates.set;
-
-import org.bson.Document;
 
 @TestMethodOrder(OrderAnnotation.class)
 class MongoDBServiceTest {
@@ -33,7 +29,7 @@ class MongoDBServiceTest {
         assertNotNull(getMongoDBService());
     }
 
-    @Test 
+    @Test
     @Order(2)
     void testMongoDBCollections() {
         MongoDBService mongoDBService = getMongoDBService();
@@ -44,20 +40,19 @@ class MongoDBServiceTest {
         assertNotNull(mongoDatabase);
     }
 
-    @Test 
+    @Test
     @Order(3)
     void testMongoDBCollectionInsertion() {
         MongoDBService mongoDBService = getMongoDBService();
         MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
 
         MongoCollection<Document> collection = mongoDatabase.getCollection("test");
-        Document document = new Document("field_name", "field_value")
-                .append("_id", "primary_key");
+        Document document = new Document("field_name", "field_value").append("_id", "primary_key");
 
         collection.insertOne(document);
     }
 
-    @Test 
+    @Test
     @Order(4)
     void testMongoDBCollectionUpdate() {
         MongoDBService mongoDBService = getMongoDBService();
@@ -65,8 +60,9 @@ class MongoDBServiceTest {
 
         MongoCollection<Document> collection = mongoDatabase.getCollection("test");
 
-        UpdateResult updateResult = collection.updateOne(eq("_id", "primary_key"), 
-        set("field_name", "updated_field_value"));
+        UpdateResult updateResult =
+                collection.updateOne(
+                        eq("_id", "primary_key"), set("field_name", "updated_field_value"));
 
         assertTrue(updateResult.getModifiedCount() > 0);
         assertEquals(1, collection.countDocuments());
@@ -74,7 +70,7 @@ class MongoDBServiceTest {
         assertEquals(1, count);
     }
 
-    @Test 
+    @Test
     @Order(5)
     void testMongoDBCollectionDelete() {
         MongoDBService mongoDBService = getMongoDBService();
