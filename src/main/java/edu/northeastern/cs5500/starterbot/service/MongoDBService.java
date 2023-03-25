@@ -20,7 +20,8 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 public class MongoDBService implements Service {
 
     private static final String DEFAULT_DB_NAME = "stock";
-    private static final String DEFAULT_DB_URI = "mongodb+srv://stock_username:stock_password@stockie.ujsgrdy.mongodb.net/?retryWrites=true";
+    private static final String DEFAULT_DB_URI =
+            "mongodb+srv://stock_username:stock_password@stockie.ujsgrdy.mongodb.net/?retryWrites=true";
 
     static String getDatabaseURI() {
         ProcessBuilder processBuilder = new ProcessBuilder();
