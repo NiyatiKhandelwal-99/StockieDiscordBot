@@ -79,8 +79,6 @@ class MongoDBServiceTest {
 
         MongoCollection<Document> collection = mongoDatabase.getCollection("stockie_test");
 
-        System.out.println("Total Documents: " + collection.countDocuments());
-
         long count = collection.countDocuments(eq("_id", "primary_key"));
         assertEquals(1, count);
 
