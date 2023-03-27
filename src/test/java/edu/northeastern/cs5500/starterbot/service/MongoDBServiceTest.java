@@ -46,7 +46,7 @@ class MongoDBServiceTest {
         MongoDBService mongoDBService = getMongoDBService();
         MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
 
-        MongoCollection<Document> collection = mongoDatabase.getCollection("test");
+        MongoCollection<Document> collection = mongoDatabase.getCollection("stockie_test");
         Document document = new Document("field_name", "field_value").append("_id", "primary_key");
 
         collection.insertOne(document);
@@ -58,7 +58,7 @@ class MongoDBServiceTest {
         MongoDBService mongoDBService = getMongoDBService();
         MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
 
-        MongoCollection<Document> collection = mongoDatabase.getCollection("test");
+        MongoCollection<Document> collection = mongoDatabase.getCollection("stockie_test");
 
         UpdateResult updateResult =
                 collection.updateOne(
@@ -77,7 +77,7 @@ class MongoDBServiceTest {
         MongoClient mongoClient = mongoDBService.getMongoClient();
         MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
 
-        MongoCollection<Document> collection = mongoDatabase.getCollection("test");
+        MongoCollection<Document> collection = mongoDatabase.getCollection("stockie_test");
 
         System.out.println("Total Documents: " + collection.countDocuments());
 
