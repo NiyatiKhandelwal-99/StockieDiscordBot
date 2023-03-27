@@ -20,8 +20,6 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 public class MongoDBService implements Service {
 
     private static final String DEFAULT_DB_NAME = "stock";
-    private static final String DEFAULT_DB_URI =
-            "mongodb+srv://stock_username:stock_password@stockie.ujsgrdy.mongodb.net/?retryWrites=true";
 
     static String getDatabaseURI() {
         ProcessBuilder processBuilder = new ProcessBuilder();
@@ -29,7 +27,11 @@ public class MongoDBService implements Service {
         if (databaseURI != null) {
             return databaseURI;
         }
-        return DEFAULT_DB_URI; // connect to hosted cluster by default
+        
+        String mongoDBUsername = System.getenv("MONGODB_USERNAME");
+        String mongoDBPassword = System.getenv("MONGODB_PASSWORD");
+        String DEFAULT_DB_URI ="mongodb+srv://" + mongoDBUsername + ":" + mongoDBPassword + "@stockie.ujsgrdy.mongodb.net/?retryWrites=true";
+        return DEFAULT_DB_URI;
     }
 
     @Getter private MongoDatabase mongoDatabase;
@@ -53,6 +55,10 @@ public class MongoDBService implements Service {
         mongoClient = MongoClients.create(mongoClientSettings);
 
         mongoDatabase = mongoClient.getDatabase(DEFAULT_DB_NAME);
+    }
+
+    public void retreiveDBUri() {
+
     }
 
     @Override
