@@ -27,10 +27,15 @@ public class MongoDBService implements Service {
         if (databaseURI != null) {
             return databaseURI;
         }
-        
+
         String mongoDBUsername = System.getenv("MONGODB_USERNAME");
         String mongoDBPassword = System.getenv("MONGODB_PASSWORD");
-        String DEFAULT_DB_URI ="mongodb+srv://" + mongoDBUsername + ":" + mongoDBPassword + "@stockie.ujsgrdy.mongodb.net/?retryWrites=true";
+        String DEFAULT_DB_URI =
+                "mongodb+srv://"
+                        + mongoDBUsername
+                        + ":"
+                        + mongoDBPassword
+                        + "@stockie.ujsgrdy.mongodb.net/?retryWrites=true";
         return DEFAULT_DB_URI;
     }
 
@@ -57,9 +62,7 @@ public class MongoDBService implements Service {
         mongoDatabase = mongoClient.getDatabase(DEFAULT_DB_NAME);
     }
 
-    public void retreiveDBUri() {
-
-    }
+    public void retreiveDBUri() {}
 
     @Override
     public void register() {
