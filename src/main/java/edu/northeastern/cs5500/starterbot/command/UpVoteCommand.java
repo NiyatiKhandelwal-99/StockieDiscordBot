@@ -5,6 +5,7 @@ import edu.northeastern.cs5500.starterbot.exception.MissingRequiredParameterExce
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
+import edu.northeastern.cs5500.starterbot.service.MongoDBService;
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,6 +17,16 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.set;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.result.UpdateResult;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
 @Singleton
 @Slf4j
@@ -53,45 +64,32 @@ public class UpVoteCommand implements SlashCommandHandler {
             throw new MissingRequiredParameterException("ticker");
         }
 
-        var tickerSymbol = option.getAsString();
+        String tickerSymbol = option.getAsString();
 
-        event.reply("Hey you provided the ticker ").queue();
+        MongoDBService mongoDBService = new MongoDBService();
+        MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
 
-        // final AlphaVantageGlobalQuote quote;
+        MongoCollection<Document> collection = mongoDatabase.getCollection("upvote");
+        Document document = collection.find(eq("_id", tickerSymbol)).first();
 
-        // try {
-        //     quote = quoteController.getQuote(tickerSymbol);
-        // } catch (BadRequestException bre) {
-        //     event.reply("Invalid ticker symbol").queue();
-        //     return;
-        // } catch (NotFoundException nfe) {
-        //     event.reply("Ticker symbol not found").queue();
-        //     return;
-        // } catch (RestException e) {
-        //     log.error("Error getting quote", e);
-        //     event.reply("Error getting quote").queue();
-        //     return;
-        // }
-
-        // final String message = formatMessage(quote);
-
-        // event.reply(message).queue();
+        if(document == null){
+            event.reply("Ticker does not exist!").queue();
+        }
+        else{
+            String voteString = document.get("vote")+"";
+            int vote = Integer.parseInt(voteString);
+            
+            UpdateResult updateResult = collection.updateOne( eq("_id", tickerSymbol), set("vote", vote+1));
+            String message="";
+            if(updateResult.getModifiedCount()>0)
+            {
+                message = "You have successfully upvoted for the ticker " +tickerSymbol+ ".";
+                event.reply(message).queue();
+            }
+            else{
+                message= "There was a problem encountered. Could not up-vote for " +tickerSymbol+ ".";
+                event.reply(message).queue();
+            }
+        }
     }
-
-    // @Nonnull
-    // public static String formatMessage(AlphaVantageGlobalQuote quote) {
-    //     String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-    //     final String message;
-    //     if (currentDate.equals(quote.getLatestTradingDay())) {
-    //         message =
-    //                 "After Market Price: "
-    //                         + quote.getPrice()
-    //                         + "\tMarket Price: "
-    //                         + quote.getPreviousClose();
-    //     } else {
-    //         message = "Current price: " + quote.getPrice();
-    //     }
-
-    //     return message;
-    // }
 }
