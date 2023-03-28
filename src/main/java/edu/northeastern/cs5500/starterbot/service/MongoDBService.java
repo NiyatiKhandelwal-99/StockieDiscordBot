@@ -19,16 +19,28 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 @Slf4j
 public class MongoDBService implements Service {
 
+    private static final String DEFAULT_DB_NAME = "stock";
+
     static String getDatabaseURI() {
         ProcessBuilder processBuilder = new ProcessBuilder();
         final String databaseURI = processBuilder.environment().get("MONGODB_URI");
         if (databaseURI != null) {
             return databaseURI;
         }
-        return "mongodb://localhost:27017/Stuff"; // connect to localhost by default
+
+        String mongoDBUsername = System.getenv("MONGODB_USERNAME");
+        String mongoDBPassword = System.getenv("MONGODB_PASSWORD");
+        String DEFAULT_DB_URI =
+                "mongodb+srv://"
+                        + mongoDBUsername
+                        + ":"
+                        + mongoDBPassword
+                        + "@stockie.ujsgrdy.mongodb.net/?retryWrites=true";
+        return DEFAULT_DB_URI;
     }
 
     @Getter private MongoDatabase mongoDatabase;
+    @Getter private MongoClient mongoClient;
 
     @Inject
     public MongoDBService() {
@@ -45,12 +57,19 @@ public class MongoDBService implements Service {
                         .applyConnectionString(connectionString)
                         .build();
 
-        MongoClient mongoClient = MongoClients.create(mongoClientSettings);
-        mongoDatabase = mongoClient.getDatabase(connectionString.getDatabase());
+        mongoClient = MongoClients.create(mongoClientSettings);
+
+        mongoDatabase = mongoClient.getDatabase(DEFAULT_DB_NAME);
     }
+
+    public void retreiveDBUri() {}
 
     @Override
     public void register() {
         log.info("MongoDBService > register");
+    }
+
+    public void close() {
+        mongoClient.close();
     }
 }
