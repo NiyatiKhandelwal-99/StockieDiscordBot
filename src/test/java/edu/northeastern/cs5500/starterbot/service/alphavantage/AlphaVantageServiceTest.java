@@ -3,10 +3,9 @@ package edu.northeastern.cs5500.starterbot.service.alphavantage;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
-
-import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 
 @EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_API_KEY", matches = ".+")
 class AlphaVantageServiceTest {
