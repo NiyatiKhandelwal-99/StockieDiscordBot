@@ -1,8 +1,10 @@
 package edu.northeastern.cs5500.starterbot.service.alphavantage;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.Assert.assertTrue;
 
+import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.Test;
@@ -20,9 +22,9 @@ class AlphaVantageServiceTest {
     }
 
     @Test
-    void testGetGlobalQuote() throws AlphaVantageException {
+    void testGetGlobalQuote() throws Exception {
         assertThat(getAlphaVantageService()).isNotNull();
-        AlphaVantageGlobalQuote quote = getAlphaVantageService().getGlobalQuote(EXAMPLE_SYMBOL);
+        AlphaVantageGlobalQuote quote = getAlphaVantageService().getQuote(EXAMPLE_SYMBOL);
         assertThat(quote).isNotNull();
         assertThat(quote.getSymbol()).isEqualTo("AAPL");
     }

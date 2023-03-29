@@ -19,6 +19,8 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 @Slf4j
 public class MongoDBService implements Service {
 
+    private static final String DB_NAME = "stock";
+
     static String getDatabaseURI() {
         ProcessBuilder processBuilder = new ProcessBuilder();
         final String databaseURI = processBuilder.environment().get("MONGODB_URI");
@@ -46,7 +48,7 @@ public class MongoDBService implements Service {
                         .build();
 
         MongoClient mongoClient = MongoClients.create(mongoClientSettings);
-        mongoDatabase = mongoClient.getDatabase(connectionString.getDatabase());
+        mongoDatabase = mongoClient.getDatabase(DB_NAME);
     }
 
     @Override
