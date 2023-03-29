@@ -9,14 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 @EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_API_KEY", matches = ".+")
+@EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_TESTS_ENABLED", matches = "true")
 class AlphaVantageServiceTest {
     static final String EXAMPLE_SYMBOL = "AAPL";
     static final String EXAMPLE_INVALID_SYMBOL = "ASHIOHSAIODHAIOSHDOASHD";
     private static final int NUMBER_OF_DAYS = 4;
-    private static final String fromTime =
-            LocalDateTime.now()
-                    .minusDays(NUMBER_OF_DAYS)
-                    .format(DateTimeFormatter.ofPattern("yyyyMMdd HHmm"));
 
     private AlphaVantageService getAlphaVantageService() {
         return new AlphaVantageService();
@@ -40,6 +37,11 @@ class AlphaVantageServiceTest {
 
     @Test
     void testGetNewsSentiment() throws AlphaVantageException {
+        final String fromTime =
+                LocalDateTime.now()
+                        .minusDays(NUMBER_OF_DAYS)
+                        .format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmm"));
+
         assertThat(getAlphaVantageService()).isNotNull();
         AlphaVantageNewsFeed[] newsFeeds =
                 getAlphaVantageService().getNewsSentiment(EXAMPLE_SYMBOL, fromTime);
@@ -50,9 +52,14 @@ class AlphaVantageServiceTest {
 
     @Test
     void testGetNewsSentimentNonexistent() throws AlphaVantageException {
+        final String fromTime =
+                LocalDateTime.now()
+                        .minusDays(NUMBER_OF_DAYS)
+                        .format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmm"));
+
         assertThat(getAlphaVantageService()).isNotNull();
         AlphaVantageNewsFeed[] newsFeeds =
                 getAlphaVantageService().getNewsSentiment(EXAMPLE_INVALID_SYMBOL, fromTime);
-        assertThat(newsFeeds).isNotNull();
+        assertThat(newsFeeds).isNull();
     }
 }

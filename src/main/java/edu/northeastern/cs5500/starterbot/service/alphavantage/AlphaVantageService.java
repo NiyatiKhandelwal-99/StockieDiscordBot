@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Singleton
@@ -15,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 public class AlphaVantageService implements Service, AlphaVantageApi {
     private static final String BASE_URL = "https://www.alphavantage.co/query?";
     private final String apiKey;
+    private static final String LIMITS_EXCEEDED =
+            "{    \"Note\": \"Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.\"}";
 
     public AlphaVantageService(String alphaVantageApiKey) {
         this.apiKey = alphaVantageApiKey;
@@ -34,15 +37,29 @@ public class AlphaVantageService implements Service, AlphaVantageApi {
     }
 
     @Override
+    @SneakyThrows({InterruptedException.class})
     public AlphaVantageGlobalQuote getGlobalQuote(String symbol) throws AlphaVantageException {
         String queryUrl = "function=GLOBAL_QUOTE&symbol=" + symbol;
         String response = getRequest(queryUrl);
 
+        long backoff = 1;
+
+        while (LIMITS_EXCEEDED.equals(response)) {
+            backoff *= 2;
+            log.info("API limit exceeded; waiting {} seconds and trying again", backoff);
+            if (backoff > 64) {
+                throw new AlphaVantageException("Limit exceeded");
+            }
+            Thread.sleep(backoff * 1000);
+            response = getRequest(queryUrl);
+        }
+
         Gson gson = new Gson();
         AlphaVantageGlobalQuote quote =
                 gson.fromJson(response, AlphaVantageGlobalQuoteResponse.class).getGlobalQuote();
-        if (quote.getSymbol() == null) {
+        if (quote == null || quote.getSymbol() == null) {
             // This means the given symbol was not valid and no data was returned
+            log.error(response);
             return null;
         }
         return quote;
