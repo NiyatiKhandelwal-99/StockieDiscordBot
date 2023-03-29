@@ -2,6 +2,7 @@ package edu.northeastern.cs5500.starterbot.command;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,5 +29,23 @@ class PriceCommandTest {
         CommandData testPriceCommandData = new PriceCommand().getCommandData();
         assertThat(testPriceCommandData).isNotNull();
         assertThat(testPriceCommandData.getName()).isEqualTo(commandData.getName());
+    }
+
+    @Test
+    void testFormatMessageContainsCurrentPrice() {
+        AlphaVantageGlobalQuote quote =
+                new AlphaVantageGlobalQuote(
+                        null,
+                        null,
+                        null,
+                        null,
+                        "PRICE_PLACEHOLDER_VALUE",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null);
+        String message = PriceCommand.formatMessage(quote);
+        assertThat(message).contains("PRICE_PLACEHOLDER_VALUE");
     }
 }
