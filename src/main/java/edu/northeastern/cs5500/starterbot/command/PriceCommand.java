@@ -1,8 +1,10 @@
 package edu.northeastern.cs5500.starterbot.command;
 
-import edu.northeastern.cs5500.starterbot.constants.LogMessages;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageApi;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageException;
+import edu.northeastern.cs5500.starterbot.controller.QuoteController;
+import edu.northeastern.cs5500.starterbot.exception.MissingRequiredParameterException;
+import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
+import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
+import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,12 +20,12 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 @Singleton
 @Slf4j
 public class PriceCommand implements SlashCommandHandler {
-
-    @Inject AlphaVantageApi alphaVantageApi;
-    public static final String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+    @Inject QuoteController quoteController;
 
     @Inject
-    public PriceCommand() {}
+    public PriceCommand() {
+        // empty constructor required for injection
+    }
 
     @Nonnull
     @Override
@@ -48,32 +50,46 @@ public class PriceCommand implements SlashCommandHandler {
         var option = event.getOption("ticker");
 
         if (option == null) {
-            log.error(LogMessages.EMPTY_TICKER + event.getName());
-            return;
+            throw new MissingRequiredParameterException("ticker");
         }
 
-        AlphaVantageGlobalQuote quote = null;
+        var tickerSymbol = option.getAsString();
+
+        final AlphaVantageGlobalQuote quote;
+
         try {
-            quote = alphaVantageApi.getGlobalQuote(option.getAsString());
-        } catch (AlphaVantageException e) {
-            log.error(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY.toString(), e);
-            event.reply(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY.toString()).queue();
+            quote = quoteController.getQuote(tickerSymbol);
+        } catch (BadRequestException bre) {
+            event.reply("Invalid ticker symbol").queue();
             return;
-        }
-        if (quote == null) {
-            event.reply(LogMessages.INVALID_TICKER.toString()).queue();
+        } catch (NotFoundException nfe) {
+            event.reply("Ticker symbol not found").queue();
+            return;
+        } catch (RestException e) {
+            log.error("Error getting quote", e);
+            event.reply("Error getting quote").queue();
             return;
         }
 
-        if (quote.getLatestTradingDay().equals(currentDate)) {
-            event.reply(
-                            "After Market Price: "
-                                    + quote.getPrice()
-                                    + "\tMarket Price: "
-                                    + quote.getPreviousClose())
-                    .queue();
-            return;
+        final String message = formatMessage(quote);
+
+        event.reply(message).queue();
+    }
+
+    @Nonnull
+    public static String formatMessage(AlphaVantageGlobalQuote quote) {
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        final String message;
+        if (currentDate.equals(quote.getLatestTradingDay())) {
+            message =
+                    "After Market Price: "
+                            + quote.getPrice()
+                            + "\tMarket Price: "
+                            + quote.getPreviousClose();
+        } else {
+            message = "Current price: " + quote.getPrice();
         }
-        event.reply("Current price: " + quote.getPrice()).queue();
+
+        return message;
     }
 }
