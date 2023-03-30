@@ -5,6 +5,7 @@ import edu.northeastern.cs5500.starterbot.exception.MissingRequiredParameterExce
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
+import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -59,6 +60,9 @@ public class PriceCommand implements SlashCommandHandler {
 
         try {
             quote = quoteController.getQuote(tickerSymbol);
+        } catch (AlphaVantageException ave) {
+            event.reply("Invalid ticker symbol").queue();
+            return;
         } catch (BadRequestException bre) {
             event.reply("Invalid ticker symbol").queue();
             return;

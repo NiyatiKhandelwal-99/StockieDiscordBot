@@ -2,22 +2,21 @@ package edu.northeastern.cs5500.starterbot.controller;
 
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
-import edu.northeastern.cs5500.starterbot.service.QuoteService;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageException;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
+import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
+import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageNewsFeed;
 import javax.inject.Inject;
 
-public class QuoteController {
+public class NewsFeedController {
 
-    QuoteService quoteService;
+    NewsFeedService newsFeedService;
 
     @Inject
-    QuoteController(QuoteService quoteService) {
-        this.quoteService = quoteService;
+    NewsFeedController(NewsFeedService newsFeedService) {
+        this.newsFeedService = newsFeedService;
     }
 
-    public AlphaVantageGlobalQuote getQuote(String tickerSymbol)
-            throws RestException, AlphaVantageException {
+    public AlphaVantageNewsFeed[] getNewsFeeds(String tickerSymbol, String fromTime)
+            throws RestException {
         if (tickerSymbol == null || tickerSymbol.isBlank()) {
             throw new BadRequestException("ticker cannot be null or empty");
         }
@@ -27,7 +26,6 @@ public class QuoteController {
         if (!tickerSymbol.matches("^[A-Z]+(?:[.=\\-][A-Z]+)?$")) {
             throw new BadRequestException("ticker had invalid characters");
         }
-
-        return quoteService.getQuote(tickerSymbol);
+        return newsFeedService.getNewsSentiment(tickerSymbol, fromTime);
     }
 }

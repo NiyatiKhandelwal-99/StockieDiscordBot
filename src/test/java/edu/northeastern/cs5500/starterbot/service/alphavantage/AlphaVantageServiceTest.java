@@ -1,17 +1,18 @@
 package edu.northeastern.cs5500.starterbot.service.alphavantage;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
+import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 @EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_API_KEY", matches = ".+")
-@EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_TESTS_ENABLED", matches = "true")
+// @EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_TESTS_ENABLED", matches = "true")
 class AlphaVantageServiceTest {
     static final String EXAMPLE_SYMBOL = "AAPL";
     static final String EXAMPLE_INVALID_SYMBOL = "ASHIOHSAIODHAIOSHDOASHD";
@@ -30,15 +31,22 @@ class AlphaVantageServiceTest {
     }
 
     @Test
-    void testGetGlobalQuoteNonexistent() throws AlphaVantageException {
+    void testGetGlobalQuoteNonexistent() throws RestException {
         assertThat(getAlphaVantageService()).isNotNull();
-        AlphaVantageGlobalQuote quote =
-                getAlphaVantageService().getGlobalQuote(EXAMPLE_INVALID_SYMBOL);
-        assertThat(quote).isNull();
+        try {
+            getAlphaVantageService().getQuote(EXAMPLE_INVALID_SYMBOL);
+            // if we reach this point, we did not throw an expected exception
+            fail();
+        } catch (NotFoundException e) {
+            // expected
+        } catch (AlphaVantageException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Test
-    void testGetNewsSentiment() throws AlphaVantageException {
+    void testGetNewsSentiment() throws RestException {
         final String fromTime =
                 LocalDateTime.now()
                         .minusDays(NUMBER_OF_DAYS)
@@ -53,7 +61,7 @@ class AlphaVantageServiceTest {
     }
 
     @Test
-    void testGetNewsSentimentNonexistent() throws AlphaVantageException {
+    void testGetNewsSentimentNonexistent() throws RestException {
         final String fromTime =
                 LocalDateTime.now()
                         .minusDays(NUMBER_OF_DAYS)

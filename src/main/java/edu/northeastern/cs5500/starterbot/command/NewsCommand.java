@@ -4,8 +4,8 @@ import static edu.northeastern.cs5500.starterbot.constants.LogMessages.ERROR_ALP
 import static edu.northeastern.cs5500.starterbot.constants.LogMessages.INVALID_TICKER;
 
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageApi;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageException;
+import edu.northeastern.cs5500.starterbot.controller.NewsFeedController;
+import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageNewsFeed;
 import java.awt.Color;
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 @Slf4j
 public class NewsCommand implements SlashCommandHandler {
 
-    @Inject AlphaVantageApi alphaVantageApi;
+    @Inject NewsFeedController newsFeedController;
     private static final int NUMBER_OF_DAYS = 4;
     private static final String NUMBER_OF_DAYS_IN_WORDS = "four";
 
@@ -51,13 +51,13 @@ public class NewsCommand implements SlashCommandHandler {
                         true);
     }
 
-    AlphaVantageNewsFeed[] getNewsFeed(String ticker) throws AlphaVantageException {
+    AlphaVantageNewsFeed[] getNewsFeed(String ticker) throws RestException {
         final String fromTime =
                 LocalDateTime.now()
                         .minusDays(NUMBER_OF_DAYS)
                         .format(DateTimeFormatter.ofPattern("yyyyMMdd'THHmm"));
 
-        return alphaVantageApi.getNewsSentiment(ticker, fromTime);
+        return newsFeedController.getNewsFeeds(ticker, fromTime);
     }
 
     @Override
@@ -78,8 +78,8 @@ public class NewsCommand implements SlashCommandHandler {
         AlphaVantageNewsFeed[] newsFeeds = null;
         try {
             newsFeeds = getNewsFeed(ticker);
-        } catch (AlphaVantageException e) {
-            log.error(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY.toString(), e);
+        } catch (RestException re) {
+            log.error(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY.toString(), re);
             event.reply(ERROR_ALPHAVANTAGE_API_REPLY.toString()).queue();
             return;
         }

@@ -5,6 +5,7 @@ import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.InternalServerErrorException;
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
+import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
 import edu.northeastern.cs5500.starterbot.service.QuoteService;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Singleton
 @Slf4j
-public class AlphaVantageService implements QuoteService {
+public class AlphaVantageService implements QuoteService, NewsFeedService {
     private static final String BASE_URL = "https://www.alphavantage.co/query?";
     private final String apiKey;
     private static final String LIMITS_EXCEEDED =
@@ -43,7 +44,9 @@ public class AlphaVantageService implements QuoteService {
     }
 
     @Override
-    public AlphaVantageGlobalQuote getQuote(String symbol) throws RestException {
+    @SneakyThrows({InterruptedException.class})
+    public AlphaVantageGlobalQuote getQuote(String symbol)
+            throws RestException, AlphaVantageException {
         String queryUrl = "function=GLOBAL_QUOTE&symbol=" + symbol;
         String response = getRequest(queryUrl);
 
@@ -102,7 +105,7 @@ public class AlphaVantageService implements QuoteService {
 
     @Override
     public AlphaVantageNewsFeed[] getNewsSentiment(String symbol, String fromTime)
-            throws AlphaVantageException {
+            throws RestException {
         String queryUrl = "function=NEWS_SENTIMENT&tickers=" + symbol + "&time_from=" + fromTime;
         String response = getRequest(queryUrl);
 
