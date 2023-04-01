@@ -3,7 +3,9 @@ package edu.northeastern.cs5500.starterbot.controller;
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
+import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageNewsFeed;
+import java.util.List;
 import javax.inject.Inject;
 
 public class NewsFeedController {
@@ -15,8 +17,8 @@ public class NewsFeedController {
         this.newsFeedService = newsFeedService;
     }
 
-    public AlphaVantageNewsFeed[] getNewsFeeds(String tickerSymbol, String fromTime)
-            throws RestException {
+    public List<AlphaVantageNewsFeed> getNewsFeeds(String tickerSymbol, String fromTime)
+            throws RestException, AlphaVantageException {
         if (tickerSymbol == null || tickerSymbol.isBlank()) {
             throw new BadRequestException("ticker cannot be null or empty");
         }

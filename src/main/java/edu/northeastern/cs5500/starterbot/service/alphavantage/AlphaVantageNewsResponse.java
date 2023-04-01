@@ -1,6 +1,7 @@
 package edu.northeastern.cs5500.starterbot.service.alphavantage;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -15,5 +16,5 @@ public class AlphaVantageNewsResponse {
     private final String relevanceScoreDefinition;
 
     @SerializedName("feed")
-    private final AlphaVantageNewsFeed[] feed;
+    private final List<AlphaVantageNewsFeed> feed;
 }

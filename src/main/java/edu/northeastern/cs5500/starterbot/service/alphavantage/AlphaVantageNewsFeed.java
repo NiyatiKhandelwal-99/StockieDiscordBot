@@ -1,6 +1,7 @@
 package edu.northeastern.cs5500.starterbot.service.alphavantage;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -39,5 +40,5 @@ public class AlphaVantageNewsFeed {
     private final String overallSentimentLabel;
 
     @SerializedName("topics")
-    private final AlphaVantageNewsTopic[] topics;
+    private final List<AlphaVantageNewsTopic> topics;
 }

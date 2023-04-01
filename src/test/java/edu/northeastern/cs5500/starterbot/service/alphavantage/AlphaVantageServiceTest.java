@@ -8,16 +8,13 @@ import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 @EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_API_KEY", matches = ".+")
 // @EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_TESTS_ENABLED", matches = "true")
 class AlphaVantageServiceTest {
-    static final String EXAMPLE_SYMBOL = "AAPL";
-    static final String EXAMPLE_INVALID_SYMBOL = "ASHIOHSAIODHAIOSHDOASHD";
-    private static final int NUMBER_OF_DAYS = 4;
-
     private AlphaVantageService getAlphaVantageService() {
         return new AlphaVantageService();
     }
@@ -25,6 +22,7 @@ class AlphaVantageServiceTest {
     @Test
     void testGetGlobalQuote() throws Exception {
         assertThat(getAlphaVantageService()).isNotNull();
+        final String EXAMPLE_SYMBOL = "AAPL";
         AlphaVantageGlobalQuote quote = getAlphaVantageService().getQuote(EXAMPLE_SYMBOL);
         assertThat(quote).isNotNull();
         assertThat(quote.getSymbol()).isEqualTo("AAPL");
@@ -33,6 +31,7 @@ class AlphaVantageServiceTest {
     @Test
     void testGetGlobalQuoteNonexistent() throws RestException {
         assertThat(getAlphaVantageService()).isNotNull();
+        final String EXAMPLE_INVALID_SYMBOL = "ASHIOHSAIODHAIOSHDOASHD";
         try {
             getAlphaVantageService().getQuote(EXAMPLE_INVALID_SYMBOL);
             // if we reach this point, we did not throw an expected exception
@@ -40,35 +39,36 @@ class AlphaVantageServiceTest {
         } catch (NotFoundException e) {
             // expected
         } catch (AlphaVantageException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // expected
         }
     }
 
     @Test
-    void testGetNewsSentiment() throws RestException {
+    void testGetNewsSentiment() throws RestException, AlphaVantageException {
         final String fromTime =
                 LocalDateTime.now()
-                        .minusDays(NUMBER_OF_DAYS)
+                        .minusDays(4)
                         .format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmm"));
+        final String EXAMPLE_SYMBOL = "AAPL";
 
         assertThat(getAlphaVantageService()).isNotNull();
-        AlphaVantageNewsFeed[] newsFeeds =
+        List<AlphaVantageNewsFeed> newsFeeds =
                 getAlphaVantageService().getNewsSentiment(EXAMPLE_SYMBOL, fromTime);
         assertThat(newsFeeds).isNotNull();
-        assertTrue(newsFeeds.length > 0);
-        assertThat(newsFeeds[0].getTitle()).isNotNull();
+        assertTrue(newsFeeds.size() > 0);
+        assertThat(newsFeeds.get(0).getTitle()).isNotNull();
     }
 
     @Test
-    void testGetNewsSentimentNonexistent() throws RestException {
+    void testGetNewsSentimentNonexistent() throws RestException, AlphaVantageException {
         final String fromTime =
                 LocalDateTime.now()
-                        .minusDays(NUMBER_OF_DAYS)
+                        .minusDays(4)
                         .format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmm"));
+        final String EXAMPLE_INVALID_SYMBOL = "ASHIOHSAIODHAIOSHDOASHD";
 
         assertThat(getAlphaVantageService()).isNotNull();
-        AlphaVantageNewsFeed[] newsFeeds =
+        List<AlphaVantageNewsFeed> newsFeeds =
                 getAlphaVantageService().getNewsSentiment(EXAMPLE_INVALID_SYMBOL, fromTime);
         assertThat(newsFeeds).isNull();
     }
