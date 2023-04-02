@@ -23,6 +23,8 @@ public class AlphaVantageService implements QuoteService {
     private static final String BASE_URL = "https://www.alphavantage.co/query?";
     private final String apiKey;
 
+    @Inject MongoDBService mongoDBService;
+
     public AlphaVantageService(String alphaVantageApiKey) {
         this.apiKey = alphaVantageApiKey;
     }
