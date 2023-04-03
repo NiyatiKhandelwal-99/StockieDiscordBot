@@ -1,7 +1,9 @@
 package edu.northeastern.cs5500.starterbot.service.alphavantage;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
@@ -25,7 +27,12 @@ class AlphaVantageServiceTest {
     @Test
     void testGetGlobalQuoteNonexistent() throws Exception {
         assertThat(getAlphaVantageService()).isNotNull();
-        AlphaVantageGlobalQuote quote = getAlphaVantageService().getQuote(EXAMPLE_INVALID_SYMBOL);
-        assertThat(quote).isNull();
+        try {
+            getAlphaVantageService().getQuote(EXAMPLE_INVALID_SYMBOL);
+            // if we reach this point, we did not throw an expected exception
+            fail();
+        } catch (NotFoundException e) {
+            // expected
+        }
     }
 }
