@@ -2,10 +2,13 @@ package edu.northeastern.cs5500.starterbot.service.alphavantage;
 
 import com.google.gson.Gson;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
+import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.InternalServerErrorException;
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsResponse;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
 import edu.northeastern.cs5500.starterbot.service.QuoteService;
 import java.io.BufferedReader;

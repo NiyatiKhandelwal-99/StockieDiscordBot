@@ -1,11 +1,11 @@
 package edu.northeastern.cs5500.starterbot.command;
 
 import edu.northeastern.cs5500.starterbot.controller.QuoteController;
+import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.MissingRequiredParameterException;
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
 import java.text.SimpleDateFormat;
 import java.util.Date;

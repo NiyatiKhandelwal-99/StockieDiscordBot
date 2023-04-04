@@ -1,4 +1,4 @@
-package edu.northeastern.cs5500.starterbot.service.alphavantage;
+package edu.northeastern.cs5500.starterbot.model;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;

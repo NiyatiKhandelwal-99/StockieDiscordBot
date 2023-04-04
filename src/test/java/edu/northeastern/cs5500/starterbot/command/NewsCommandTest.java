@@ -2,9 +2,9 @@ package edu.northeastern.cs5500.starterbot.command;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageException;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageNewsTopic;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsTopic;
 import java.util.List;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.junit.jupiter.api.BeforeEach;
