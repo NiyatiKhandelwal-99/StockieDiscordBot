@@ -5,10 +5,7 @@ import edu.northeastern.cs5500.starterbot.exception.MissingRequiredParameterExce
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
-<<<<<<< HEAD
 import edu.northeastern.cs5500.starterbot.service.MongoDBService;
-=======
->>>>>>> feature-upvote-niyati
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,7 +18,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
-<<<<<<< HEAD
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
 import com.mongodb.client.MongoClient;
@@ -32,8 +28,6 @@ import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-=======
->>>>>>> feature-upvote-niyati
 @Singleton
 @Slf4j
 public class UpVoteCommand implements SlashCommandHandler {
@@ -70,14 +64,13 @@ public class UpVoteCommand implements SlashCommandHandler {
             throw new MissingRequiredParameterException("ticker");
         }
 
-<<<<<<< HEAD
         String tickerSymbol = option.getAsString();
 
         MongoDBService mongoDBService = new MongoDBService();
         MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
 
         MongoCollection<Document> collection = mongoDatabase.getCollection("upvote");
-        Document document = collection.find(eq("_id", tickerSymbol)).first();
+        Document document = collection.find(eq("_id", tickerSymbol.toLowerCase())).first();
 
         if(document == null){
             event.reply("Ticker does not exist!").queue();
@@ -99,47 +92,4 @@ public class UpVoteCommand implements SlashCommandHandler {
             }
         }
     }
-=======
-        var tickerSymbol = option.getAsString();
-
-        event.reply("Hey you provided the ticker ").queue();
-
-        // final AlphaVantageGlobalQuote quote;
-
-        // try {
-        //     quote = quoteController.getQuote(tickerSymbol);
-        // } catch (BadRequestException bre) {
-        //     event.reply("Invalid ticker symbol").queue();
-        //     return;
-        // } catch (NotFoundException nfe) {
-        //     event.reply("Ticker symbol not found").queue();
-        //     return;
-        // } catch (RestException e) {
-        //     log.error("Error getting quote", e);
-        //     event.reply("Error getting quote").queue();
-        //     return;
-        // }
-
-        // final String message = formatMessage(quote);
-
-        // event.reply(message).queue();
-    }
-
-    // @Nonnull
-    // public static String formatMessage(AlphaVantageGlobalQuote quote) {
-    //     String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-    //     final String message;
-    //     if (currentDate.equals(quote.getLatestTradingDay())) {
-    //         message =
-    //                 "After Market Price: "
-    //                         + quote.getPrice()
-    //                         + "\tMarket Price: "
-    //                         + quote.getPreviousClose();
-    //     } else {
-    //         message = "Current price: " + quote.getPrice();
-    //     }
-
-    //     return message;
-    // }
->>>>>>> feature-upvote-niyati
 }
