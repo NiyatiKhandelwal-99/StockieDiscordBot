@@ -6,8 +6,6 @@ import edu.northeastern.cs5500.starterbot.exception.rest.InternalServerErrorExce
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.service.QuoteService;
-import edu.northeastern.cs5500.starterbot.service.MongoDBService;
-import edu.northeastern.cs5500.starterbot.service.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,8 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 public class AlphaVantageService implements QuoteService {
     private static final String BASE_URL = "https://www.alphavantage.co/query?";
     private final String apiKey;
-
-    @Inject MongoDBService mongoDBService;
 
     public AlphaVantageService(String alphaVantageApiKey) {
         this.apiKey = alphaVantageApiKey;
