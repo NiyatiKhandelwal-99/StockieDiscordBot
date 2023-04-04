@@ -1,14 +1,14 @@
 package edu.northeastern.cs5500.starterbot.command;
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.set;
+
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.UpdateResult;
 import edu.northeastern.cs5500.starterbot.controller.QuoteController;
 import edu.northeastern.cs5500.starterbot.exception.MissingRequiredParameterException;
-import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
-import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
-import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.service.MongoDBService;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -17,16 +17,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Updates.set;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 
 @Singleton
 @Slf4j
@@ -72,22 +63,23 @@ public class UpVoteCommand implements SlashCommandHandler {
         MongoCollection<Document> collection = mongoDatabase.getCollection("upvote");
         Document document = collection.find(eq("_id", tickerSymbol.toLowerCase())).first();
 
-        if(document == null){
+        if (document == null) {
             event.reply("Ticker does not exist!").queue();
-        }
-        else{
-            String voteString = document.get("vote")+"";
+        } else {
+            String voteString = document.get("vote") + "";
             int vote = Integer.parseInt(voteString);
-            
-            UpdateResult updateResult = collection.updateOne( eq("_id", tickerSymbol), set("vote", vote+1));
-            String message="";
-            if(updateResult.getModifiedCount()>0)
-            {
-                message = "You have successfully upvoted for the ticker " +tickerSymbol+ ".";
+
+            UpdateResult updateResult =
+                    collection.updateOne(eq("_id", tickerSymbol), set("vote", vote + 1));
+            String message = "";
+            if (updateResult.getModifiedCount() > 0) {
+                message = "You have successfully upvoted for the ticker " + tickerSymbol + ".";
                 event.reply(message).queue();
-            }
-            else{
-                message= "There was a problem encountered. Could not up-vote for " +tickerSymbol+ ".";
+            } else {
+                message =
+                        "There was a problem encountered. Could not up-vote for "
+                                + tickerSymbol
+                                + ".";
                 event.reply(message).queue();
             }
         }
