@@ -49,4 +49,10 @@ public class CommandModule {
     public SlashCommandHandler providePriceCommand(PriceCommand priceCommand) {
         return priceCommand;
     }
+
+    @Provides
+    @IntoSet
+    public SlashCommandHandler provideNewsCommand(NewsCommand newsCommand) {
+        return newsCommand;
+    }
 }
