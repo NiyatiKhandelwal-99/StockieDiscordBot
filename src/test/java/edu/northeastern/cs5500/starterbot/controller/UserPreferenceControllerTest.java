@@ -2,6 +2,7 @@ package edu.northeastern.cs5500.starterbot.controller;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import edu.northeastern.cs5500.starterbot.model.UserPreference;
 import edu.northeastern.cs5500.starterbot.repository.InMemoryRepository;
 import org.junit.jupiter.api.Test;
 
@@ -58,5 +59,53 @@ class UserPreferenceControllerTest {
                 .isEqualTo(PREFERRED_NAME_1);
         assertThat(userPreferenceController.getPreferredNameForUser(USER_ID_2))
                 .isEqualTo(PREFERRED_NAME_2);
+    }
+
+    @Test
+    public void testUserPreferenceEqualHashCode() {
+        UserPreference sourceUserPreference = new UserPreference();
+        sourceUserPreference.setDiscordUserId(USER_ID_1);
+        sourceUserPreference.setPreferredName(PREFERRED_NAME_1);
+        UserPreference sameUserPreference = new UserPreference();
+        sameUserPreference.setDiscordUserId(USER_ID_1);
+        sameUserPreference.setPreferredName(PREFERRED_NAME_1);
+
+        UserPreference targetUserPreference = new UserPreference();
+        targetUserPreference.setDiscordUserId(USER_ID_2);
+        targetUserPreference.setPreferredName(PREFERRED_NAME_2);
+        assertThat(sourceUserPreference.equals(sameUserPreference)).isTrue();
+        assertThat(
+                        sourceUserPreference
+                                .getDiscordUserId()
+                                .equals(sameUserPreference.getDiscordUserId()))
+                .isTrue();
+        assertThat(sourceUserPreference.hashCode() == sameUserPreference.hashCode()).isTrue();
+        assertThat(sourceUserPreference.equals(sourceUserPreference)).isTrue();
+        assertThat(sourceUserPreference.hashCode() == sourceUserPreference.hashCode()).isTrue();
+        assertThat(sourceUserPreference.toString().equals(sourceUserPreference.toString()))
+                .isTrue();
+    }
+
+    @Test
+    public void testUserPreferenceNotEqualHashCode() {
+        UserPreference sourceUserPreference = new UserPreference();
+        sourceUserPreference.setDiscordUserId(USER_ID_1);
+        sourceUserPreference.setPreferredName(PREFERRED_NAME_1);
+
+        UserPreference targetUserPreference = new UserPreference();
+        targetUserPreference.setDiscordUserId(USER_ID_2);
+        targetUserPreference.setPreferredName(PREFERRED_NAME_2);
+        assertThat(sourceUserPreference.equals(targetUserPreference)).isFalse();
+        assertThat(
+                        sourceUserPreference
+                                .getDiscordUserId()
+                                .equals(targetUserPreference.getDiscordUserId()))
+                .isFalse();
+        assertThat(sourceUserPreference.getDiscordUserId().equals("test")).isFalse();
+        assertThat(sourceUserPreference.hashCode() == targetUserPreference.hashCode()).isFalse();
+        assertThat(sourceUserPreference.equals(sourceUserPreference)).isTrue();
+        assertThat(sourceUserPreference.hashCode() == sourceUserPreference.hashCode()).isTrue();
+        assertThat(sourceUserPreference.toString().equals(targetUserPreference.toString()))
+                .isFalse();
     }
 }
