@@ -85,16 +85,39 @@ test {
 jacocoTestReport {
     dependsOn test
     reports {
-        xml.enabled true
+        xml.enabled false
         // Change html.enabled to true if you want html reports
-        html.enabled false
+        html.enabled true
         csv.enabled false
-        xml.destination file("${buildDir}/reports/jacoco.xml")
+        xml.destination file("${buildDir}/reports/jacoco.html")
     }
 }
 
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                // minimum percentage of code coverage
+                minimum = 0.4
+            }
+        }
+        rule  {
+            enabled = false
+            element = 'CLASS'
+            includes = ['org.gradle.*']
+            limit {
+                counter = 'LINE'
+                value = 'TOTALCOUNT'
+                maximum = 0.3
+            }
+        }
+    }
+}
+
+
 // Check coverage after each test run
 check.dependsOn jacocoTestCoverageVerification
+jacocoTestReport.mustRunAfter test
 
 // Target Java 17 - make sure system.properties matches this as well
 sourceCompatibility = 1.17
