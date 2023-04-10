@@ -91,6 +91,13 @@ jacocoTestReport {
         csv.enabled false
         xml.destination file("${buildDir}/reports/jacoco.html")
     }
+    afterEvaluate { // (optional) : to exclude classes / packages from coverage
+        classDirectories.from = files(classDirectories.files.collect {
+            fileTree(
+                dir: it,
+                exclude: [ 'edu/northeastern/cs5500/starterbot/DaggerBotComponent.class','edu/northeastern/cs5500/starterbot/BotComponentImpl.class','edu/northeastern/cs5500/starterbot/Builder.class' ])
+        })
+    }
 }
 
 jacocoTestCoverageVerification {
@@ -98,17 +105,17 @@ jacocoTestCoverageVerification {
         rule {
             limit {
                 // minimum percentage of code coverage
-                minimum = 0.5
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.6
             }
         }
-        rule  {
-            enabled = false
-            element = 'CLASS'
-            includes = ['org.gradle.*']
+        rule {
             limit {
-                counter = 'LINE'
-                value = 'TOTALCOUNT'
-                maximum = 0.3
+                // minimum percentage of code coverage
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.6
             }
         }
     }

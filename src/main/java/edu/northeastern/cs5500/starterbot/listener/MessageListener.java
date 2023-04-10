@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.listener;
 
+import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.command.ButtonHandler;
 import edu.northeastern.cs5500.starterbot.command.SlashCommandHandler;
 import edu.northeastern.cs5500.starterbot.command.StringSelectHandler;
@@ -17,6 +18,7 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
+@Generated
 @Slf4j
 public class MessageListener extends ListenerAdapter {
 

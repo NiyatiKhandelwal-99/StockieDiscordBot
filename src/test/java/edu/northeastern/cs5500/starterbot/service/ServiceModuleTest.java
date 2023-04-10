@@ -13,6 +13,7 @@ public class ServiceModuleTest {
 
     @Test
     public void testProvideNewsFeedService() {
-        assertThat(new ServiceModule().provideQuoteService(new AlphaVantageService())).isNotNull();
+        assertThat(new ServiceModule().provideNewsFeedService(new AlphaVantageService()))
+                .isNotNull();
     }
 }

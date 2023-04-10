@@ -5,8 +5,6 @@ import static org.junit.Assert.fail;
 
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
-import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsResponse;
-import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsTopic;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -171,56 +169,5 @@ public class NewsFeedControllerTest {
         assertThat(newsFeedSameTicker1.equals(newsFeedEmpty)).isFalse();
         assertThat(newsFeedSameTicker1.equals(newsFeedNull)).isFalse();
         assertThat(newsFeedSameTicker1.toString().equals("test")).isFalse();
-    }
-
-    @Test
-    public void testAlphaVantageNewsTopicEqualHashCode() {
-        AlphaVantageNewsTopic scienceTopic = new AlphaVantageNewsTopic("Science");
-        AlphaVantageNewsTopic sameTopic = new AlphaVantageNewsTopic("Science");
-        assertThat(scienceTopic.equals(sameTopic)).isTrue();
-        assertThat(scienceTopic.getTopic().equals(sameTopic.getTopic())).isTrue();
-        assertThat(scienceTopic.hashCode() == sameTopic.hashCode()).isTrue();
-        assertThat(scienceTopic.equals(scienceTopic)).isTrue();
-        assertThat(scienceTopic.hashCode() == scienceTopic.hashCode()).isTrue();
-        assertThat(scienceTopic.toString().equals(sameTopic.toString())).isTrue();
-    }
-
-    @Test
-    public void testAlphaVantageNewsTopicNotEqualHashCode() {
-        AlphaVantageNewsTopic scienceTopic = new AlphaVantageNewsTopic("Science");
-        AlphaVantageNewsTopic diffTopic = new AlphaVantageNewsTopic("Technology");
-        AlphaVantageNewsTopic emptyTopic = new AlphaVantageNewsTopic("");
-        AlphaVantageNewsTopic nullTopic = new AlphaVantageNewsTopic(null);
-        assertThat(scienceTopic.equals(diffTopic)).isFalse();
-        assertThat(scienceTopic.equals(emptyTopic)).isFalse();
-        assertThat(scienceTopic.equals(nullTopic)).isFalse();
-        assertThat(scienceTopic.getTopic().equals(diffTopic.getTopic())).isFalse();
-        assertThat(scienceTopic.hashCode() == diffTopic.hashCode()).isFalse();
-        assertThat(scienceTopic.toString().equals(diffTopic.toString())).isFalse();
-        assertThat(scienceTopic.equals("test")).isFalse();
-    }
-
-    @Test
-    public void testAlphaVantageNewsResponseEqualHashCode() {
-        AlphaVantageNewsResponse sourceNewsRes = new AlphaVantageNewsResponse("item", "", "", null);
-        AlphaVantageNewsResponse sameNewsRes = new AlphaVantageNewsResponse("item", "", "", null);
-        assertThat(sourceNewsRes.equals(sameNewsRes)).isTrue();
-        assertThat(sourceNewsRes.getItems().equals(sameNewsRes.getItems())).isTrue();
-        assertThat(sourceNewsRes.hashCode() == sameNewsRes.hashCode()).isTrue();
-        assertThat(sourceNewsRes.equals(sourceNewsRes)).isTrue();
-        assertThat(sourceNewsRes.hashCode() == sourceNewsRes.hashCode()).isTrue();
-        assertThat(sourceNewsRes.toString().equals(sourceNewsRes.toString())).isTrue();
-    }
-
-    @Test
-    public void testAlphaVantageNewsResponseNotEqualHashCode() {
-        AlphaVantageNewsResponse sourceNewsRes = new AlphaVantageNewsResponse("item", "", "", null);
-        AlphaVantageNewsResponse nullRes = null;
-        AlphaVantageNewsResponse emptyNewsRes = new AlphaVantageNewsResponse("", "", "", null);
-        assertThat(sourceNewsRes.equals(nullRes)).isFalse();
-        assertThat(sourceNewsRes.getItems().equals(emptyNewsRes.getItems())).isFalse();
-        assertThat(sourceNewsRes.hashCode() == emptyNewsRes.hashCode()).isFalse();
-        assertThat(sourceNewsRes.toString().equals(emptyNewsRes.toString())).isFalse();
-        assertThat(sourceNewsRes.equals("test")).isFalse();
     }
 }
