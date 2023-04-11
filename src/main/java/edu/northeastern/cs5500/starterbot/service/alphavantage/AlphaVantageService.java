@@ -1,10 +1,15 @@
 package edu.northeastern.cs5500.starterbot.service.alphavantage;
 
 import com.google.gson.Gson;
+import edu.northeastern.cs5500.starterbot.constants.LogMessages;
+import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.InternalServerErrorException;
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsResponse;
+import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
 import edu.northeastern.cs5500.starterbot.service.QuoteService;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,6 +17,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.SneakyThrows;
@@ -19,9 +25,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Singleton
 @Slf4j
-public class AlphaVantageService implements QuoteService {
+public class AlphaVantageService implements QuoteService, NewsFeedService {
     private static final String BASE_URL = "https://www.alphavantage.co/query?";
     private final String apiKey;
+    private static long backoff = 1;
+    private static final String LIMITS_EXCEEDED =
+            "{    \"Note\": \"Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.\"}";
 
     public AlphaVantageService(String alphaVantageApiKey) {
         this.apiKey = alphaVantageApiKey;
@@ -41,7 +50,8 @@ public class AlphaVantageService implements QuoteService {
     }
 
     @Override
-    public AlphaVantageGlobalQuote getQuote(String symbol) throws RestException {
+    public AlphaVantageGlobalQuote getQuote(String symbol)
+            throws RestException, AlphaVantageException {
         String queryUrl = "function=GLOBAL_QUOTE&symbol=" + symbol;
         String response = getRequest(queryUrl);
 
@@ -54,8 +64,23 @@ public class AlphaVantageService implements QuoteService {
         return quote;
     }
 
+    @SneakyThrows({InterruptedException.class})
+    private void backoffLogic(String response, String queryUrl)
+            throws AlphaVantageException, RestException {
+
+        while (LIMITS_EXCEEDED.equals(response)) {
+            backoff *= 2;
+            log.info("API limit exceeded; waiting {} seconds and trying again", backoff);
+            if (backoff > 64) {
+                throw new AlphaVantageException("Limit exceeded");
+            }
+            Thread.sleep(backoff * 1000);
+            response = getRequest(queryUrl);
+        }
+    }
+
     @SneakyThrows({MalformedURLException.class, IOException.class})
-    private String getRequest(String queryUrl) throws RestException {
+    private String getRequest(String queryUrl) throws RestException, AlphaVantageException {
         StringBuilder val = new StringBuilder();
         URL url = new URL(BASE_URL + queryUrl + "&apikey=" + apiKey);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -83,6 +108,23 @@ public class AlphaVantageService implements QuoteService {
         }
         conn.disconnect();
 
+        if (LIMITS_EXCEEDED.equals(val.toString())) {
+            backoffLogic(val.toString(), queryUrl);
+        }
+
         return val.toString();
+    }
+
+    @Override
+    public List<AlphaVantageNewsFeed> getNewsSentiment(String symbol, String fromTime)
+            throws RestException, AlphaVantageException {
+        String queryUrl = "function=NEWS_SENTIMENT&tickers=" + symbol + "&time_from=" + fromTime;
+        String response = getRequest(queryUrl);
+
+        var newsFeed = new Gson().fromJson(response, AlphaVantageNewsResponse.class).getFeed();
+        if (newsFeed == null) {
+            log.error(String.format(LogMessages.EMPTY_RESPONSE, symbol), symbol);
+        }
+        return newsFeed;
     }
 }

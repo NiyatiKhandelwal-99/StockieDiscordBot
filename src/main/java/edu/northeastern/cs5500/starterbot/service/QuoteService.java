@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.service;
 
+import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
 
@@ -11,6 +12,7 @@ public interface QuoteService extends Service {
      *
      * @param symbol the symbol to get a quote for
      * @return a quote for the given symbol, or null if a quote cannot be obtained
+     * @throws AlphaVantageException
      */
-    AlphaVantageGlobalQuote getQuote(String symbol) throws RestException;
+    AlphaVantageGlobalQuote getQuote(String symbol) throws RestException, AlphaVantageException;
 }

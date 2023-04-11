@@ -10,4 +10,9 @@ public class ServiceModule {
     public QuoteService provideQuoteService(AlphaVantageService service) {
         return service;
     }
+
+    @Provides
+    public NewsFeedService provideNewsFeedService(AlphaVantageService service) {
+        return service;
+    }
 }
