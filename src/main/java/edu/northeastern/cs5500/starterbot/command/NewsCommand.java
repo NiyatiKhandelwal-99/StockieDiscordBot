@@ -84,12 +84,12 @@ public class NewsCommand implements SlashCommandHandler {
             newsFeeds = getNewsFeed(ticker);
         } catch (RestException | AlphaVantageException exp) {
             log.error(String.format(LogMessages.ERROR_ALPHAVANTAGE_API, exp.getMessage()), exp);
-            event.reply(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY).queue();
+            event.reply(String.format(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY, ticker)).queue();
             return;
         }
 
         if (newsFeeds == null) {
-            event.reply(LogMessages.EMPTY_RESPONSE).queue();
+            event.reply(String.format(LogMessages.EMPTY_RESPONSE, ticker)).queue();
             return;
         }
 
