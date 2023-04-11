@@ -1,13 +1,8 @@
 package edu.northeastern.cs5500.starterbot.command;
 
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Updates.set;
-
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.result.UpdateResult;
 import edu.northeastern.cs5500.starterbot.controller.QuoteController;
-import edu.northeastern.cs5500.starterbot.exception.MissingRequiredParameterException;
 import edu.northeastern.cs5500.starterbot.service.MongoDBService;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -18,6 +13,8 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.bson.Document;
+import edu.northeastern.cs5500.starterbot.constants.LogMessages;
+
 
 @Singleton
 @Slf4j
@@ -26,7 +23,6 @@ public class UpVoteCommand implements SlashCommandHandler {
 
     @Inject
     public UpVoteCommand() {
-        // empty constructor required for injection
     }
 
     @Nonnull
@@ -48,40 +44,46 @@ public class UpVoteCommand implements SlashCommandHandler {
 
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
+        
         log.info("event: /upvote");
         var option = event.getOption("ticker");
 
         if (option == null) {
-            throw new MissingRequiredParameterException("ticker");
+            log.error(LogMessages.EMPTY_TICKER, event.getName());
+            return;
         }
 
-        String tickerSymbol = option.getAsString();
+        String ticker = option.getAsString().toLowerCase();
+
+        log.info("event: /upvote ticker:" + ticker);
 
         MongoDBService mongoDBService = new MongoDBService();
         MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
 
         MongoCollection<Document> collection = mongoDatabase.getCollection("upvote");
-        Document document = collection.find(eq("_id", tickerSymbol.toLowerCase())).first();
+        Document query = createDocumentWithTicker(ticker);
 
-        if (document == null) {
-            event.reply("Ticker does not exist!").queue();
+        // Check if the document exists with the specified ticker
+        if (collectionCount(collection, query) == 1) {
+
+            Document updateDoc = createUpDateDocument();
+            collection.updateOne(query, updateDoc);
+            event.reply("You have successfully upvoted for the ticker " + ticker + ".").queue();
+
         } else {
-            String voteString = document.get("vote") + "";
-            int vote = Integer.parseInt(voteString);
-
-            UpdateResult updateResult =
-                    collection.updateOne(eq("_id", tickerSymbol), set("vote", vote + 1));
-            String message = "";
-            if (updateResult.getModifiedCount() > 0) {
-                message = "You have successfully upvoted for the ticker " + tickerSymbol + ".";
-                event.reply(message).queue();
-            } else {
-                message =
-                        "There was a problem encountered. Could not up-vote for "
-                                + tickerSymbol
-                                + ".";
-                event.reply(message).queue();
-            }
+            event.reply(LogMessages.INVALID_TICKER).queue();
         }
+    }
+
+    public Document createDocumentWithTicker(String ticker){
+        return new Document("ticker", ticker);
+    }
+
+    public int collectionCount(MongoCollection<Document> collection, Document doc){
+        return (int) collection.countDocuments(doc);
+    }
+
+    public Document createUpDateDocument(){
+        return new Document("$inc", new Document("votes", 1));
     }
 }
