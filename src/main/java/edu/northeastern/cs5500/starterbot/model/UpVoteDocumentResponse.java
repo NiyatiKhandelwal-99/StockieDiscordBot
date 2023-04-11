@@ -1,12 +1,10 @@
 package edu.northeastern.cs5500.starterbot.model;
 
+import lombok.Data;
 import org.bson.types.ObjectId;
 
-import lombok.Data;
-
 @Data
-public class UpVoteDocumentResponse implements Model{
-
+public class UpVoteDocumentResponse implements Model {
 
     private String ticker;
     private int votes;

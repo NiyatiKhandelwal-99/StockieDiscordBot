@@ -1,17 +1,15 @@
 package edu.northeastern.cs5500.starterbot.command;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.bson.Document;
-import org.bson.types.ObjectId;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import edu.northeastern.cs5500.starterbot.model.UpVoteDocumentResponse;
 import edu.northeastern.cs5500.starterbot.repository.InMemoryRepository;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-
-import static com.google.common.truth.Truth.assertThat;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class UpVoteCommandTest {
 
@@ -50,13 +48,14 @@ public class UpVoteCommandTest {
 
     @Test
     void testCreateDocumentWithTicker() {
-        Document testCreateDocumentWithTicker = new UpVoteCommand().createDocumentWithTicker("aapl");
+        Document testCreateDocumentWithTicker =
+                new UpVoteCommand().createDocumentWithTicker("aapl");
         String name = testCreateDocumentWithTicker.getString("ticker");
         assertEquals("aapl", name);
     }
 
     @Test
-    void testCreateUpdateDocument(){
+    void testCreateUpdateDocument() {
         Document testDocument = new Document("$inc", new Document("votes", 1));
         assertEquals(new UpVoteCommand().createUpDateDocument(), testDocument);
     }

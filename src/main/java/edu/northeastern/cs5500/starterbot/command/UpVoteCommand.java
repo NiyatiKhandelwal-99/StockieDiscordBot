@@ -2,6 +2,7 @@ package edu.northeastern.cs5500.starterbot.command;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.QuoteController;
 import edu.northeastern.cs5500.starterbot.service.MongoDBService;
 import javax.annotation.Nonnull;
@@ -13,8 +14,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.bson.Document;
-import edu.northeastern.cs5500.starterbot.constants.LogMessages;
-
 
 @Singleton
 @Slf4j
@@ -22,8 +21,7 @@ public class UpVoteCommand implements SlashCommandHandler {
     @Inject QuoteController quoteController;
 
     @Inject
-    public UpVoteCommand() {
-    }
+    public UpVoteCommand() {}
 
     @Nonnull
     @Override
@@ -44,7 +42,7 @@ public class UpVoteCommand implements SlashCommandHandler {
 
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
-        
+
         log.info("event: /upvote");
         var option = event.getOption("ticker");
 
@@ -75,15 +73,15 @@ public class UpVoteCommand implements SlashCommandHandler {
         }
     }
 
-    public Document createDocumentWithTicker(String ticker){
+    public Document createDocumentWithTicker(String ticker) {
         return new Document("ticker", ticker);
     }
 
-    public int collectionCount(MongoCollection<Document> collection, Document doc){
+    public int collectionCount(MongoCollection<Document> collection, Document doc) {
         return (int) collection.countDocuments(doc);
     }
 
-    public Document createUpDateDocument(){
+    public Document createUpDateDocument() {
         return new Document("$inc", new Document("votes", 1));
     }
 }
