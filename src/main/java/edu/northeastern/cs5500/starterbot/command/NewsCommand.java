@@ -104,8 +104,12 @@ public class NewsCommand implements SlashCommandHandler {
 
     private List<MessageEmbed> renderEmbeds(List<AlphaVantageNewsFeed> newsFeeds) {
         List<MessageEmbed> newsEmbeds = new ArrayList<>();
+        int TITLE_MAX_LENGTH = 255;
 
         for (AlphaVantageNewsFeed newsFeed : newsFeeds) {
+            if (newsFeed.getTitle().length() > TITLE_MAX_LENGTH) {
+                continue;
+            }
             newsEmbeds.add(renderEmbed(newsFeed));
         }
 
