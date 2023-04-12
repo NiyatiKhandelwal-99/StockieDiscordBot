@@ -6,7 +6,7 @@ import edu.northeastern.cs5500.starterbot.exception.MissingRequiredParameterExce
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuote;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.annotation.Nonnull;

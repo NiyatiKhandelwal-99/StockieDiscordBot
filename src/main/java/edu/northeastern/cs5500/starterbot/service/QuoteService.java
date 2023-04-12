@@ -2,7 +2,7 @@ package edu.northeastern.cs5500.starterbot.service;
 
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuote;
 
 public interface QuoteService extends Service {
     /**

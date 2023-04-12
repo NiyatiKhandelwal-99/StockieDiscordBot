@@ -7,8 +7,12 @@ import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.InternalServerErrorException;
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuote;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuoteResponse;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsResponse;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageTickerDetails;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageTickerResponse;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
 import edu.northeastern.cs5500.starterbot.service.QuoteService;
 import java.io.BufferedReader;
@@ -126,5 +130,19 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
             log.error(String.format(LogMessages.EMPTY_RESPONSE, symbol), symbol);
         }
         return newsFeed;
+    }
+
+    @Override
+    public List<AlphaVantageTickerDetails> getTicker(String symbol)
+            throws RestException, AlphaVantageException {
+        String queryUrl = "function=SYMBOL_SEARCH&keywords=" + symbol;
+        String response = getRequest(queryUrl);
+
+        var tickerDetails =
+                new Gson().fromJson(response, AlphaVantageTickerResponse.class).getTickerDetails();
+        if (tickerDetails == null || tickerDetails.isEmpty()) {
+            log.error(String.format(LogMessages.EMPTY_RESPONSE, symbol), symbol);
+        }
+        return tickerDetails;
     }
 }

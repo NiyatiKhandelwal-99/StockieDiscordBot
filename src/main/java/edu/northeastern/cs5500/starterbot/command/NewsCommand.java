@@ -6,13 +6,18 @@ import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsTopic;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageTickerDetails;
 import java.awt.Color;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -23,6 +28,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 @Singleton
 @Slf4j
@@ -100,12 +106,76 @@ public class NewsCommand implements SlashCommandHandler {
         for (MessageEmbed embed : newsEmbeds) {
             event.getChannel().sendMessageEmbeds(embed).queue();
         }
+
+        log.info("event: creating buttons for other tickers");
+
+        List<AlphaVantageTickerDetails> newsFeedsLists = null;
+        try {
+            newsFeedsLists = createListOfTitles(newsFeeds);
+        } catch (RestException | AlphaVantageException e) {
+            log.error(String.format(LogMessages.ERROR_ALPHAVANTAGE_API, e.getMessage()), e);
+            event.reply(String.format(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY, ticker)).queue();
+            return;
+        }
+
+        List<Button> otherTickerNews = new ArrayList<>();
+        for (AlphaVantageTickerDetails tickerDetails : newsFeedsLists) {
+            otherTickerNews.add(Button.success(tickerDetails.getSymbol(), tickerDetails.getName()));
+        }
+        event.reply("Some more news from other tickers!").addActionRow(otherTickerNews).queue();
+
+        // for (Button button : otherTickerNews) {
+        //     event.reply("Some more news from other tickers!").addActionRow(otherTickerNews);
+        // }
+    }
+
+    private List<AlphaVantageTickerDetails> createListOfTitles(List<AlphaVantageNewsFeed> newsFeeds)
+            throws RestException, AlphaVantageException {
+        List<String> titles = new ArrayList<>();
+        for (AlphaVantageNewsFeed newsFeed : newsFeeds) {
+            titles.add(newsFeed.getTitle());
+        }
+        final String regex = "(\\b[A-Z][A-Z]+\\b)";
+        final Pattern pattern = Pattern.compile(regex);
+
+        Set<String> uniqueTitleTickers = new HashSet<>();
+
+        for (String title : titles) {
+            final Matcher matcher = pattern.matcher(title);
+            while (matcher.find()) {
+                // System.out.println("Full match: " + matcher.group(0));
+                uniqueTitleTickers.add(matcher.group(0));
+            }
+        }
+        List<AlphaVantageTickerDetails> newsFeedsLists = new ArrayList<>();
+        for (String titleTicker : uniqueTitleTickers) {
+            if (newsFeedsLists.size() < 10) {
+                var ticker = getTicker(titleTicker);
+                if (ticker == null || ticker.isEmpty()) {
+                    continue;
+                }
+                newsFeedsLists.add(getTicker(titleTicker).get(0));
+            } else {
+                break;
+            }
+        }
+        return newsFeedsLists;
+    }
+
+    public List<AlphaVantageTickerDetails> getTicker(String ticker)
+            throws RestException, AlphaVantageException {
+
+        return newsFeedController.getTicker(ticker);
     }
 
     private List<MessageEmbed> renderEmbeds(List<AlphaVantageNewsFeed> newsFeeds) {
         List<MessageEmbed> newsEmbeds = new ArrayList<>();
+        int TITLE_MAX_LENGTH = 255;
 
         for (AlphaVantageNewsFeed newsFeed : newsFeeds) {
+            if (newsFeed.getTitle().length() > TITLE_MAX_LENGTH) {
+                continue;
+            }
             newsEmbeds.add(renderEmbed(newsFeed));
         }
 
