@@ -6,16 +6,17 @@ import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsTopic;
-import edu.northeastern.cs5500.starterbot.model.AlphaVantageTickerDetails;
 import java.awt.Color;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -32,7 +34,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 @Singleton
 @Slf4j
-public class NewsCommand implements SlashCommandHandler {
+public class NewsCommand implements SlashCommandHandler, ButtonHandler {
 
     @Inject NewsFeedController newsFeedController;
     private static final int NUMBER_OF_DAYS = 4;
@@ -109,63 +111,56 @@ public class NewsCommand implements SlashCommandHandler {
 
         log.info("event: creating buttons for other tickers");
 
-        List<AlphaVantageTickerDetails> newsFeedsLists = null;
+        Map<String, String> uniqueTickerLists = null;
         try {
-            newsFeedsLists = createListOfTitles(newsFeeds);
-        } catch (RestException | AlphaVantageException e) {
-            log.error(String.format(LogMessages.ERROR_ALPHAVANTAGE_API, e.getMessage()), e);
+            uniqueTickerLists = createListOfTitles(newsFeeds);
+        } catch (RestException | AlphaVantageException | IOException | InterruptedException e) {
+            log.error(LogMessages.ERROR_ALPHAVANTAGE_API, e);
             event.reply(String.format(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY, ticker)).queue();
             return;
         }
 
         List<Button> otherTickerNews = new ArrayList<>();
-        for (AlphaVantageTickerDetails tickerDetails : newsFeedsLists) {
-            otherTickerNews.add(Button.success(tickerDetails.getSymbol(), tickerDetails.getName()));
+        for (String tickerSymbol : uniqueTickerLists.keySet()) {
+            if (otherTickerNews.size() < 5) {
+                otherTickerNews.add(Button.success(getName() + ":" + tickerSymbol, tickerSymbol));
+            } else {
+                event.getChannel().sendMessage("").addActionRow(otherTickerNews).queue();
+                otherTickerNews.clear();
+            }
         }
-        event.reply("Some more news from other tickers!").addActionRow(otherTickerNews).queue();
-
-        // for (Button button : otherTickerNews) {
-        //     event.reply("Some more news from other tickers!").addActionRow(otherTickerNews);
-        // }
     }
 
-    private List<AlphaVantageTickerDetails> createListOfTitles(List<AlphaVantageNewsFeed> newsFeeds)
-            throws RestException, AlphaVantageException {
+    private Map<String, String> createListOfTitles(List<AlphaVantageNewsFeed> newsFeeds)
+            throws RestException, AlphaVantageException, InterruptedException, IOException {
         List<String> titles = new ArrayList<>();
         for (AlphaVantageNewsFeed newsFeed : newsFeeds) {
             titles.add(newsFeed.getTitle());
         }
+
+        Map<String, String> uniqueValidTickers = new HashMap<>();
+        Map<String, String> tickerList = getTickers();
+
+        // System.out.println(tickerList.size());
+
         final String regex = "(\\b[A-Z][A-Z]+\\b)";
         final Pattern pattern = Pattern.compile(regex);
-
-        Set<String> uniqueTitleTickers = new HashSet<>();
 
         for (String title : titles) {
             final Matcher matcher = pattern.matcher(title);
             while (matcher.find()) {
-                // System.out.println("Full match: " + matcher.group(0));
-                uniqueTitleTickers.add(matcher.group(0));
-            }
-        }
-        List<AlphaVantageTickerDetails> newsFeedsLists = new ArrayList<>();
-        for (String titleTicker : uniqueTitleTickers) {
-            if (newsFeedsLists.size() < 10) {
-                var ticker = getTicker(titleTicker);
-                if (ticker == null || ticker.isEmpty()) {
-                    continue;
+                if (tickerList.containsKey(matcher.group(0))) {
+                    uniqueValidTickers.put(matcher.group(0), tickerList.get(matcher.group(0)));
                 }
-                newsFeedsLists.add(getTicker(titleTicker).get(0));
-            } else {
-                break;
             }
         }
-        return newsFeedsLists;
+        return uniqueValidTickers;
     }
 
-    public List<AlphaVantageTickerDetails> getTicker(String ticker)
-            throws RestException, AlphaVantageException {
+    public Map<String, String> getTickers()
+            throws RestException, AlphaVantageException, IOException {
 
-        return newsFeedController.getTicker(ticker);
+        return newsFeedController.getTickers();
     }
 
     private List<MessageEmbed> renderEmbeds(List<AlphaVantageNewsFeed> newsFeeds) {
@@ -244,5 +239,57 @@ public class NewsCommand implements SlashCommandHandler {
             log.error(String.format("Date is in wrong format %s", userDateTime), pe);
         }
         return formattedDate;
+    }
+
+    @Override
+    public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
+        log.info("In NewsCommand onButtonInteraction " + event.getButton().getId());
+        var ticker = Objects.requireNonNull(event.getButton().getId()).split(":")[1];
+
+        List<AlphaVantageNewsFeed> newsFeeds = null;
+        try {
+            newsFeeds = getNewsFeed(ticker);
+        } catch (RestException | AlphaVantageException exp) {
+            log.error(LogMessages.ERROR_ALPHAVANTAGE_API, exp);
+            event.reply(String.format(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY, ticker)).queue();
+            return;
+        }
+
+        if (newsFeeds == null) {
+            event.reply(String.format(LogMessages.EMPTY_RESPONSE, ticker)).queue();
+            return;
+        }
+
+        event.reply("Bringing latest news from last " + NUMBER_OF_DAYS_IN_WORDS + " days!").queue();
+        /** Generating embed builders for each news feed. */
+        List<MessageEmbed> newsEmbeds = renderEmbeds(newsFeeds);
+
+        for (MessageEmbed embed : newsEmbeds) {
+            event.getChannel().sendMessageEmbeds(embed).queue();
+        }
+
+        log.info("event: creating buttons for other tickers");
+
+        Map<String, String> uniqueTickerLists = createButtonsFromNewsFeeds(newsFeeds);
+
+        List<Button> otherTickerNews = new ArrayList<>();
+        for (String tickerSymbol : uniqueTickerLists.keySet()) {
+            if (otherTickerNews.size() < 5) {
+                otherTickerNews.add(Button.success(getName() + ":" + tickerSymbol, tickerSymbol));
+            } else {
+                event.getChannel().sendMessage("").addActionRow(otherTickerNews).queue();
+                otherTickerNews.clear();
+            }
+        }
+    }
+
+    private Map<String, String> createButtonsFromNewsFeeds(List<AlphaVantageNewsFeed> newsFeeds) {
+        Map<String, String> uniqueTickerLists = null;
+        try {
+            uniqueTickerLists = createListOfTitles(newsFeeds);
+        } catch (RestException | AlphaVantageException | InterruptedException | IOException e) {
+            log.error(LogMessages.ERROR_ALPHAVANTAGE_API, e);
+        }
+        return uniqueTickerLists;
     }
 }

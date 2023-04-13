@@ -3,9 +3,10 @@ package edu.northeastern.cs5500.starterbot.controller;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
-import edu.northeastern.cs5500.starterbot.model.AlphaVantageTickerDetails;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class FakeNewsFeedService implements NewsFeedService {
 
@@ -31,9 +32,9 @@ public class FakeNewsFeedService implements NewsFeedService {
     }
 
     @Override
-    public List<AlphaVantageTickerDetails> getTicker(String symbol)
-            throws RestException, AlphaVantageException {
+    public Map<String, String> getTickers()
+            throws RestException, AlphaVantageException, IOException {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTicker'");
+        throw new UnsupportedOperationException("Unimplemented method 'getTickers'");
     }
 }

@@ -11,8 +11,6 @@ import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuote;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuoteResponse;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsResponse;
-import edu.northeastern.cs5500.starterbot.model.AlphaVantageTickerDetails;
-import edu.northeastern.cs5500.starterbot.model.AlphaVantageTickerResponse;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
 import edu.northeastern.cs5500.starterbot.service.QuoteService;
 import java.io.BufferedReader;
@@ -21,7 +19,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.SneakyThrows;
@@ -133,16 +133,70 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
     }
 
     @Override
-    public List<AlphaVantageTickerDetails> getTicker(String symbol)
-            throws RestException, AlphaVantageException {
-        String queryUrl = "function=SYMBOL_SEARCH&keywords=" + symbol;
-        String response = getRequest(queryUrl);
-
-        var tickerDetails =
-                new Gson().fromJson(response, AlphaVantageTickerResponse.class).getTickerDetails();
-        if (tickerDetails == null || tickerDetails.isEmpty()) {
-            log.error(String.format(LogMessages.EMPTY_RESPONSE, symbol), symbol);
+    public Map<String, String> getTickers()
+            throws RestException, AlphaVantageException, IOException {
+        String queryUrl = "function=LISTING_STATUS";
+        Map<String, String> tickerSymbolAndName = getFile(queryUrl);
+        if (tickerSymbolAndName.size() == 0) {
+            log.error("Empty response found for getTickers()");
         }
-        return tickerDetails;
+        return tickerSymbolAndName;
+    }
+
+    private Map<String, String> getFile(String queryUrl)
+            throws IOException, RestException, AlphaVantageException {
+        URL url = new URL(BASE_URL + queryUrl + "&apikey=" + apiKey);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+
+        switch (conn.getResponseCode()) {
+            case HttpURLConnection.HTTP_OK:
+                break;
+            case HttpURLConnection.HTTP_BAD_REQUEST:
+                throw new BadRequestException();
+            case HttpURLConnection.HTTP_NOT_FOUND:
+                throw new NotFoundException();
+            case HttpURLConnection.HTTP_INTERNAL_ERROR:
+                throw new InternalServerErrorException();
+            default:
+                throw new RestException("unknown", conn.getResponseCode());
+        }
+
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+        Map<String, String> tickers = new HashMap<>();
+        String output;
+        while ((output = br.readLine()) != null) {
+            String[] tickerDetail = output.split(",");
+            if (tickerDetail.length > 1) {
+                tickers.put(tickerDetail[0], tickerDetail[1]);
+            } else {
+                System.out.println("length is 1" + tickerDetail[0]);
+            }
+        }
+
+        // if (tickers.isEmpty()) {
+        //     backoffLogicForTickers(tickers, queryUrl);
+        // }
+
+        conn.disconnect();
+
+        return tickers;
+    }
+
+    @SneakyThrows({InterruptedException.class, IOException.class})
+    private void backoffLogicForTickers(Map<String, String> tickers, String queryUrl)
+            throws AlphaVantageException, RestException {
+
+        while (tickers.isEmpty()) {
+            backoff *= 2;
+            log.info("API limit exceeded; waiting {} seconds and trying again", backoff);
+            if (backoff > 64) {
+                throw new AlphaVantageException("Limit exceeded");
+            }
+            Thread.sleep(backoff * 1000);
+            tickers = getFile(queryUrl);
+        }
     }
 }
