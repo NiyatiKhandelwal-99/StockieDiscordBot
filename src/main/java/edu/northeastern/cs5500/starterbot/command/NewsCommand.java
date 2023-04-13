@@ -37,8 +37,8 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 public class NewsCommand implements SlashCommandHandler, ButtonHandler {
 
     @Inject NewsFeedController newsFeedController;
-    private static final int NUMBER_OF_DAYS = 4;
-    private static final String NUMBER_OF_DAYS_IN_WORDS = "four";
+    private static final int NUMBER_OF_DAYS = 2;
+    private static final String NUMBER_OF_DAYS_IN_WORDS = "two";
 
     @Inject
     public NewsCommand() {
@@ -128,6 +128,9 @@ public class NewsCommand implements SlashCommandHandler, ButtonHandler {
                 event.getChannel().sendMessage("").addActionRow(otherTickerNews).queue();
                 otherTickerNews.clear();
             }
+        }
+        if (!otherTickerNews.isEmpty()) {
+            event.getChannel().sendMessage("").addActionRow(otherTickerNews).queue();
         }
     }
 
@@ -280,6 +283,9 @@ public class NewsCommand implements SlashCommandHandler, ButtonHandler {
                 event.getChannel().sendMessage("").addActionRow(otherTickerNews).queue();
                 otherTickerNews.clear();
             }
+        }
+        if (!otherTickerNews.isEmpty()) {
+            event.getChannel().sendMessage("").addActionRow(otherTickerNews).queue();
         }
     }
 
