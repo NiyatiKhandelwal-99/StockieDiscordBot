@@ -1,6 +1,7 @@
 package edu.northeastern.cs5500.starterbot.service.alphavantage;
 
 import com.google.gson.Gson;
+import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
@@ -36,6 +37,7 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
         this.apiKey = alphaVantageApiKey;
     }
 
+    @Generated
     @Override
     public void register() {
         log.info("AlphaVantageService > register");
@@ -64,6 +66,7 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
         return quote;
     }
 
+    @Generated
     @SneakyThrows({InterruptedException.class})
     private void backoffLogic(String response, String queryUrl)
             throws AlphaVantageException, RestException {
@@ -108,11 +111,21 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
         }
         conn.disconnect();
 
+        checkLimitsExceed(val.toString(), queryUrl);
+
         if (LIMITS_EXCEEDED.equals(val.toString())) {
             backoffLogic(val.toString(), queryUrl);
         }
 
         return val.toString();
+    }
+
+    @Generated
+    private void checkLimitsExceed(String val, String queryUrl)
+            throws AlphaVantageException, RestException {
+        if (LIMITS_EXCEEDED.equals(val)) {
+            backoffLogic(val, queryUrl);
+        }
     }
 
     @Override

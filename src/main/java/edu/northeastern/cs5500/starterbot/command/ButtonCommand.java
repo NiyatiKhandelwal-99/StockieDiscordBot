@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.command;
 
+import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,6 +31,7 @@ public class ButtonCommand implements SlashCommandHandler, ButtonHandler {
         return Commands.slash(getName(), "Demonstrate a button interaction");
     }
 
+    @Generated
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
         log.info("event: /button");
@@ -43,6 +45,7 @@ public class ButtonCommand implements SlashCommandHandler, ButtonHandler {
         event.reply(messageCreateBuilder.build()).queue();
     }
 
+    @Generated
     @Override
     public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
         event.reply(event.getButton().getLabel()).queue();

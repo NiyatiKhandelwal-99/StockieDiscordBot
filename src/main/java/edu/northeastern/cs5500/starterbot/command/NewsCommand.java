@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.command;
 
+import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.NewsFeedController;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
@@ -54,6 +55,7 @@ public class NewsCommand implements SlashCommandHandler {
                         true);
     }
 
+    @Generated
     public List<AlphaVantageNewsFeed> getNewsFeed(String ticker)
             throws RestException, AlphaVantageException {
         final String fromTime =
@@ -64,6 +66,7 @@ public class NewsCommand implements SlashCommandHandler {
         return newsFeedController.getNewsFeeds(ticker, fromTime);
     }
 
+    @Generated
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
 
@@ -102,6 +105,7 @@ public class NewsCommand implements SlashCommandHandler {
         }
     }
 
+    @Generated
     private List<MessageEmbed> renderEmbeds(List<AlphaVantageNewsFeed> newsFeeds) {
         List<MessageEmbed> newsEmbeds = new ArrayList<>();
         int TITLE_MAX_LENGTH = 255;
@@ -116,6 +120,7 @@ public class NewsCommand implements SlashCommandHandler {
         return newsEmbeds;
     }
 
+    @Generated
     private MessageEmbed renderEmbed(AlphaVantageNewsFeed newsFeed) {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle(newsFeed.getTitle());

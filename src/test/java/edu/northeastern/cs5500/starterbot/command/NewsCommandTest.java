@@ -57,9 +57,17 @@ public class NewsCommandTest {
 
     @Test
     void testFormatDateInvalid() throws RestException, AlphaVantageException {
-        final String userFromDateTime = "20230319122133";
-        String botDateFormat = NewsCommand.formatDateTimeString(userFromDateTime);
+        final String userFromDateTimeWithoutT = "20230319122133";
+        String botDateFormat = NewsCommand.formatDateTimeString(userFromDateTimeWithoutT);
         assertThat(botDateFormat.isBlank()).isTrue();
+
+        final String userFromDateTimeWrongFormat = "02-01-2023T12-23-122";
+        var result = NewsCommand.formatDateTimeString(userFromDateTimeWrongFormat);
+        assertThat(result).isEmpty();
+
+        final String userFromDateEmpty = "";
+        var emptyResult = NewsCommand.formatDateTimeString(userFromDateEmpty);
+        assertThat(emptyResult).isEmpty();
     }
 
     @Test
@@ -70,7 +78,7 @@ public class NewsCommandTest {
     }
 
     @Test
-    void testformatTopicString() throws RestException, AlphaVantageException {
+    void testFormatTopicString() throws RestException, AlphaVantageException {
         List<AlphaVantageNewsTopic> topicList =
                 List.of(
                         new AlphaVantageNewsTopic("technology"),
@@ -81,7 +89,7 @@ public class NewsCommandTest {
     }
 
     @Test
-    void testformatTopicStringInvalidList() throws RestException, AlphaVantageException {
+    void testFormatTopicStringInvalidList() throws RestException, AlphaVantageException {
         List<AlphaVantageNewsTopic> topicListEmpty = null;
         String csvTopicString = NewsCommand.formatTopicString(topicListEmpty);
         assertThat(csvTopicString).isNotEmpty();
