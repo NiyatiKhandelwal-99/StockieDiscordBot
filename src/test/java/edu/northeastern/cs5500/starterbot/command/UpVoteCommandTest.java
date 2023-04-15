@@ -3,11 +3,8 @@ package edu.northeastern.cs5500.starterbot.command;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import edu.northeastern.cs5500.starterbot.model.UpVoteDocumentResponse;
-import edu.northeastern.cs5500.starterbot.repository.InMemoryRepository;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,17 +15,6 @@ public class UpVoteCommandTest {
 
     @BeforeEach
     void setUp() {
-        InMemoryRepository<UpVoteDocumentResponse> repository = new InMemoryRepository<>();
-
-        ObjectId id1 = new ObjectId("5399aba6e4b0ae375bfdca88");
-
-        UpVoteDocumentResponse upVoteDocumentResponse = new UpVoteDocumentResponse(id1, "aapl", 1);
-        repository.add(upVoteDocumentResponse);
-
-        ObjectId id2 = new ObjectId("5399aba6e4b0ae375bfdca89");
-        UpVoteDocumentResponse upVoteDocumentResponse2 = new UpVoteDocumentResponse(id2, "aapl", 1);
-        repository.add(upVoteDocumentResponse2);
-
         upVoteCommand = new UpVoteCommand();
         commandData = upVoteCommand.getCommandData();
     }

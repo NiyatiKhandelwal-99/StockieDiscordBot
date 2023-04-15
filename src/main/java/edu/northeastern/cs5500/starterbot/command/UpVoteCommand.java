@@ -3,7 +3,6 @@ package edu.northeastern.cs5500.starterbot.command;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
-import edu.northeastern.cs5500.starterbot.controller.QuoteController;
 import edu.northeastern.cs5500.starterbot.service.MongoDBService;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -18,7 +17,8 @@ import org.bson.Document;
 @Singleton
 @Slf4j
 public class UpVoteCommand implements SlashCommandHandler {
-    @Inject QuoteController quoteController;
+
+    @Inject MongoDBService mongoDBService;
 
     @Inject
     public UpVoteCommand() {}
@@ -55,7 +55,7 @@ public class UpVoteCommand implements SlashCommandHandler {
 
         log.info("event: /upvote ticker:" + ticker);
 
-        MongoDBService mongoDBService = new MongoDBService();
+        mongoDBService = new MongoDBService();
         MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
 
         MongoCollection<Document> collection = mongoDatabase.getCollection("upvote");
