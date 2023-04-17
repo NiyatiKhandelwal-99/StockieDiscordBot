@@ -2,6 +2,7 @@ package edu.northeastern.cs5500.starterbot.command;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.service.MongoDBService;
 import javax.annotation.Nonnull;
@@ -40,6 +41,7 @@ public class UpVoteCommand implements SlashCommandHandler {
                         true);
     }
 
+    @Generated
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
 
@@ -55,7 +57,6 @@ public class UpVoteCommand implements SlashCommandHandler {
 
         log.info("event: /upvote ticker:" + ticker);
 
-        mongoDBService = new MongoDBService();
         MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
 
         MongoCollection<Document> collection = mongoDatabase.getCollection("upvote");
@@ -77,6 +78,7 @@ public class UpVoteCommand implements SlashCommandHandler {
         return new Document("ticker", ticker);
     }
 
+    @Generated
     public int collectionCount(MongoCollection<Document> collection, Document doc) {
         return (int) collection.countDocuments(doc);
     }
