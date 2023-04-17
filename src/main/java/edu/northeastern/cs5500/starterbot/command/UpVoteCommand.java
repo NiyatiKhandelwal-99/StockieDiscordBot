@@ -59,7 +59,7 @@ public class UpVoteCommand implements SlashCommandHandler {
 
         MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
 
-        MongoCollection<Document> collection = mongoDatabase.getCollection("upvote");
+        MongoCollection<Document> collection = mongoDatabase.getCollection("votes");
         Document query = createDocumentWithTicker(ticker);
 
         // Check if the document exists with the specified ticker
