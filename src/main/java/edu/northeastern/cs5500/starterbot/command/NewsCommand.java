@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.command;
 
+import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.NewsFeedController;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
@@ -54,6 +55,7 @@ public class NewsCommand implements SlashCommandHandler {
                         true);
     }
 
+    @Generated
     public List<AlphaVantageNewsFeed> getNewsFeed(String ticker)
             throws RestException, AlphaVantageException {
         final String fromTime =
@@ -64,6 +66,7 @@ public class NewsCommand implements SlashCommandHandler {
         return newsFeedController.getNewsFeeds(ticker, fromTime);
     }
 
+    @Generated
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
 
@@ -84,12 +87,12 @@ public class NewsCommand implements SlashCommandHandler {
             newsFeeds = getNewsFeed(ticker);
         } catch (RestException | AlphaVantageException exp) {
             log.error(String.format(LogMessages.ERROR_ALPHAVANTAGE_API, exp.getMessage()), exp);
-            event.reply(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY).queue();
+            event.reply(String.format(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY, ticker)).queue();
             return;
         }
 
         if (newsFeeds == null) {
-            event.reply(LogMessages.EMPTY_RESPONSE).queue();
+            event.reply(String.format(LogMessages.EMPTY_RESPONSE, ticker)).queue();
             return;
         }
 
@@ -102,16 +105,22 @@ public class NewsCommand implements SlashCommandHandler {
         }
     }
 
+    @Generated
     private List<MessageEmbed> renderEmbeds(List<AlphaVantageNewsFeed> newsFeeds) {
         List<MessageEmbed> newsEmbeds = new ArrayList<>();
+        int TITLE_MAX_LENGTH = 255;
 
         for (AlphaVantageNewsFeed newsFeed : newsFeeds) {
+            if (newsFeed.getTitle().length() > TITLE_MAX_LENGTH) {
+                continue;
+            }
             newsEmbeds.add(renderEmbed(newsFeed));
         }
 
         return newsEmbeds;
     }
 
+    @Generated
     private MessageEmbed renderEmbed(AlphaVantageNewsFeed newsFeed) {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle(newsFeed.getTitle());

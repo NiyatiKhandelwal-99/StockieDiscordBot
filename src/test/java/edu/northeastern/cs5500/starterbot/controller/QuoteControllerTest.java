@@ -50,4 +50,27 @@ class QuoteControllerTest {
             }
         }
     }
+
+    @Test
+    public void testGetNewsSentimentEmptyTicker() throws Exception {
+        QuoteController quoteController = getQuoteController();
+        String emptyTicker = "";
+        try {
+            quoteController.getQuote(emptyTicker);
+            fail("Accepted invalid ticker symbol: " + emptyTicker);
+        } catch (BadRequestException bre) {
+            // expected
+        }
+    }
+
+    @Test
+    public void testGetNewsSentimentNullTicker() throws Exception {
+        QuoteController quoteController = getQuoteController();
+        try {
+            quoteController.getQuote(null);
+            fail("Got null ticker symbol: ");
+        } catch (BadRequestException bre) {
+            // expected
+        }
+    }
 }
