@@ -22,13 +22,63 @@ public class FakeNewsFeedService implements NewsFeedService {
     @Override
     public List<AlphaVantageNewsFeed> getNewsSentiment(String symbol, String fromTime)
             throws RestException, AlphaVantageException {
-        return List.of(
-                new AlphaVantageNewsFeed(
-                        fromTime, fromTime, fromTime, null, fromTime, fromTime, fromTime, fromTime,
-                        fromTime, symbol, fromTime, null),
-                new AlphaVantageNewsFeed(
-                        fromTime, fromTime, fromTime, null, fromTime, fromTime, fromTime, fromTime,
-                        fromTime, symbol, fromTime, null));
+        if (symbol.equals("AAPL")) {
+            return List.of(
+                    new AlphaVantageNewsFeed(
+                            "AAPL title1",
+                            "url1",
+                            fromTime,
+                            null,
+                            "test summary",
+                            "",
+                            "test source",
+                            "test",
+                            "internet",
+                            "neutral",
+                            "neutral",
+                            null),
+                    new AlphaVantageNewsFeed(
+                            "AAPL title2",
+                            "url2",
+                            fromTime,
+                            null,
+                            "test summary",
+                            "",
+                            "test source",
+                            "test",
+                            "internet",
+                            "neutral",
+                            "neutral",
+                            null));
+        } else {
+            return List.of(
+                    new AlphaVantageNewsFeed(
+                            "title1",
+                            "url1",
+                            fromTime,
+                            null,
+                            "test summary",
+                            "",
+                            "test source",
+                            "test",
+                            "internet",
+                            "neutral",
+                            "neutral",
+                            null),
+                    new AlphaVantageNewsFeed(
+                            "title2",
+                            "url2",
+                            fromTime,
+                            null,
+                            "test summary",
+                            "",
+                            "test source",
+                            "test",
+                            "internet",
+                            "neutral",
+                            "neutral",
+                            null));
+        }
     }
 
     @Override

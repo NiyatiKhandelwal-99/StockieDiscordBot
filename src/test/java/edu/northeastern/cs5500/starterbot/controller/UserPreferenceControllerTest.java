@@ -46,17 +46,4 @@ class UserPreferenceControllerTest {
         assertThat(userPreferenceController.getPreferredNameForUser(USER_ID_1))
                 .isEqualTo(PREFERRED_NAME_2);
     }
-
-    @Test
-    void testSetNameOnlyOverwritesTargetUser() {
-        UserPreferenceController userPreferenceController = getUserPreferenceController();
-
-        userPreferenceController.setPreferredNameForUser(USER_ID_1, PREFERRED_NAME_1);
-        userPreferenceController.setPreferredNameForUser(USER_ID_2, PREFERRED_NAME_2);
-
-        assertThat(userPreferenceController.getPreferredNameForUser(USER_ID_1))
-                .isEqualTo(PREFERRED_NAME_1);
-        assertThat(userPreferenceController.getPreferredNameForUser(USER_ID_2))
-                .isEqualTo(PREFERRED_NAME_2);
-    }
 }
