@@ -29,7 +29,7 @@ public class BalanceSheetControllerTest {
     @Test
     public void testInvalidTickerSymbolForBalanceSheet() throws Exception {
         BalanceSheetController balanceSheetController = getBalanceSheetController();
-        final String[] invalidTickerSymbols = {null, ""};
+        final String[] invalidTickerSymbols = {null, "", "$%^&ewqar"};
 
         for (String tickerSymbol : invalidTickerSymbols) {
             try {
