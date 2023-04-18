@@ -28,7 +28,6 @@ public class BalanceSheetController {
         if (!ticker.matches("^[A-Z]+(?:[.=\\-][A-Z]+)?$")) {
             throw new BadRequestException("ticker had invalid characters");
         }
-
         return balanceSheetService.getBalanceSheet(ticker);
     }
 }
