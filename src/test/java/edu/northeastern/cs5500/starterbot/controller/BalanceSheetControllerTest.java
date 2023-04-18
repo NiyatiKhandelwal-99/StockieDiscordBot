@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
+@EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_API_KEY", matches = ".+")
 public class BalanceSheetControllerTest {
 
     private BalanceSheetController getBalanceSheetController() {
@@ -33,7 +35,6 @@ public class BalanceSheetControllerTest {
 
         for (String tickerSymbol : invalidTickerSymbols) {
             try {
-                System.out.println(tickerSymbol);
                 balanceSheetController.getBalanceSheet(tickerSymbol);
                 fail("Incorrect Balance Sheet command request failed");
             } catch (BadRequestException e) {
