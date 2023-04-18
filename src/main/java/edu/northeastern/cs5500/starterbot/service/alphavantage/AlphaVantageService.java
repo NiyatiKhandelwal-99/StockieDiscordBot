@@ -8,8 +8,11 @@ import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.InternalServerErrorException;
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageIncomeStatement;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageIncomeStatementResponse;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsResponse;
+import edu.northeastern.cs5500.starterbot.service.IncomeStatementService;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
 import edu.northeastern.cs5500.starterbot.service.QuoteService;
 import java.io.BufferedReader;
@@ -26,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Singleton
 @Slf4j
-public class AlphaVantageService implements QuoteService, NewsFeedService {
+public class AlphaVantageService implements QuoteService, NewsFeedService, IncomeStatementService {
     private static final String BASE_URL = "https://www.alphavantage.co/query?";
     private final String apiKey;
     private static long backoff = 1;
@@ -139,5 +142,20 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
             log.error(String.format(LogMessages.EMPTY_RESPONSE, symbol), symbol);
         }
         return newsFeed;
+    }
+
+    @Override
+    public List<AlphaVantageIncomeStatement> getIncomeStatement(String symbol)
+            throws RestException, AlphaVantageException {
+        String queryUrl = "function=INCOME_STATEMENT&symbol=" + symbol;
+        String response = getRequest(queryUrl);
+
+        var incomeStatement =
+                new Gson().fromJson(response, AlphaVantageIncomeStatementResponse.class).getFeed();
+        if (incomeStatement == null) {
+            log.error(String.format(LogMessages.EMPTY_RESPONSE, symbol), symbol);
+        }
+
+        return incomeStatement;
     }
 }
