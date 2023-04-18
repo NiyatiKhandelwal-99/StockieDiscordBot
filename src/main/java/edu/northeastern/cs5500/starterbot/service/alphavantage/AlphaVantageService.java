@@ -10,6 +10,7 @@ import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsResponse;
+import edu.northeastern.cs5500.starterbot.service.BalanceSheetService;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
 import edu.northeastern.cs5500.starterbot.service.QuoteService;
 import java.io.BufferedReader;
@@ -26,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Singleton
 @Slf4j
-public class AlphaVantageService implements QuoteService, NewsFeedService {
+public class AlphaVantageService implements QuoteService, NewsFeedService, BalanceSheetService {
     private static final String BASE_URL = "https://www.alphavantage.co/query?";
     private final String apiKey;
     private static long backoff = 1;
@@ -139,5 +140,20 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
             log.error(String.format(LogMessages.EMPTY_RESPONSE, symbol), symbol);
         }
         return newsFeed;
+    }
+
+    @Override
+    public List<AlphaVantageBalanceSheet> getBalanceSheet(String symbol)
+            throws RestException, AlphaVantageException {
+        String queryUrl = "function=BALANCE_SHEET&symbol=" + symbol;
+        String response = getRequest(queryUrl);
+
+        var balanceSheet =
+                new Gson().fromJson(response, AlphaVantageBalanceSheetResponse.class).getFeed();
+        if (balanceSheet == null) {
+            log.error(String.format(LogMessages.EMPTY_RESPONSE, symbol), symbol);
+        }
+
+        return balanceSheet;
     }
 }
