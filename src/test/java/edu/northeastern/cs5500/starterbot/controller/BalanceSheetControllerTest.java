@@ -2,10 +2,7 @@ package edu.northeastern.cs5500.starterbot.controller;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import org.junit.Test;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
-
-@EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_API_KEY", matches = ".+")
+import org.junit.jupiter.api.Test;
 public class BalanceSheetControllerTest {
 
     private BalanceSheetController getBalanceSheetController() {
