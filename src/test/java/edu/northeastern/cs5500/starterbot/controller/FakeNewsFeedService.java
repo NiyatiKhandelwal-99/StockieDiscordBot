@@ -6,7 +6,6 @@ import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public class FakeNewsFeedService implements NewsFeedService {
 
@@ -82,8 +81,7 @@ public class FakeNewsFeedService implements NewsFeedService {
     }
 
     @Override
-    public Map<String, String> getTickers()
-            throws RestException, AlphaVantageException, IOException {
+    public List<String> getTickers() throws RestException, AlphaVantageException, IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getTickers'");
     }
