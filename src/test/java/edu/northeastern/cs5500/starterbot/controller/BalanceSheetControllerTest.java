@@ -1,11 +1,10 @@
 package edu.northeastern.cs5500.starterbot.controller;
 
 import static com.google.common.truth.Truth.assertThat;
-
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
+import org.junit.jupiter.api.Test;
 
 public class BalanceSheetControllerTest {
 
@@ -26,12 +25,11 @@ public class BalanceSheetControllerTest {
             assertThat(balanceSheetController.getBalanceSheet(tickerSymbol)).isNotNull();
         }
     }
+
     @Test
     public void testInvalidTickerSymbolForBalanceSheet() throws Exception {
         BalanceSheetController balanceSheetController = getBalanceSheetController();
-        final String[] invalidTickerSymbols = {
-            null, ""
-        };
+        final String[] invalidTickerSymbols = {null, ""};
 
         for (String tickerSymbol : invalidTickerSymbols) {
             try {
