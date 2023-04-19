@@ -7,7 +7,9 @@ import edu.northeastern.cs5500.starterbot.model.AlphaVantageBalanceSheet;
 import edu.northeastern.cs5500.starterbot.service.BalanceSheetService;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class BalanceSheetController {
 
     BalanceSheetService balanceSheetService;
