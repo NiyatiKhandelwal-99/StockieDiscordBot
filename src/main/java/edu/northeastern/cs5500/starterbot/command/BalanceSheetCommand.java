@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.command;
 
+import edu.northeastern.cs5500.starterbot.annotate.ExcludeMethodFromGeneratedCoverage;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.BalanceSheetController;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
@@ -49,6 +50,7 @@ public class BalanceSheetCommand implements SlashCommandHandler {
         return balanceSheetController.getBalanceSheet(ticker);
     }
 
+    @ExcludeMethodFromGeneratedCoverage
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
         log.info("event: /balance");
@@ -80,7 +82,9 @@ public class BalanceSheetCommand implements SlashCommandHandler {
 
     public List<MessageEmbed> renderBalanceSheets(List<AlphaVantageBalanceSheet> balanceSheets) {
         List<MessageEmbed> messageEmbeds = new ArrayList<>();
-        for (int i = 0; i < MAX_NUMBER_OF_BALANCE_SHEET_RESULTS; i++) {
+        for (int i = 0;
+                i < Math.min(MAX_NUMBER_OF_BALANCE_SHEET_RESULTS, balanceSheets.size());
+                i++) {
             AlphaVantageBalanceSheet alphaVantageBalanceSheet = balanceSheets.get(i);
             messageEmbeds.add(renderBalanceSheet(alphaVantageBalanceSheet));
         }
