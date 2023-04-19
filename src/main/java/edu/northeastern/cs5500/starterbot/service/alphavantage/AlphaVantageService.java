@@ -32,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 public class AlphaVantageService implements QuoteService, NewsFeedService {
     private static final String BASE_URL = "https://www.alphavantage.co/query?";
     private final String apiKey;
-    private static long backoff = 1;
     private static final String LIMITS_EXCEEDED =
             "{    \"Note\": \"Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.\"}";
 
@@ -71,7 +70,8 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
     @SneakyThrows({InterruptedException.class})
     private void backoffLogic(String response, String queryUrl)
             throws AlphaVantageException, RestException {
-
+        long backoff = 1;
+        
         while (LIMITS_EXCEEDED.equals(response)) {
             backoff *= 2;
             log.info("API limit exceeded; waiting {} seconds and trying again", backoff);
