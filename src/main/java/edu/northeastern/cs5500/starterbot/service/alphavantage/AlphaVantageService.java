@@ -1,13 +1,15 @@
 package edu.northeastern.cs5500.starterbot.service.alphavantage;
 
 import com.google.gson.Gson;
-import edu.northeastern.cs5500.starterbot.annotate.Generated;
+import edu.northeastern.cs5500.starterbot.annotate.ExcludeClassFromGeneratedCoverage;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.InternalServerErrorException;
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuote;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuoteResponse;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsResponse;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
@@ -26,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Singleton
 @Slf4j
+@ExcludeClassFromGeneratedCoverage
 public class AlphaVantageService implements QuoteService, NewsFeedService {
     private static final String BASE_URL = "https://www.alphavantage.co/query?";
     private final String apiKey;
@@ -37,7 +40,6 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
         this.apiKey = alphaVantageApiKey;
     }
 
-    @Generated
     @Override
     public void register() {
         log.info("AlphaVantageService > register");
@@ -66,7 +68,6 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
         return quote;
     }
 
-    @Generated
     @SneakyThrows({InterruptedException.class})
     private void backoffLogic(String response, String queryUrl)
             throws AlphaVantageException, RestException {
@@ -120,7 +121,6 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
         return val.toString();
     }
 
-    @Generated
     private void checkLimitsExceed(String val, String queryUrl)
             throws AlphaVantageException, RestException {
         if (LIMITS_EXCEEDED.equals(val)) {
