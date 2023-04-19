@@ -113,7 +113,7 @@ jacocoTestReport {
                 '**/Dagger*BotComponentImpl.class',
                 'edu/northeastern/cs5500/starterbot/Builder.class',
                 '**/*_MembersInjector.class',
-                '**/Dagger*Component.class', 
+                '**/Dagger*Component.class',
                 '**/Dagger*Component$Builder.class',
                 '**/*Module_*Factory.class' ])
         })
