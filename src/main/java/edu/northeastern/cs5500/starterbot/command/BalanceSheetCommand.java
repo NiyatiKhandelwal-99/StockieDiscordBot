@@ -1,11 +1,10 @@
 package edu.northeastern.cs5500.starterbot.command;
 
-import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.BalanceSheetController;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageBalanceSheet;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageBalanceSheet;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +44,11 @@ public class BalanceSheetCommand implements SlashCommandHandler {
                         OptionType.STRING, "ticker", "The bot will return the balance sheet", true);
     }
 
-    @Generated
     public List<AlphaVantageBalanceSheet> getBalanceSheet(String ticker)
             throws RestException, AlphaVantageException {
         return balanceSheetController.getBalanceSheet(ticker);
     }
 
-    @Generated
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
         log.info("event: /balance");
@@ -81,7 +78,6 @@ public class BalanceSheetCommand implements SlashCommandHandler {
         }
     }
 
-    @Generated
     public List<MessageEmbed> renderBalanceSheets(List<AlphaVantageBalanceSheet> balanceSheets) {
         List<MessageEmbed> messageEmbeds = new ArrayList<>();
         for (int i = 0; i < MAX_NUMBER_OF_BALANCE_SHEET_RESULTS; i++) {
@@ -91,7 +87,6 @@ public class BalanceSheetCommand implements SlashCommandHandler {
         return messageEmbeds;
     }
 
-    @Generated
     public MessageEmbed renderBalanceSheet(AlphaVantageBalanceSheet balanceSheet) {
         EmbedBuilder embed = new EmbedBuilder();
 
