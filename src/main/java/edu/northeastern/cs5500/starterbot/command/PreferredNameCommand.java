@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.command;
 
+import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.controller.UserPreferenceController;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -39,6 +40,7 @@ public class PreferredNameCommand implements SlashCommandHandler {
                                 .setRequired(true));
     }
 
+    @Generated
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
         log.info("event: /preferredname");

@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.command;
 
+import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.NewsFeedController;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
@@ -37,7 +38,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 public class NewsCommand implements SlashCommandHandler, ButtonHandler {
 
     @Inject NewsFeedController newsFeedController;
-    private static final int NUMBER_OF_DAYS = 2;
+    private static final int NUMBER_OF_DAYS = 1;
     private static final String NUMBER_OF_DAYS_IN_WORDS = "two";
 
     @Inject
@@ -62,6 +63,7 @@ public class NewsCommand implements SlashCommandHandler, ButtonHandler {
                         true);
     }
 
+    @Generated
     public List<AlphaVantageNewsFeed> getNewsFeed(String ticker)
             throws RestException, AlphaVantageException {
         final String fromTime =
@@ -72,6 +74,7 @@ public class NewsCommand implements SlashCommandHandler, ButtonHandler {
         return newsFeedController.getNewsFeeds(ticker, fromTime);
     }
 
+    @Generated
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
 
@@ -121,9 +124,10 @@ public class NewsCommand implements SlashCommandHandler, ButtonHandler {
         }
 
         List<Button> otherTickerNews = new ArrayList<>();
-        for (String tickerSymbol : uniqueTickerLists.keySet()) {
+        for (Map.Entry<String, String> entry : uniqueTickerLists.entrySet()) {
             if (otherTickerNews.size() < 5) {
-                otherTickerNews.add(Button.success(getName() + ":" + tickerSymbol, tickerSymbol));
+                otherTickerNews.add(
+                        Button.primary(getName() + ":" + entry.getKey(), entry.getValue()));
             } else {
                 event.getChannel().sendMessage("").addActionRow(otherTickerNews).queue();
                 otherTickerNews.clear();
@@ -134,6 +138,7 @@ public class NewsCommand implements SlashCommandHandler, ButtonHandler {
         }
     }
 
+    @Generated
     private Map<String, String> createListOfTitles(List<AlphaVantageNewsFeed> newsFeeds)
             throws RestException, AlphaVantageException, InterruptedException, IOException {
         List<String> titles = new ArrayList<>();
@@ -143,8 +148,6 @@ public class NewsCommand implements SlashCommandHandler, ButtonHandler {
 
         Map<String, String> uniqueValidTickers = new HashMap<>();
         Map<String, String> tickerList = getTickers();
-
-        // System.out.println(tickerList.size());
 
         final String regex = "(\\b[A-Z][A-Z]+\\b)";
         final Pattern pattern = Pattern.compile(regex);
@@ -166,6 +169,7 @@ public class NewsCommand implements SlashCommandHandler, ButtonHandler {
         return newsFeedController.getTickers();
     }
 
+    @Generated
     private List<MessageEmbed> renderEmbeds(List<AlphaVantageNewsFeed> newsFeeds) {
         List<MessageEmbed> newsEmbeds = new ArrayList<>();
         int TITLE_MAX_LENGTH = 255;
@@ -180,6 +184,7 @@ public class NewsCommand implements SlashCommandHandler, ButtonHandler {
         return newsEmbeds;
     }
 
+    @Generated
     private MessageEmbed renderEmbed(AlphaVantageNewsFeed newsFeed) {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle(newsFeed.getTitle());
@@ -244,6 +249,7 @@ public class NewsCommand implements SlashCommandHandler, ButtonHandler {
         return formattedDate;
     }
 
+    @Generated
     @Override
     public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
         log.info("In NewsCommand onButtonInteraction " + event.getButton().getId());
@@ -275,10 +281,16 @@ public class NewsCommand implements SlashCommandHandler, ButtonHandler {
 
         Map<String, String> uniqueTickerLists = createButtonsFromNewsFeeds(newsFeeds);
 
+        if (uniqueTickerLists == null || uniqueTickerLists.isEmpty()) {
+            log.error("No response found for ");
+            return;
+        }
+
         List<Button> otherTickerNews = new ArrayList<>();
-        for (String tickerSymbol : uniqueTickerLists.keySet()) {
+        for (Map.Entry<String, String> entry : uniqueTickerLists.entrySet()) {
             if (otherTickerNews.size() < 5) {
-                otherTickerNews.add(Button.success(getName() + ":" + tickerSymbol, tickerSymbol));
+                otherTickerNews.add(
+                        Button.primary(getName() + ":" + entry.getKey(), entry.getValue()));
             } else {
                 event.getChannel().sendMessage("").addActionRow(otherTickerNews).queue();
                 otherTickerNews.clear();

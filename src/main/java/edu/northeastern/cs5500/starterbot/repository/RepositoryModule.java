@@ -16,7 +16,8 @@ public class RepositoryModule {
 
     @Provides
     public GenericRepository<UserPreference> provideUserPreferencesRepository(
-            MongoDBRepository<UserPreference> repository) {
+            // MongoDBRepository<UserPreference> repository) {
+            InMemoryRepository<UserPreference> repository) {
         return repository;
     }
 

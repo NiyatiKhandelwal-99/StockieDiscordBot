@@ -8,6 +8,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+@Generated
 @Singleton
 @Slf4j
 public class MongoDBService implements Service {
@@ -48,7 +50,8 @@ public class MongoDBService implements Service {
                         .build();
 
         MongoClient mongoClient = MongoClients.create(mongoClientSettings);
-        mongoDatabase = mongoClient.getDatabase(DB_NAME);
+        mongoDatabase = mongoClient.getDatabase(connectionString.getDatabase());
+        // mongoDatabase = mongoClient.getDatabase(DB_NAME);
     }
 
     @Override

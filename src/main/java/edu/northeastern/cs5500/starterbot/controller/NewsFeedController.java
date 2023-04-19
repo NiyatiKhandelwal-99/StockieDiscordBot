@@ -6,6 +6,7 @@ import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -35,6 +36,12 @@ public class NewsFeedController {
 
     public Map<String, String> getTickers()
             throws RestException, AlphaVantageException, IOException {
-        return newsFeedService.getTickers();
+        List<String> uniqueTickers = newsFeedService.getTickers();
+        Map<String, String> uniqueTickersMap = new HashMap<>();
+        for (String tickerDetail : uniqueTickers) {
+            String[] tickerSymbolAndName = tickerDetail.split(",");
+            uniqueTickersMap.put(tickerSymbolAndName[0], tickerSymbolAndName[1]);
+        }
+        return uniqueTickersMap;
     }
 }

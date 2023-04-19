@@ -6,7 +6,6 @@ import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public class FakeNewsFeedService implements NewsFeedService {
 
@@ -22,18 +21,67 @@ public class FakeNewsFeedService implements NewsFeedService {
     @Override
     public List<AlphaVantageNewsFeed> getNewsSentiment(String symbol, String fromTime)
             throws RestException, AlphaVantageException {
-        return List.of(
-                new AlphaVantageNewsFeed(
-                        fromTime, fromTime, fromTime, null, fromTime, fromTime, fromTime, fromTime,
-                        fromTime, symbol, fromTime, null),
-                new AlphaVantageNewsFeed(
-                        fromTime, fromTime, fromTime, null, fromTime, fromTime, fromTime, fromTime,
-                        fromTime, symbol, fromTime, null));
+        if (symbol.equals("AAPL")) {
+            return List.of(
+                    new AlphaVantageNewsFeed(
+                            "AAPL title1",
+                            "url1",
+                            fromTime,
+                            null,
+                            "test summary",
+                            "",
+                            "test source",
+                            "test",
+                            "internet",
+                            "neutral",
+                            "neutral",
+                            null),
+                    new AlphaVantageNewsFeed(
+                            "AAPL title2",
+                            "url2",
+                            fromTime,
+                            null,
+                            "test summary",
+                            "",
+                            "test source",
+                            "test",
+                            "internet",
+                            "neutral",
+                            "neutral",
+                            null));
+        } else {
+            return List.of(
+                    new AlphaVantageNewsFeed(
+                            "title1",
+                            "url1",
+                            fromTime,
+                            null,
+                            "test summary",
+                            "",
+                            "test source",
+                            "test",
+                            "internet",
+                            "neutral",
+                            "neutral",
+                            null),
+                    new AlphaVantageNewsFeed(
+                            "title2",
+                            "url2",
+                            fromTime,
+                            null,
+                            "test summary",
+                            "",
+                            "test source",
+                            "test",
+                            "internet",
+                            "neutral",
+                            "neutral",
+                            null));
+        }
     }
 
     @Override
-    public Map<String, String> getTickers()
-            throws RestException, AlphaVantageException, IOException {
+    public List<String> getTickers() throws RestException, AlphaVantageException, IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getTickers'");
     }

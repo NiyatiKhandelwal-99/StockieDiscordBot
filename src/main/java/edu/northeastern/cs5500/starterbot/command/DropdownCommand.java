@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.command;
 
+import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -30,6 +31,7 @@ public class DropdownCommand implements SlashCommandHandler, StringSelectHandler
         return Commands.slash(getName(), "Demonstrate a dropdown interaction");
     }
 
+    @Generated
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
         log.info("event: /dropdown");
@@ -46,6 +48,7 @@ public class DropdownCommand implements SlashCommandHandler, StringSelectHandler
         event.reply("Please pick your class below").setEphemeral(true).addActionRow(menu).queue();
     }
 
+    @Generated
     @Override
     public void onStringSelectInteraction(@Nonnull StringSelectInteractionEvent event) {
         final String response = event.getInteraction().getValues().get(0);

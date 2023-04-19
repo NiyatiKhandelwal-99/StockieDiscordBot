@@ -1,6 +1,7 @@
 package edu.northeastern.cs5500.starterbot.service.alphavantage;
 
 import com.google.gson.Gson;
+import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
@@ -19,9 +20,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.SneakyThrows;
@@ -40,6 +40,7 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
         this.apiKey = alphaVantageApiKey;
     }
 
+    @Generated
     @Override
     public void register() {
         log.info("AlphaVantageService > register");
@@ -68,6 +69,7 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
         return quote;
     }
 
+    @Generated
     @SneakyThrows({InterruptedException.class})
     private void backoffLogic(String response, String queryUrl)
             throws AlphaVantageException, RestException {
@@ -112,11 +114,17 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
         }
         conn.disconnect();
 
-        if (LIMITS_EXCEEDED.equals(val.toString())) {
-            backoffLogic(val.toString(), queryUrl);
-        }
+        checkLimitsExceed(val.toString(), queryUrl);
 
         return val.toString();
+    }
+
+    @Generated
+    private void checkLimitsExceed(String val, String queryUrl)
+            throws AlphaVantageException, RestException {
+        if (LIMITS_EXCEEDED.equals(val)) {
+            backoffLogic(val, queryUrl);
+        }
     }
 
     @Override
@@ -132,18 +140,19 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
         return newsFeed;
     }
 
+    @Generated
     @Override
-    public Map<String, String> getTickers()
-            throws RestException, AlphaVantageException, IOException {
+    public List<String> getTickers() throws RestException, AlphaVantageException, IOException {
         String queryUrl = "function=LISTING_STATUS";
-        Map<String, String> tickerSymbolAndName = getFile(queryUrl);
-        if (tickerSymbolAndName.size() == 0) {
-            log.error("Empty response found for getTickers()");
+        List<String> tickerSymbolAndName = getFile(queryUrl);
+        if (tickerSymbolAndName.isEmpty()) {
+            log.error("Empty response found for getTickers service method");
         }
         return tickerSymbolAndName;
     }
 
-    private Map<String, String> getFile(String queryUrl)
+    @Generated
+    private List<String> getFile(String queryUrl)
             throws IOException, RestException, AlphaVantageException {
         URL url = new URL(BASE_URL + queryUrl + "&apikey=" + apiKey);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -165,28 +174,24 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
 
         BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
 
-        Map<String, String> tickers = new HashMap<>();
+        List<String> tickers = new ArrayList<>();
         String output;
         while ((output = br.readLine()) != null) {
-            String[] tickerDetail = output.split(",");
-            if (tickerDetail.length > 1) {
-                tickers.put(tickerDetail[0], tickerDetail[1]);
-            } else {
-                System.out.println("length is 1" + tickerDetail[0]);
-            }
+            tickers.add(output);
         }
 
-        // if (tickers.isEmpty()) {
-        //     backoffLogicForTickers(tickers, queryUrl);
-        // }
+        if (tickers.isEmpty()) {
+            backoffLogicForTickers(tickers, queryUrl);
+        }
 
         conn.disconnect();
 
         return tickers;
     }
 
+    @Generated
     @SneakyThrows({InterruptedException.class, IOException.class})
-    private void backoffLogicForTickers(Map<String, String> tickers, String queryUrl)
+    private void backoffLogicForTickers(List<String> tickers, String queryUrl)
             throws AlphaVantageException, RestException {
 
         while (tickers.isEmpty()) {
