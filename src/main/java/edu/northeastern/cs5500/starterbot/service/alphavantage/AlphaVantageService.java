@@ -71,7 +71,7 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
     private void backoffLogic(String response, String queryUrl)
             throws AlphaVantageException, RestException {
         long backoff = 1;
-        
+
         while (LIMITS_EXCEEDED.equals(response)) {
             backoff *= 2;
             log.info("API limit exceeded; waiting {} seconds and trying again", backoff);
