@@ -176,6 +176,7 @@ public class AlphaVantageService implements QuoteService, NewsFeedService {
 
         List<String> tickers = new ArrayList<>();
         String output;
+        br.readLine();
         while ((output = br.readLine()) != null) {
             tickers.add(output);
         }

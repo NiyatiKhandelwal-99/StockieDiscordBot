@@ -53,6 +53,6 @@ public class DropdownCommand implements SlashCommandHandler, StringSelectHandler
     public void onStringSelectInteraction(@Nonnull StringSelectInteractionEvent event) {
         final String response = event.getInteraction().getValues().get(0);
         Objects.requireNonNull(response);
-        event.reply(response+" .....").queue();
+        event.reply(response).queue();
     }
 }

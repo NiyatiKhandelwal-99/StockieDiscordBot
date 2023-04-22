@@ -58,7 +58,7 @@ public class CommandModule {
 
     @Provides
     @IntoSet
-    public ButtonHandler provideNewsButtonCommand(NewsCommand newsCommand) {
+    public StringSelectHandler provideNewsStringSelectCommand(NewsCommand newsCommand) {
         return newsCommand;
     }
 }
