@@ -209,8 +209,8 @@ public class AlphaVantageService implements QuoteService, NewsFeedService, Balan
             throws AlphaVantageException, RestException {
         long backoff = 1;
         while (tickers.isEmpty()) {
-            backoff *=
             log.info("API limit exceeded; waiting {} seconds and trying again", backoff);
+            backoff *= 2;
             if (backoff > 64) {
                 throw new AlphaVantageException("Limit exceeded");
             }
