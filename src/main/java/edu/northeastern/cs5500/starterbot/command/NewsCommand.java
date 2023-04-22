@@ -28,14 +28,17 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
 @Singleton
 @Slf4j
-public class NewsCommand implements SlashCommandHandler, ButtonHandler {
+public class NewsCommand implements SlashCommandHandler, ButtonHandler, StringSelectHandler {
 
     @Inject NewsFeedController newsFeedController;
     private static final int NUMBER_OF_DAYS = 1;
@@ -123,19 +126,36 @@ public class NewsCommand implements SlashCommandHandler, ButtonHandler {
             return;
         }
 
-        List<Button> otherTickerNews = new ArrayList<>();
+        // event.reply("Please pick your class
+        // below").setEphemeral(true).addActionRow(menu).queue();
+
+        List<SelectOption> otherTickerNews = new ArrayList<>();
         for (Map.Entry<String, String> entry : uniqueTickerLists.entrySet()) {
-            if (otherTickerNews.size() < 5) {
-                otherTickerNews.add(
-                        Button.primary(getName() + ":" + entry.getKey(), entry.getValue()));
-            } else {
-                event.getChannel().sendMessage("").addActionRow(otherTickerNews).queue();
-                otherTickerNews.clear();
-            }
+            otherTickerNews.add(
+                    SelectOption.of(getName() + ":" + entry.getKey(), entry.getValue()));
         }
-        if (!otherTickerNews.isEmpty()) {
-            event.getChannel().sendMessage("").addActionRow(otherTickerNews).queue();
-        }
+
+        StringSelectMenu menu =
+                StringSelectMenu.create("latestnews")
+                        .setPlaceholder(
+                                "Choose your class") // shows the placeholder indicating what this
+                        // menu is for
+                        .addOptions(otherTickerNews)
+                        .build();
+        event.getChannel().sendMessage("").addActionRow(menu).queue();
+        // List<Button> otherTickerNews = new ArrayList<>();
+        // for (Map.Entry<String, String> entry : uniqueTickerLists.entrySet()) {
+        //     if (otherTickerNews.size() < 5) {
+        //         otherTickerNews.add(
+        //                 Button.primary(getName() + ":" + entry.getKey(), entry.getValue()));
+        //     } else {
+        //         event.getChannel().sendMessage("").addActionRow(otherTickerNews).queue();
+        //         otherTickerNews.clear();
+        //     }
+        // }
+        // if (!otherTickerNews.isEmpty()) {
+        //     event.getChannel().sendMessage("").addActionRow(otherTickerNews).queue();
+        // }
     }
 
     @Generated
@@ -309,5 +329,12 @@ public class NewsCommand implements SlashCommandHandler, ButtonHandler {
             log.error(LogMessages.ERROR_ALPHAVANTAGE_API, e);
         }
         return uniqueTickerLists;
+    }
+
+    @Override
+    public void onStringSelectInteraction(@Nonnull StringSelectInteractionEvent event) {
+        String response = event.getInteraction().getValues().get(0)+" testing";
+        Objects.requireNonNull(response);
+        event.reply(response).queue();
     }
 }
