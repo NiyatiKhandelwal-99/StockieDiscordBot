@@ -1,6 +1,5 @@
 package edu.northeastern.cs5500.starterbot.command;
 
-import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.controller.QuoteController;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.MissingRequiredParameterException;
@@ -46,7 +45,6 @@ public class PriceCommand implements SlashCommandHandler {
                         true);
     }
 
-    @Generated
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
         log.info("event: /price");

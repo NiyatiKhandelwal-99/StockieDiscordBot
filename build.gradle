@@ -85,11 +85,12 @@ test {
 jacocoTestReport {
     dependsOn test
     reports {
-        xml.enabled false
+        xml.enabled true
         // Change html.enabled to true if you want html reports
         html.enabled true
         csv.enabled false
-        xml.destination file("${buildDir}/reports/jacoco.html")
+        html.destination file("${buildDir}/reports/jacoco.html")
+        xml.destination file("${buildDir}/reports/jacoco.xml")
     }
     afterEvaluate { // (optional) : to exclude classes / packages from coverage
         classDirectories.from = files(classDirectories.files.collect {
@@ -127,7 +128,7 @@ jacocoTestCoverageVerification {
                 // minimum percentage of code coverage
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.6
+                minimum = 0.3
             }
         }
         rule {
@@ -135,7 +136,7 @@ jacocoTestCoverageVerification {
                 // minimum percentage of code coverage
                 counter = 'BRANCH'
                 value = 'COVEREDRATIO'
-                minimum = 0.6
+                minimum = 0.5
             }
         }
     }

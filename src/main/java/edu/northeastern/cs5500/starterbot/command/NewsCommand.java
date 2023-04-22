@@ -1,6 +1,5 @@
 package edu.northeastern.cs5500.starterbot.command;
 
-import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.NewsFeedController;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
@@ -28,6 +27,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -65,7 +65,6 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
                         true);
     }
 
-    @Generated
     public List<AlphaVantageNewsFeed> getNewsFeed(String ticker)
             throws RestException, AlphaVantageException {
         final String fromTime =
@@ -76,21 +75,26 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         return newsFeedController.getNewsFeeds(ticker, fromTime);
     }
 
-    @Generated
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
 
         log.info("event: /latestnews");
-        var option = event.getOption("ticker");
+        var ticker = event.getOption("ticker", OptionMapping::getAsString);
 
-        if (option == null) {
+        if (ticker == null) {
             log.error(LogMessages.EMPTY_TICKER, event.getName());
             return;
         }
 
-        String ticker = option.getAsString();
-
         log.info("event: /latestnews ticker:" + ticker);
+
+        // try {
+        //     var message = renderMessage(ticker);
+        //     event.getChannel().sendMessageEmbeds(message);
+        // } catch (SomeRenderException exp) {
+        //     event.reply(exp.getMessage()).queue();
+        //     return;
+        // }
 
         List<AlphaVantageNewsFeed> newsFeeds = null;
         try {
@@ -130,7 +134,6 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         return newsFeeds == null || newsFeeds.size() == 0;
     }
 
-    @Generated
     public List<String> createListOfTitles(List<AlphaVantageNewsFeed> newsFeeds) {
 
         List<String> titles = new ArrayList<>();
@@ -157,7 +160,6 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         return uniqueValidTickers;
     }
 
-    @Generated
     public Map<String, String> getTickers()
             throws RestException, AlphaVantageException, IOException {
 
@@ -242,7 +244,6 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         return formattedDate;
     }
 
-    @Generated
     @Override
     public void onStringSelectInteraction(@Nonnull StringSelectInteractionEvent event) {
         log.info(
@@ -286,7 +287,6 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         event.getChannel().sendMessage("").addActionRow(menu).queue();
     }
 
-    @Generated
     @Nullable
     public StringSelectMenu getStringSelectMenu(List<AlphaVantageNewsFeed> newsFeeds)
             throws RestException, AlphaVantageException, IOException, InterruptedException {

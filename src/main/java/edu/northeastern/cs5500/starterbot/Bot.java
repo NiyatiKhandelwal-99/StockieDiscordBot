@@ -1,7 +1,7 @@
 package edu.northeastern.cs5500.starterbot;
 
 import dagger.Component;
-import edu.northeastern.cs5500.starterbot.annotate.Generated;
+import edu.northeastern.cs5500.starterbot.annotate.ExcludeClassFromGeneratedCoverage;
 import edu.northeastern.cs5500.starterbot.command.CommandModule;
 import edu.northeastern.cs5500.starterbot.listener.MessageListener;
 import edu.northeastern.cs5500.starterbot.repository.RepositoryModule;
@@ -22,7 +22,7 @@ interface BotComponent {
     public Bot bot();
 }
 
-@Generated
+@ExcludeClassFromGeneratedCoverage
 public class Bot {
 
     @Inject

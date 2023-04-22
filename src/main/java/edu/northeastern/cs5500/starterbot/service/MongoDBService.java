@@ -8,7 +8,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-import edu.northeastern.cs5500.starterbot.annotate.Generated;
+import edu.northeastern.cs5500.starterbot.annotate.ExcludeClassFromGeneratedCoverage;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;
@@ -16,9 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
-@Generated
 @Singleton
 @Slf4j
+@ExcludeClassFromGeneratedCoverage
 public class MongoDBService implements Service {
 
     private static final String DB_NAME = "stock";
@@ -29,7 +29,7 @@ public class MongoDBService implements Service {
         if (databaseURI != null) {
             return databaseURI;
         }
-        return "mongodb://localhost:27017/Stuff"; // connect to localhost by default
+        throw new IllegalStateException("MONGODB_URI not set; unable to construct MongoDBService!");
     }
 
     @Getter private MongoDatabase mongoDatabase;
