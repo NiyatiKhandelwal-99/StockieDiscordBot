@@ -156,7 +156,7 @@ public class NewsCommandTest {
         StringSelectMenu menu = newsCommand.createDropDownListForNews(tickerList);
         assertThat(menu).isNotNull();
         assertThat(menu.isDisabled()).isFalse();
-        assertThat(menu.getPlaceholder()).isEqualTo("News from other tickers!");
+        assertThat(menu.getPlaceholder()).isEqualTo("Select tickers for more news");
         assertThat(menu.getOptions()).isNotEmpty();
     }
 

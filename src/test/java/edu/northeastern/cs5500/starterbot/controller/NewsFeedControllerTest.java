@@ -3,8 +3,11 @@ package edu.northeastern.cs5500.starterbot.controller;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
+import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
+import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -169,5 +172,15 @@ public class NewsFeedControllerTest {
         assertThat(newsFeedSameTicker1.equals(newsFeedEmpty)).isFalse();
         assertThat(newsFeedSameTicker1.equals(newsFeedNull)).isFalse();
         assertThat(newsFeedSameTicker1.toString().equals("test")).isFalse();
+    }
+
+    @Test
+    void testGetTickers() throws RestException, AlphaVantageException, IOException {
+        NewsFeedController newsFeedController = getNewsFeedController();
+        var tickerMap = newsFeedController.getTickers();
+        assertThat(tickerMap).isNotEmpty();
+        assertThat(tickerMap.containsKey("AAPL")).isTrue();
+        assertThat(tickerMap.get("AAPL")).isEqualTo("Apple Inc");
+        assertThat(tickerMap.containsKey("DUMMY")).isFalse();
     }
 }

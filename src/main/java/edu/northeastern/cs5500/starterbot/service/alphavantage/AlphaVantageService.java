@@ -198,19 +198,18 @@ public class AlphaVantageService implements QuoteService, NewsFeedService, Balan
         if (tickers.isEmpty()) {
             backoffLogicForTickers(tickers, queryUrl);
         }
-
         conn.disconnect();
 
         return tickers;
     }
 
-    @SneakyThrows({InterruptedException.class, IOException.class})
+    @SneakyThrows({InterruptedException.class})
     private void backoffLogicForTickers(List<String> tickers, String queryUrl)
-            throws AlphaVantageException, RestException {
+            throws AlphaVantageException, RestException, IOException {
         long backoff = 1;
         while (tickers.isEmpty()) {
-            log.info("API limit exceeded; waiting {} seconds and trying again", backoff);
             backoff *= 2;
+            log.info("API limit exceeded; waiting {} seconds and trying again", backoff);
             if (backoff > 64) {
                 throw new AlphaVantageException("Limit exceeded");
             }

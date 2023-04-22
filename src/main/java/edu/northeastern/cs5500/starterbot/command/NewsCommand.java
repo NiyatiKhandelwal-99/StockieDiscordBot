@@ -313,7 +313,7 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         }
 
         return StringSelectMenu.create("latestnews")
-                .setPlaceholder("News from other tickers!")
+                .setPlaceholder("Select tickers for more news")
                 .addOptions(otherTickerNews)
                 .build();
     }

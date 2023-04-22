@@ -16,8 +16,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
-@EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_API_KEY", matches = ".+")
-@EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_TESTS_ENABLED", matches = "true")
+ @EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_API_KEY", matches = ".+")
+ @EnabledIfEnvironmentVariable(named = "ALPHA_VANTAGE_TESTS_ENABLED", matches = "true")
 class AlphaVantageServiceTest {
     private AlphaVantageService getAlphaVantageService() {
         return new AlphaVantageService();

@@ -82,7 +82,8 @@ public class FakeNewsFeedService implements NewsFeedService {
 
     @Override
     public List<String> getTickers() throws RestException, AlphaVantageException, IOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTickers'");
+        return List.of(
+                "AAPL,Apple Inc,NASDAQ,Stock,1980-12-12, ,Active",
+                "GOOGL,Alphabet Inc - Class A,NASDAQ,Stock,2004-08-19, ,Active");
     }
 }
