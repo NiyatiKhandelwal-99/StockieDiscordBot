@@ -1,18 +1,28 @@
 package edu.northeastern.cs5500.starterbot.service.alphavantage;
 
 import com.google.gson.Gson;
-import edu.northeastern.cs5500.starterbot.annotate.Generated;
+import edu.northeastern.cs5500.starterbot.annotate.ExcludeClassFromGeneratedCoverage;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.InternalServerErrorException;
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
+<<<<<<< HEAD
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageIncomeStatement;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageIncomeStatementResponse;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsResponse;
 import edu.northeastern.cs5500.starterbot.service.IncomeStatementService;
+=======
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageBalanceSheet;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageBalanceSheetResponse;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuote;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuoteResponse;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsResponse;
+import edu.northeastern.cs5500.starterbot.service.BalanceSheetService;
+>>>>>>> main
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
 import edu.northeastern.cs5500.starterbot.service.QuoteService;
 import java.io.BufferedReader;
@@ -29,10 +39,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Singleton
 @Slf4j
-public class AlphaVantageService implements QuoteService, NewsFeedService, IncomeStatementService {
+@ExcludeClassFromGeneratedCoverage
+public class AlphaVantageService implements QuoteService, NewsFeedService, BalanceSheetService, IncomeStatementService {
     private static final String BASE_URL = "https://www.alphavantage.co/query?";
     private final String apiKey;
-    private static long backoff = 1;
     private static final String LIMITS_EXCEEDED =
             "{    \"Note\": \"Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency.\"}";
 
@@ -40,7 +50,6 @@ public class AlphaVantageService implements QuoteService, NewsFeedService, Incom
         this.apiKey = alphaVantageApiKey;
     }
 
-    @Generated
     @Override
     public void register() {
         log.info("AlphaVantageService > register");
@@ -69,10 +78,10 @@ public class AlphaVantageService implements QuoteService, NewsFeedService, Incom
         return quote;
     }
 
-    @Generated
     @SneakyThrows({InterruptedException.class})
     private void backoffLogic(String response, String queryUrl)
             throws AlphaVantageException, RestException {
+        long backoff = 1;
 
         while (LIMITS_EXCEEDED.equals(response)) {
             backoff *= 2;
@@ -123,7 +132,6 @@ public class AlphaVantageService implements QuoteService, NewsFeedService, Incom
         return val.toString();
     }
 
-    @Generated
     private void checkLimitsExceed(String val, String queryUrl)
             throws AlphaVantageException, RestException {
         if (LIMITS_EXCEEDED.equals(val)) {
@@ -157,5 +165,17 @@ public class AlphaVantageService implements QuoteService, NewsFeedService, Incom
         }
 
         return incomeStatement;
+    public List<AlphaVantageBalanceSheet> getBalanceSheet(String symbol)
+            throws RestException, AlphaVantageException {
+        String queryUrl = "function=BALANCE_SHEET&symbol=" + symbol;
+        String response = getRequest(queryUrl);
+
+        var balanceSheet =
+                new Gson().fromJson(response, AlphaVantageBalanceSheetResponse.class).getFeed();
+        if (balanceSheet == null) {
+            log.error(String.format(LogMessages.EMPTY_RESPONSE, symbol), symbol);
+        }
+
+        return balanceSheet;
     }
 }

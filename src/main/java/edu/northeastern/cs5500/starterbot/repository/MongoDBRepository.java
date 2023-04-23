@@ -4,7 +4,7 @@ import static com.mongodb.client.model.Filters.eq;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import edu.northeastern.cs5500.starterbot.annotate.Generated;
+import edu.northeastern.cs5500.starterbot.annotate.ExcludeClassFromGeneratedCoverage;
 import edu.northeastern.cs5500.starterbot.model.Model;
 import edu.northeastern.cs5500.starterbot.service.MongoDBService;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import org.bson.types.ObjectId;
 
-@Generated
+@ExcludeClassFromGeneratedCoverage
 public class MongoDBRepository<T extends Model> implements GenericRepository<T> {
 
     static final String MONGODB_ID_FIELD = "_id";

@@ -3,9 +3,9 @@ package edu.northeastern.cs5500.starterbot;
 import static spark.Spark.get;
 import static spark.Spark.port;
 
-import edu.northeastern.cs5500.starterbot.annotate.Generated;
+import edu.northeastern.cs5500.starterbot.annotate.ExcludeClassFromGeneratedCoverage;
 
-@Generated
+@ExcludeClassFromGeneratedCoverage
 public class App {
 
     public static void main(String[] arg) {
