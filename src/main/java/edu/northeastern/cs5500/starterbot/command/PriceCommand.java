@@ -1,13 +1,12 @@
 package edu.northeastern.cs5500.starterbot.command;
 
-import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.controller.QuoteController;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.MissingRequiredParameterException;
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuote;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.annotation.Nonnull;
@@ -46,7 +45,6 @@ public class PriceCommand implements SlashCommandHandler {
                         true);
     }
 
-    @Generated
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
         log.info("event: /price");

@@ -1,8 +1,8 @@
 package edu.northeastern.cs5500.starterbot.controller;
 
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuote;
 import edu.northeastern.cs5500.starterbot.service.QuoteService;
-import edu.northeastern.cs5500.starterbot.service.alphavantage.AlphaVantageGlobalQuote;
 
 public class FakeQuoteService implements QuoteService {
 
