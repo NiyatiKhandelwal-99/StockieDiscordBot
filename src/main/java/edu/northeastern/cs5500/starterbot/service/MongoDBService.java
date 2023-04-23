@@ -7,7 +7,10 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import edu.northeastern.cs5500.starterbot.annotate.ExcludeClassFromGeneratedCoverage;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,7 +22,7 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 @Singleton
 @Slf4j
 @ExcludeClassFromGeneratedCoverage
-public class MongoDBService implements Service {
+public class MongoDBService implements VotingService {
 
     private static final String DB_NAME = "stock";
 
@@ -56,5 +59,13 @@ public class MongoDBService implements Service {
     @Override
     public void register() {
         log.info("MongoDBService > register");
+    }
+
+    @Override
+    public void upVote(
+            MongoCollection<org.bson.Document> collection, String ticker, String userId) {
+        collection.updateOne(
+                Filters.eq("ticker", ticker),
+                Updates.combine(Updates.inc("votes", 1), Updates.addToSet("voters", userId)));
     }
 }

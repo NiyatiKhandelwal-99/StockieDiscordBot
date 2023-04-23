@@ -3,10 +3,9 @@ package edu.northeastern.cs5500.starterbot.command;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
 import edu.northeastern.cs5500.starterbot.annotate.ExcludeMethodFromGeneratedCoverage;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
-import edu.northeastern.cs5500.starterbot.service.MongoDBService;
+import edu.northeastern.cs5500.starterbot.controller.VotingController;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -26,7 +25,7 @@ public class UpVoteCommand implements SlashCommandHandler {
     public static final String VOTERS = "voters";
     public static final String TICKER = "ticker";
 
-    @Inject MongoDBService mongoDBService;
+    @Inject VotingController votingController;
 
     @Inject
     public UpVoteCommand() {}
@@ -68,7 +67,7 @@ public class UpVoteCommand implements SlashCommandHandler {
 
         log.info("event: /upvote ticker:" + ticker);
 
-        MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
+        MongoDatabase mongoDatabase = votingController.getMongoDatabase();
 
         MongoCollection<Document> collection = mongoDatabase.getCollection(VOTES);
 
@@ -79,7 +78,7 @@ public class UpVoteCommand implements SlashCommandHandler {
             boolean userHasVoted = hasUserVoted(document, userId);
 
             if (!userHasVoted) {
-                increaseCount(collection, ticker, userId);
+                votingController.upVote(collection, ticker, userId);
                 event.reply("You have successfully upvoted for the ticker " + ticker + ".").queue();
 
             } else {
@@ -90,11 +89,5 @@ public class UpVoteCommand implements SlashCommandHandler {
 
     public Boolean hasUserVoted(Document document, String userId) {
         return document.getList(VOTERS, String.class).contains(userId);
-    }
-
-    public void increaseCount(MongoCollection<Document> collection, String ticker, String userId) {
-        collection.updateOne(
-                Filters.eq(TICKER, ticker),
-                Updates.combine(Updates.inc(VOTES, 1), Updates.addToSet(VOTERS, userId)));
     }
 }

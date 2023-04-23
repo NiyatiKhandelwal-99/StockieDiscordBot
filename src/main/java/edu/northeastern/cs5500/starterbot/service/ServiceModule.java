@@ -22,4 +22,9 @@ public class ServiceModule {
     public BalanceSheetService provideBalanceSheetService(AlphaVantageService service) {
         return service;
     }
+
+    @Provides
+    public VotingService provideVotingService(MongoDBService service) {
+        return service;
+    }
 }
