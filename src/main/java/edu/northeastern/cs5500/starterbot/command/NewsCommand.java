@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
@@ -79,7 +80,7 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
 
         log.info("event: /latestnews");
-        var ticker = event.getOption("ticker", OptionMapping::getAsString);
+        var ticker = Objects.requireNonNull(event.getOption("ticker", OptionMapping::getAsString)).toUpperCase();
 
         if (ticker == null) {
             log.error(LogMessages.EMPTY_TICKER, event.getName());
@@ -155,8 +156,8 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
             List<AlphaVantageNewsFeed> newsFeeds, String sourceTicker) {
 
         return newsFeeds.stream()
+                .filter(p -> !p.getTitle().contains(sourceTicker))
                 .map(AlphaVantageNewsFeed::getTitle)
-                .filter(p -> !p.contains(sourceTicker))
                 .toList();
     }
 
