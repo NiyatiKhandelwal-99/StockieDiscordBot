@@ -80,7 +80,9 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
 
         log.info("event: /latestnews");
-        var ticker = Objects.requireNonNull(event.getOption("ticker", OptionMapping::getAsString)).toUpperCase();
+        var ticker =
+                Objects.requireNonNull(event.getOption("ticker", OptionMapping::getAsString))
+                        .toUpperCase();
 
         if (ticker == null) {
             log.error(LogMessages.EMPTY_TICKER, event.getName());
