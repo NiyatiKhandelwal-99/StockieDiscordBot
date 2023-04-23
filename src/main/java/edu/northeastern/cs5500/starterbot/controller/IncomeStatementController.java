@@ -7,7 +7,9 @@ import edu.northeastern.cs5500.starterbot.model.AlphaVantageIncomeStatement;
 import edu.northeastern.cs5500.starterbot.service.IncomeStatementService;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class IncomeStatementController {
     IncomeStatementService incomeStatementService;
 

@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.command;
 
+import edu.northeastern.cs5500.starterbot.annotate.ExcludeMethodFromGeneratedCoverage;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.IncomeStatementController;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
@@ -22,6 +23,8 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 @Singleton
 @Slf4j
 public class IncomeStatementCommand implements SlashCommandHandler {
+
+    public static final int NUMBER_OF_REPORTS = 3;
 
     @Inject IncomeStatementController incomeStatementController;
 
@@ -50,6 +53,7 @@ public class IncomeStatementCommand implements SlashCommandHandler {
         return incomeStatementController.getIncomeStatement(ticker);
     }
 
+    @ExcludeMethodFromGeneratedCoverage
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
 
@@ -72,9 +76,9 @@ public class IncomeStatementCommand implements SlashCommandHandler {
             event.reply(String.format(LogMessages.EMPTY_RESPONSE, ticker)).queue();
             return;
         }
-
-        List<MessageEmbed> balanceSheetEmbeds = renderIncomeStatements(incomeStatements);
-        for (MessageEmbed embed : balanceSheetEmbeds) {
+        event.reply("Bringing you the Income Sheets for " + ticker.toUpperCase() + "!").queue();
+        List<MessageEmbed> incomeStatementEmbeds = renderIncomeStatements(incomeStatements);
+        for (MessageEmbed embed : incomeStatementEmbeds) {
             event.getChannel().sendMessageEmbeds(embed).queue();
         }
     }
@@ -82,7 +86,12 @@ public class IncomeStatementCommand implements SlashCommandHandler {
     public List<MessageEmbed> renderIncomeStatements(
             List<AlphaVantageIncomeStatement> incomeStatements) {
         List<MessageEmbed> messageEmbeds = new ArrayList<>();
-        for (int i = 0; i < 1; i++) {
+
+        int numberOfReports = incomeStatements.size();
+        if (numberOfReports > NUMBER_OF_REPORTS) {
+            numberOfReports = NUMBER_OF_REPORTS;
+        }
+        for (int i = 0; i < numberOfReports; i++) {
             AlphaVantageIncomeStatement alphaVantageIncomeStatement = incomeStatements.get(i);
             messageEmbeds.add(renderIncomeStatement(alphaVantageIncomeStatement));
         }
@@ -94,6 +103,17 @@ public class IncomeStatementCommand implements SlashCommandHandler {
 
         embed.setTitle("Fiscal Date Ending: " + incomeStatement.getFiscalDateEnding());
         embed.addField("Reported Currency", incomeStatement.getReportedCurrency(), true);
+        embed.addField("Total Revenue", incomeStatement.getTotalRevenue(), true);
+        embed.addField("Cost of Revenue", incomeStatement.getCostOfRevenue(), true);
+        embed.addField("Gross Profit", incomeStatement.getGrossProfit(), true);
+        embed.addField("Net Income", incomeStatement.getNetIncome(), true);
+        embed.addField("Operating Income", incomeStatement.getOperatingIncome(), true);
+        embed.addField("Interest Income", incomeStatement.getInterestIncome(), true);
+        embed.addField(
+                "Research and Development", incomeStatement.getResearchAndDevelopment(), true);
+        embed.addField("Income Before Tax", incomeStatement.getIncomeBeforeTax(), true);
+        embed.addField("Income Tax Expense", incomeStatement.getIncomeTaxExpense(), true);
+        embed.addField("Interest Expense", incomeStatement.getInterestExpense(), true);
 
         embed.setColor(Color.GREEN);
 

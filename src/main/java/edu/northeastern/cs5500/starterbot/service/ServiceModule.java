@@ -22,7 +22,8 @@ public class ServiceModule {
     public IncomeStatementService provideIncomeStatementService(AlphaVantageService service) {
         return service;
     }
-    
+
+    @Provides
     public BalanceSheetService provideBalanceSheetService(AlphaVantageService service) {
         return service;
     }
