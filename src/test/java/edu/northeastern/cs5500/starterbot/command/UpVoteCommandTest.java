@@ -3,6 +3,7 @@ package edu.northeastern.cs5500.starterbot.command;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Arrays;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,16 +34,10 @@ public class UpVoteCommandTest {
     }
 
     @Test
-    void testCreateDocumentWithTicker() {
-        Document testCreateDocumentWithTicker =
-                new UpVoteCommand().createDocumentWithTicker("aapl");
-        String name = testCreateDocumentWithTicker.getString("ticker");
-        assertEquals("aapl", name);
-    }
-
-    @Test
-    void testCreateUpdateDocument() {
-        Document testDocument = new Document("$inc", new Document("votes", 1));
-        assertEquals(new UpVoteCommand().createUpDateDocument(), testDocument);
+    void testHasUserVoted() {
+        Document document = new Document();
+        document.append("voters", Arrays.asList("user1", "user2"));
+        assertEquals(true, new UpVoteCommand().hasUserVoted(document, "user1"));
+        assertEquals(false, new UpVoteCommand().hasUserVoted(document, "user4"));
     }
 }

@@ -4,7 +4,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
-import edu.northeastern.cs5500.starterbot.annotate.Generated;
+import edu.northeastern.cs5500.starterbot.annotate.ExcludeMethodFromGeneratedCoverage;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.service.MongoDBService;
 import javax.annotation.Nonnull;
@@ -42,13 +42,10 @@ public class UpVoteCommand implements SlashCommandHandler {
     public CommandData getCommandData() {
         return Commands.slash(getName(), "Ask the bot to upvote for a particular ticker")
                 .addOption(
-                        OptionType.STRING,
-                        TICKER,
-                        "The bot will upvote the provided ticker",
-                        true);
+                        OptionType.STRING, TICKER, "The bot will upvote the provided ticker", true);
     }
 
-    @Generated
+    @ExcludeMethodFromGeneratedCoverage
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
 
@@ -79,7 +76,6 @@ public class UpVoteCommand implements SlashCommandHandler {
         if (document == null) {
             event.reply(LogMessages.INVALID_TICKER).queue();
         } else {
-            // Check if the user has already voted for this ticker
             boolean userHasVoted = hasUserVoted(document, userId);
 
             if (!userHasVoted) {
