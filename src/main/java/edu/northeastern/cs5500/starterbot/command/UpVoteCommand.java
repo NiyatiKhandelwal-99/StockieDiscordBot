@@ -2,6 +2,9 @@ package edu.northeastern.cs5500.starterbot.command;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+
 import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.service.MongoDBService;
@@ -47,6 +50,8 @@ public class UpVoteCommand implements SlashCommandHandler {
 
         log.info("event: /upvote");
         var option = event.getOption("ticker");
+        
+        String userId = event.getMember().getId();
 
         if (option == null) {
             log.error(LogMessages.EMPTY_TICKER, event.getName());
@@ -60,17 +65,26 @@ public class UpVoteCommand implements SlashCommandHandler {
         MongoDatabase mongoDatabase = mongoDBService.getMongoDatabase();
 
         MongoCollection<Document> collection = mongoDatabase.getCollection("votes");
-        Document query = createDocumentWithTicker(ticker);
 
-        // Check if the document exists with the specified ticker
-        if (collectionCount(collection, query) == 1) {
-
-            Document updateDoc = createUpDateDocument();
-            collection.updateOne(query, updateDoc);
-            event.reply("You have successfully upvoted for the ticker " + ticker + ".").queue();
-
-        } else {
+        Document document = collection.find(Filters.eq("ticker", ticker)).first();
+        if (document == null) {
             event.reply(LogMessages.INVALID_TICKER).queue();
+        } else {
+            // Check if the user has already voted for this ticker
+            boolean userHasVoted = document.getList("voters", String.class).contains(userId);
+
+            if (!userHasVoted) {
+                // The user has not voted for this ticker, so update the votes and add the user to the voters list
+                collection.updateOne(Filters.eq("ticker", ticker), Updates.combine(
+                    Updates.inc("votes", 1),
+                    Updates.addToSet("voters", userId)
+                ));
+
+                event.reply("You have successfully upvoted for the ticker " + ticker + ".").queue();
+
+            } else {
+                event.reply("User has already voted for this ticker.").queue();
+            }
         }
     }
 
