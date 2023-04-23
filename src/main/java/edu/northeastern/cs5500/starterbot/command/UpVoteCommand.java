@@ -2,10 +2,10 @@ package edu.northeastern.cs5500.starterbot.command;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 import edu.northeastern.cs5500.starterbot.annotate.ExcludeMethodFromGeneratedCoverage;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.VotingController;
+import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -71,7 +71,14 @@ public class UpVoteCommand implements SlashCommandHandler {
 
         MongoCollection<Document> collection = mongoDatabase.getCollection(VOTES);
 
-        Document document = collection.find(Filters.eq(TICKER, ticker)).first();
+        Document document;
+        try {
+            document = findDocument(collection, ticker);
+        } catch (RestException exp) {
+            log.error(String.format(LogMessages.INVALID_TICKER, exp.getMessage()), exp);
+            event.reply(String.format(LogMessages.INVALID_TICKER, ticker)).queue();
+            return;
+        }
         if (document == null) {
             event.reply(LogMessages.INVALID_TICKER).queue();
         } else {
@@ -85,6 +92,11 @@ public class UpVoteCommand implements SlashCommandHandler {
                 event.reply("User has already voted for this ticker.").queue();
             }
         }
+    }
+
+    public Document findDocument(MongoCollection<Document> collection, String ticker)
+            throws RestException {
+        return votingController.findDocument(collection, ticker);
     }
 
     public Boolean hasUserVoted(Document document, String userId) {

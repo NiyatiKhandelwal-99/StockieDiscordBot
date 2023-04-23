@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
@@ -67,5 +68,10 @@ public class MongoDBService implements VotingService {
         collection.updateOne(
                 Filters.eq("ticker", ticker),
                 Updates.combine(Updates.inc("votes", 1), Updates.addToSet("voters", userId)));
+    }
+
+    @Override
+    public Document findDocument(MongoCollection<Document> collection, String ticker) {
+        return collection.find(Filters.eq("ticker", ticker)).first();
     }
 }
