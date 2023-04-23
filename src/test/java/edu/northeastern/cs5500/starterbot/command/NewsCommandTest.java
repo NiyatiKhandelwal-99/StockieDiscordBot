@@ -19,11 +19,15 @@ import org.junit.jupiter.api.Test;
 public class NewsCommandTest {
     NewsCommand newsCommand;
     CommandData commandData;
+    List<AlphaVantageNewsFeed> newsFeeds;
+    Map<String, String> tickerList;
 
     @BeforeEach
     void setUp() {
         newsCommand = new NewsCommand();
         commandData = newsCommand.getCommandData();
+        tickerList = createTickerList();
+        newsFeeds = makeNewsFeeds();
     }
 
     @Test
@@ -112,7 +116,7 @@ public class NewsCommandTest {
 
     @Test
     void testRenderEmbeds() {
-        List<AlphaVantageNewsFeed> newsFeeds = makeNewsFeeds();
+
         List<MessageEmbed> newsEmbeds = newsCommand.renderEmbeds(newsFeeds);
         assertThat(newsEmbeds).isNotEmpty();
         assertThat(newsEmbeds.get(0).getTitle()).isEqualTo(newsFeeds.get(0).getTitle());
@@ -120,7 +124,6 @@ public class NewsCommandTest {
 
     @Test
     void testCheckNewsFeeds() {
-        List<AlphaVantageNewsFeed> newsFeeds = makeNewsFeeds();
         boolean resultTrue = newsCommand.checkNewsFeeds(newsFeeds);
         assertThat(resultTrue).isFalse();
         boolean resultFalse = newsCommand.checkNewsFeeds(new ArrayList<AlphaVantageNewsFeed>());
@@ -132,17 +135,13 @@ public class NewsCommandTest {
 
     @Test
     void testCreateListOfTitles() {
-        List<AlphaVantageNewsFeed> newsFeeds = makeNewsFeeds();
-        List<String> titles = newsCommand.createListOfTitles(newsFeeds);
+        List<String> titles = newsCommand.createListOfTitles(newsFeeds, "GOOG");
         assertThat(titles).isNotNull();
-        assertThat(titles.get(0))
-                .isEqualTo(
-                        "Alphabet CEO Sundar Pichai's pay soars to $226 mn on huge stock award IBM AAPL GOOG");
+        assertThat(titles.get(0)).contains("AMZN");
     }
 
     @Test
     void testFindValidTickers() {
-        Map<String, String> tickerList = createTickerList();
         Map<String, String> uniqueTickerLists =
                 newsCommand.findValidTickers(
                         tickerList, List.of("AAPL", "IBM", "EAST", "AMZN", "GOOG"));
@@ -152,12 +151,52 @@ public class NewsCommandTest {
 
     @Test
     void testCreateDropDownListForNews() {
-        Map<String, String> tickerList = createTickerList();
         StringSelectMenu menu = newsCommand.createDropDownListForNews(tickerList);
         assertThat(menu).isNotNull();
         assertThat(menu.isDisabled()).isFalse();
         assertThat(menu.getPlaceholder()).isEqualTo("Select tickers for more news");
         assertThat(menu.getOptions()).isNotEmpty();
+    }
+
+    @Test
+    void testCreateDropDownListForNewsWithMaxItems() {
+        Map<String, String> moreTickers = addMoreItems();
+        StringSelectMenu menu = newsCommand.createDropDownListForNews(moreTickers);
+        assertThat(menu).isNotNull();
+        assertThat(menu.isDisabled()).isFalse();
+        assertThat(menu.getPlaceholder()).isEqualTo("Select tickers for more news");
+        assertThat(menu.getOptions()).isNotEmpty();
+    }
+
+    private Map<String, String> addMoreItems() {
+        Map<String, String> tickerList = new HashMap<>();
+        tickerList.put("IBM", "IBM");
+        tickerList.put("AMZN", "Amazon");
+        tickerList.put("GOOG", "Google");
+        tickerList.put("AAPL", "Apple");
+        tickerList.put("BABA", "Alibaba");
+        tickerList.put("A", "Agilent");
+        tickerList.put("AA", "Alcoa");
+        tickerList.put("AAA", "Axis first");
+        tickerList.put("AAU", "Goldman Sachs");
+        tickerList.put("AAC", "some example");
+        tickerList.put("AAC-U", "some");
+        tickerList.put("AAC-WS", "Alibaba");
+        tickerList.put("AACG", "Alibaba");
+        tickerList.put("AACI", "Alibaba");
+        tickerList.put("AACIU", "Alibaba");
+        tickerList.put("AACIW", "Alibaba");
+        tickerList.put("AADI", "Alibaba");
+        tickerList.put("AADR", "Alibaba");
+        tickerList.put("AAIC-P-B", "Alibaba");
+        tickerList.put("AAIC-P-C", "Alibaba");
+        tickerList.put("AAIN", "Alibaba");
+        tickerList.put("AAL", "Alibaba");
+        tickerList.put("AAMC", "Alibaba");
+        tickerList.put("AAME", "Alibaba");
+        tickerList.put("AAN", "Alibaba");
+        tickerList.put("AAOI", "Alibaba");
+        return tickerList;
     }
 
     private Map<String, String> createTickerList() {

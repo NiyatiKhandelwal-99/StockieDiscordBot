@@ -88,22 +88,7 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
 
         log.info("event: /latestnews ticker:" + ticker);
 
-        // try {
-        //     var message = renderMessage(ticker);
-        //     event.getChannel().sendMessageEmbeds(message);
-        // } catch (SomeRenderException exp) {
-        //     event.reply(exp.getMessage()).queue();
-        //     return;
-        // }
-
-        List<AlphaVantageNewsFeed> newsFeeds = null;
-        try {
-            newsFeeds = getNewsFeed(ticker);
-        } catch (RestException | AlphaVantageException exp) {
-            log.error(String.format(LogMessages.ERROR_ALPHAVANTAGE_API, exp.getMessage()), exp);
-            event.reply(String.format(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY, ticker)).queue();
-            return;
-        }
+        List<AlphaVantageNewsFeed> newsFeeds = fetchNewsFeeds(ticker);
 
         if (checkNewsFeeds(newsFeeds)) {
             event.reply(String.format(LogMessages.EMPTY_RESPONSE, ticker)).queue();
@@ -118,30 +103,61 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
             event.getChannel().sendMessageEmbeds(embed).queue();
         }
 
+        StringSelectMenu menu = generateDropDownMenu(newsFeeds, ticker);
+
+        if (menu == null || menu.getOptions().isEmpty()) {
+            log.info("Menu list is empty");
+            event.getChannel()
+                    .sendMessageFormat(
+                            "No new ticker found in news titles. Please use latest news command to know more news.")
+                    .queue();
+            return;
+        }
+
+        event.getChannel()
+                .sendMessageFormat(
+                        "Total "
+                                + menu.getOptions().size()
+                                + " different ticker added for latest news. Check them out if you like.")
+                .addActionRow(menu)
+                .queue();
+    }
+
+    private StringSelectMenu generateDropDownMenu(
+            List<AlphaVantageNewsFeed> newsFeeds, String sourceTicker) {
+
         log.info("event: creating dropdown list for other tickers");
 
         StringSelectMenu menu = null;
         try {
-            menu = getStringSelectMenu(newsFeeds);
+            menu = getStringSelectMenu(newsFeeds, sourceTicker);
         } catch (RestException | AlphaVantageException | IOException | InterruptedException e) {
             e.printStackTrace();
         }
-
-        event.getChannel().sendMessage("").addActionRow(menu).queue();
+        return menu;
     }
 
-    public boolean checkNewsFeeds(List<AlphaVantageNewsFeed> newsFeeds) {
+    private List<AlphaVantageNewsFeed> fetchNewsFeeds(String ticker) {
+        List<AlphaVantageNewsFeed> newsFeeds = null;
+        try {
+            newsFeeds = getNewsFeed(ticker);
+        } catch (RestException | AlphaVantageException exp) {
+            log.error(String.format(LogMessages.ERROR_ALPHAVANTAGE_API, exp.getMessage()), exp);
+        }
+        return newsFeeds;
+    }
+
+    boolean checkNewsFeeds(List<AlphaVantageNewsFeed> newsFeeds) {
         return newsFeeds == null || newsFeeds.size() == 0;
     }
 
-    public List<String> createListOfTitles(List<AlphaVantageNewsFeed> newsFeeds) {
+    public List<String> createListOfTitles(
+            List<AlphaVantageNewsFeed> newsFeeds, String sourceTicker) {
 
-        List<String> titles = new ArrayList<>();
-        return newsFeeds.stream().map(AlphaVantageNewsFeed::getTitle).toList();
-        //        for (AlphaVantageNewsFeed newsFeed : newsFeeds) {
-        //            titles.add(newsFeed.getTitle());
-        //        }
-        //        return titles;
+        return newsFeeds.stream()
+                .map(AlphaVantageNewsFeed::getTitle)
+                .filter(p -> !p.contains(sourceTicker))
+                .toList();
     }
 
     public Map<String, String> findValidTickers(
@@ -253,14 +269,7 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         if (ticker == null || ticker.length() == 0) {
             throw new MissingRequiredParameterException(LogMessages.EMPTY_TICKER);
         }
-        List<AlphaVantageNewsFeed> newsFeeds = null;
-        try {
-            newsFeeds = getNewsFeed(ticker);
-        } catch (RestException | AlphaVantageException exp) {
-            log.error(LogMessages.ERROR_ALPHAVANTAGE_API, exp);
-            event.reply(String.format(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY, ticker)).queue();
-            return;
-        }
+        List<AlphaVantageNewsFeed> newsFeeds = fetchNewsFeeds(ticker);
 
         if (checkNewsFeeds(newsFeeds)) {
             event.reply(String.format(LogMessages.EMPTY_RESPONSE, ticker)).queue();
@@ -275,23 +284,35 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
             event.getChannel().sendMessageEmbeds(embed).queue();
         }
 
-        log.info("event: creating dropdown list for other tickers");
+        StringSelectMenu menu = generateDropDownMenu(newsFeeds, ticker);
 
-        StringSelectMenu menu = null;
-        try {
-            menu = getStringSelectMenu(newsFeeds);
-        } catch (RestException | AlphaVantageException | IOException | InterruptedException e) {
-            e.printStackTrace();
+        if (menu == null || menu.getOptions().isEmpty()) {
+            log.info("Menu list is empty");
+            event.getChannel()
+                    .sendMessageFormat(
+                            "No new ticker found in news titles. Please use latest news command to know more news.")
+                    .queue();
+            return;
         }
-
-        event.getChannel().sendMessage("").addActionRow(menu).queue();
+        event.getChannel()
+                .sendMessageFormat(
+                        "Total "
+                                + menu.getOptions().size()
+                                + " different ticker added for latest news. Check them out if you like.")
+                .addActionRow(menu)
+                .queue();
     }
 
     @Nullable
-    public StringSelectMenu getStringSelectMenu(List<AlphaVantageNewsFeed> newsFeeds)
+    public StringSelectMenu getStringSelectMenu(
+            List<AlphaVantageNewsFeed> newsFeeds, String sourceTicker)
             throws RestException, AlphaVantageException, IOException, InterruptedException {
 
-        List<String> titles = createListOfTitles(newsFeeds);
+        List<String> titles = createListOfTitles(newsFeeds, sourceTicker);
+
+        if (titles == null || titles.isEmpty()) {
+            return null;
+        }
 
         Map<String, String> tickerList = getTickers();
 
@@ -307,7 +328,11 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
 
     public StringSelectMenu createDropDownListForNews(Map<String, String> uniqueTickerLists) {
         List<SelectOption> otherTickerNews = new ArrayList<>();
+        final int DROP_DOWN_MAX_LENGTH = 25;
         for (Map.Entry<String, String> entry : uniqueTickerLists.entrySet()) {
+            if (otherTickerNews.size() >= DROP_DOWN_MAX_LENGTH) {
+                break;
+            }
             otherTickerNews.add(
                     SelectOption.of(entry.getKey() + " : " + entry.getValue(), entry.getKey()));
         }

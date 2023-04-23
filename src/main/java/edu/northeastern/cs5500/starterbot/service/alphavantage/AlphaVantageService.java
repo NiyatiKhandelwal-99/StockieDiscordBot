@@ -166,8 +166,8 @@ public class AlphaVantageService implements QuoteService, NewsFeedService, Balan
         return tickerSymbolAndName;
     }
 
-    private List<String> getFile(String queryUrl)
-            throws IOException, RestException, AlphaVantageException {
+    @SneakyThrows({MalformedURLException.class, IOException.class})
+    private List<String> getFile(String queryUrl) throws RestException, AlphaVantageException {
         URL url = new URL(BASE_URL + queryUrl + "&apikey=" + apiKey);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -190,7 +190,7 @@ public class AlphaVantageService implements QuoteService, NewsFeedService, Balan
 
         List<String> tickers = new ArrayList<>();
         String output;
-        br.readLine();
+        br.readLine(); // skipping heading
         while ((output = br.readLine()) != null) {
             tickers.add(output);
         }
@@ -199,7 +199,6 @@ public class AlphaVantageService implements QuoteService, NewsFeedService, Balan
             backoffLogicForTickers(tickers, queryUrl);
         }
         conn.disconnect();
-
         return tickers;
     }
 
