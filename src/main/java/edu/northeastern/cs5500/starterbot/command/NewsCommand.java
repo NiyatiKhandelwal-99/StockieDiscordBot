@@ -36,6 +36,10 @@ import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * This class represents NewsCommand, which implements SlashCommand handler and StringSelect handler
+ * (for drop down list)
+ */
 @Singleton
 @Slf4j
 public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
@@ -49,12 +53,22 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         // empty constructor required for injection
     }
 
+    /**
+     * Returns name of a command
+     *
+     * @return String
+     */
     @Nonnull
     @Override
     public String getName() {
         return "latestnews";
     }
 
+    /**
+     * Returns the structure of a command
+     *
+     * @return CommandData
+     */
     @Nonnull
     @Override
     public CommandData getCommandData() {
@@ -66,6 +80,14 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
                         true);
     }
 
+    /**
+     * Fetch latest news feeds for a given ticker
+     *
+     * @param ticker
+     * @return List<AlphaVantageNewsFeed>
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
     public List<AlphaVantageNewsFeed> getNewsFeed(String ticker)
             throws RestException, AlphaVantageException {
         final String fromTime =
@@ -76,6 +98,11 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         return newsFeedController.getNewsFeeds(ticker, fromTime);
     }
 
+    /**
+     * This method is triggered when /latestnews command is entered
+     *
+     * @param event
+     */
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
 
@@ -128,6 +155,14 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
                 .queue();
     }
 
+    /**
+     * Generates and returns drop down menu for a given list of neews feeds but excluding source
+     * ticker
+     *
+     * @param newsFeeds
+     * @param sourceTicker
+     * @return StringSelectMenu
+     */
     private StringSelectMenu generateDropDownMenu(
             List<AlphaVantageNewsFeed> newsFeeds, String sourceTicker) {
 
@@ -142,6 +177,12 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         return menu;
     }
 
+    /**
+     * Fetch news feeds for a given ticker
+     *
+     * @param ticker
+     * @return List<AlphaVantageNewsFeed>
+     */
     private List<AlphaVantageNewsFeed> fetchNewsFeeds(String ticker) {
         List<AlphaVantageNewsFeed> newsFeeds = null;
         try {
@@ -152,10 +193,21 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         return newsFeeds;
     }
 
+    /**
+     * Checks if news feeds list is null or empty
+     *
+     * @param newsFeeds
+     * @return boolean
+     */
     boolean checkNewsFeeds(List<AlphaVantageNewsFeed> newsFeeds) {
         return newsFeeds == null || newsFeeds.isEmpty();
     }
 
+    /**
+     * @param newsFeeds
+     * @param sourceTicker
+     * @return List<String>
+     */
     public List<String> createListOfTitles(
             List<AlphaVantageNewsFeed> newsFeeds, String sourceTicker) {
 
@@ -165,6 +217,13 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
                 .toList();
     }
 
+    /**
+     * Finds valid tickers from an active list of tickers and titles list
+     *
+     * @param tickerList
+     * @param titles
+     * @return Map<String, String>
+     */
     public Map<String, String> findValidTickers(
             Map<String, String> tickerList, List<String> titles) {
         Map<String, String> uniqueValidTickers = new HashMap<>();
@@ -181,12 +240,26 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         return uniqueValidTickers;
     }
 
+    /**
+     * Returns active list (map: ticker as key and company name as value) of companies.
+     *
+     * @return Map<String, String>
+     * @throws RestException
+     * @throws AlphaVantageException
+     * @throws IOException
+     */
     public Map<String, String> getTickers()
             throws RestException, AlphaVantageException, IOException {
 
         return newsFeedController.getTickers();
     }
 
+    /**
+     * Returns list of message embeds to be rendered
+     *
+     * @param newsFeeds
+     * @return List<MessageEmbed>
+     */
     public List<MessageEmbed> renderEmbeds(List<AlphaVantageNewsFeed> newsFeeds) {
         List<MessageEmbed> newsEmbeds = new ArrayList<>();
         int TITLE_MAX_LENGTH = 255;
@@ -201,6 +274,12 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         return newsEmbeds;
     }
 
+    /**
+     * Generates and returns a message embed for a given news feed.
+     *
+     * @param newsFeed
+     * @return MessageEmbed
+     */
     private MessageEmbed renderEmbed(AlphaVantageNewsFeed newsFeed) {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle(newsFeed.getTitle());
@@ -223,11 +302,23 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         return embed.build();
     }
 
+    /**
+     * Returns value if not null, otherwise returns empty string
+     *
+     * @param value
+     * @return String
+     */
     @Nonnull
     public static String getValue(String value) {
         return (value == null) ? "" : value;
     }
 
+    /**
+     * Returns comma separated string of topics for a given list of alpha vantage topics
+     *
+     * @param list
+     * @return String
+     */
     @Nonnull
     public static String formatTopicString(List<AlphaVantageNewsTopic> list) {
         if (list == null || list.isEmpty()) {
@@ -249,6 +340,12 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         return topicString.toString();
     }
 
+    /**
+     * Returns datetime in user readable format if in correct format, otherwise returns n/a
+     *
+     * @param userDateTime
+     * @return String
+     */
     @Nonnull
     public static String formatDateTimeString(String userDateTime) {
         if (userDateTime == null || userDateTime.equals("") || userDateTime.indexOf("T") <= 0) {
@@ -265,6 +362,11 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         return formattedDate.trim().length() == 0 ? "n/a" : formattedDate;
     }
 
+    /**
+     * This method is triggered when a item from a drop down list is clicked.
+     *
+     * @param event
+     */
     @Override
     public void onStringSelectInteraction(@Nonnull StringSelectInteractionEvent event) {
         log.info(
@@ -310,6 +412,17 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
                 .queue();
     }
 
+    /**
+     * Gets a list of all menu items and generates drop down list
+     *
+     * @param newsFeeds
+     * @param sourceTicker
+     * @return StringSelectMenu
+     * @throws RestException
+     * @throws AlphaVantageException
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Nullable
     public StringSelectMenu getStringSelectMenu(
             List<AlphaVantageNewsFeed> newsFeeds, String sourceTicker)
@@ -333,6 +446,12 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         return createDropDownListForNews(uniqueTickerLists);
     }
 
+    /**
+     * Generates drop down list with max twenty-five items for unique tickers
+     *
+     * @param uniqueTickerLists
+     * @return StringSelectMenu
+     */
     public StringSelectMenu createDropDownListForNews(Map<String, String> uniqueTickerLists) {
         List<SelectOption> otherTickerNews = new ArrayList<>();
         final int MENU_LIST_MAX_ITEM = 25;

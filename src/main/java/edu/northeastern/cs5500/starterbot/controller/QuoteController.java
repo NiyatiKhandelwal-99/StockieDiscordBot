@@ -7,6 +7,9 @@ import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuote;
 import edu.northeastern.cs5500.starterbot.service.QuoteService;
 import javax.inject.Inject;
 
+/**
+ * This controller class is used to connect with AlphaVantage APIs and price commands.
+ */
 public class QuoteController {
 
     QuoteService quoteService;
@@ -16,6 +19,14 @@ public class QuoteController {
         this.quoteService = quoteService;
     }
 
+    
+    /** 
+     * Returns a current pricing of a given ticker symbol
+     * @param tickerSymbol
+     * @return AlphaVantageGlobalQuote
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
     public AlphaVantageGlobalQuote getQuote(String tickerSymbol)
             throws RestException, AlphaVantageException {
         if (tickerSymbol == null || tickerSymbol.isBlank()) {
