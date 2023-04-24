@@ -63,6 +63,12 @@ dependencies {
 
     // GSON to parse JSON files
     implementation 'com.google.code.gson:gson:_'
+
+    // Web scraping library
+    implementation 'org.jsoup:jsoup:1.14.3'
+
+    // Render a table on discord
+    implementation 'org.apache.commons:commons-text:1.9'
 }
 
 application {
