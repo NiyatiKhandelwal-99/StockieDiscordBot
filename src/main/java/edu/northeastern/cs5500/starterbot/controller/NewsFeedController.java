@@ -11,9 +11,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
-/**
- * This controller class is used to connect with AlphaVantage APIs and news commands.
- */
+/** This controller class is used to connect with AlphaVantage APIs and news commands. */
 public class NewsFeedController {
 
     NewsFeedService newsFeedService;
@@ -23,9 +21,9 @@ public class NewsFeedController {
         this.newsFeedService = newsFeedService;
     }
 
-    
-    /** 
+    /**
      * Returns a list of news feeds for a given ticker symbol and time period.
+     *
      * @param tickerSymbol
      * @param fromTime
      * @return List<AlphaVantageNewsFeed>
@@ -46,9 +44,9 @@ public class NewsFeedController {
         return newsFeedService.getNewsSentiment(tickerSymbol, fromTime);
     }
 
-    
-    /** 
+    /**
      * Returns a map of active tickers from an AlphaVantage API.
+     *
      * @return Map<String, String>
      * @throws RestException
      * @throws AlphaVantageException

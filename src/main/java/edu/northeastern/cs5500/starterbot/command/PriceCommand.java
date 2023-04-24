@@ -18,9 +18,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
-/**
- * This class represents PriceCommand, which implements SlashCommand handler.
- */
+/** This class represents PriceCommand, which implements SlashCommand handler. */
 @Singleton
 @Slf4j
 public class PriceCommand implements SlashCommandHandler {
