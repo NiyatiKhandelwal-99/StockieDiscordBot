@@ -60,10 +60,7 @@ public class PriceCommand implements SlashCommandHandler {
 
         try {
             quote = quoteController.getQuote(tickerSymbol);
-        } catch (AlphaVantageException ave) {
-            event.reply("Invalid ticker symbol").queue();
-            return;
-        } catch (BadRequestException bre) {
+        } catch (AlphaVantageException | BadRequestException ave) {
             event.reply("Invalid ticker symbol").queue();
             return;
         } catch (NotFoundException nfe) {

@@ -94,7 +94,7 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         List<AlphaVantageNewsFeed> newsFeeds = fetchNewsFeeds(ticker);
 
         if (checkNewsFeeds(newsFeeds)) {
-            event.reply(String.format(LogMessages.EMPTY_RESPONSE, ticker)).queue();
+            event.reply("No response found for " + ticker).queue();
             return;
         }
 
@@ -103,7 +103,9 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         List<MessageEmbed> newsEmbeds = renderEmbeds(newsFeeds);
 
         for (MessageEmbed embed : newsEmbeds) {
-            event.getChannel().sendMessageEmbeds(embed).queue();
+            if (embed != null) {
+                event.getChannel().sendMessageEmbeds(embed).queue();
+            }
         }
 
         StringSelectMenu menu = generateDropDownMenu(newsFeeds, ticker);
@@ -151,7 +153,7 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
     }
 
     boolean checkNewsFeeds(List<AlphaVantageNewsFeed> newsFeeds) {
-        return newsFeeds == null || newsFeeds.size() == 0;
+        return newsFeeds == null || newsFeeds.isEmpty();
     }
 
     public List<String> createListOfTitles(
@@ -207,7 +209,7 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         embed.addField("Source Domain", getValue(newsFeed.getSourceDomain()), true);
         embed.addField(
                 "Category within source", getValue(newsFeed.getCategoryWithinSource()), true);
-        embed.addField("Authors", String.join(", ", newsFeed.getAuthors()), true);
+        embed.addField("Authors", getValue(String.join(", ", newsFeed.getAuthors())), true);
         embed.addField(
                 "Time published",
                 formatDateTimeString(newsFeed.getTimePublished()),
@@ -250,7 +252,7 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
     @Nonnull
     public static String formatDateTimeString(String userDateTime) {
         if (userDateTime == null || userDateTime.equals("") || userDateTime.indexOf("T") <= 0) {
-            return "";
+            return "n/a";
         }
         SimpleDateFormat fromApi = new SimpleDateFormat("yyyyMMdd HHmmss");
         SimpleDateFormat finalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -260,7 +262,7 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         } catch (ParseException pe) {
             log.error(String.format("Date is in wrong format %s", userDateTime), pe);
         }
-        return formattedDate;
+        return formattedDate.trim().length() == 0 ? "n/a" : formattedDate;
     }
 
     @Override
@@ -269,13 +271,13 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
                 "In NewsCommand onStringSelectInteraction "
                         + event.getInteraction().getSelectedOptions().get(0).getValue());
         var ticker = event.getInteraction().getSelectedOptions().get(0).getValue();
-        if (ticker == null || ticker.length() == 0) {
+        if (ticker.isEmpty() || ticker.length() == 0) {
             throw new MissingRequiredParameterException(LogMessages.EMPTY_TICKER);
         }
         List<AlphaVantageNewsFeed> newsFeeds = fetchNewsFeeds(ticker);
 
         if (checkNewsFeeds(newsFeeds)) {
-            event.reply(String.format(LogMessages.EMPTY_RESPONSE, ticker)).queue();
+            event.reply("No reponse found for " + ticker).queue();
             return;
         }
 
@@ -284,7 +286,9 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         List<MessageEmbed> newsEmbeds = renderEmbeds(newsFeeds);
 
         for (MessageEmbed embed : newsEmbeds) {
-            event.getChannel().sendMessageEmbeds(embed).queue();
+            if (embed != null) {
+                event.getChannel().sendMessageEmbeds(embed).queue();
+            }
         }
 
         StringSelectMenu menu = generateDropDownMenu(newsFeeds, ticker);
@@ -331,9 +335,9 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
 
     public StringSelectMenu createDropDownListForNews(Map<String, String> uniqueTickerLists) {
         List<SelectOption> otherTickerNews = new ArrayList<>();
-        final int DROP_DOWN_MAX_LENGTH = 25;
+        final int MENU_LIST_MAX_ITEM = 25;
         for (Map.Entry<String, String> entry : uniqueTickerLists.entrySet()) {
-            if (otherTickerNews.size() >= DROP_DOWN_MAX_LENGTH) {
+            if (otherTickerNews.size() >= MENU_LIST_MAX_ITEM) {
                 break;
             }
             otherTickerNews.add(

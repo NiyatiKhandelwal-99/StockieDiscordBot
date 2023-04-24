@@ -54,7 +54,6 @@ public class NewsCommandTest {
     void testGetInvalidValue() {
         String value = NewsCommand.getValue(null);
         assertThat(value.isBlank()).isTrue();
-        ;
     }
 
     @Test
@@ -69,22 +68,19 @@ public class NewsCommandTest {
     void testFormatDateInvalid() throws RestException, AlphaVantageException {
         final String userFromDateTimeWithoutT = "20230319122133";
         String botDateFormat = NewsCommand.formatDateTimeString(userFromDateTimeWithoutT);
-        assertThat(botDateFormat.isBlank()).isTrue();
+        assertThat(botDateFormat).isEqualTo("n/a");
 
         final String userFromDateTimeWrongFormat = "02-01-2023T12-23-122";
         var result = NewsCommand.formatDateTimeString(userFromDateTimeWrongFormat);
-        assertThat(result).isEmpty();
+        assertThat(result).isEqualTo("n/a");
 
         final String userFromDateEmpty = "";
         var emptyResult = NewsCommand.formatDateTimeString(userFromDateEmpty);
-        assertThat(emptyResult).isEmpty();
-    }
+        assertThat(emptyResult).isEqualTo("n/a");
 
-    @Test
-    void testFormatDateInvalidFormat() throws RestException, AlphaVantageException {
         final String userFromDateTime = "20230380122133";
-        String botDateFormat = NewsCommand.formatDateTimeString(userFromDateTime);
-        assertThat(botDateFormat.isBlank()).isTrue();
+        String invalidDateFormat = NewsCommand.formatDateTimeString(userFromDateTime);
+        assertThat(invalidDateFormat).isEqualTo("n/a");
     }
 
     @Test
@@ -169,80 +165,82 @@ public class NewsCommandTest {
     }
 
     private Map<String, String> addMoreItems() {
-        Map<String, String> tickerList = new HashMap<>();
-        tickerList.put("IBM", "IBM");
-        tickerList.put("AMZN", "Amazon");
-        tickerList.put("GOOG", "Google");
-        tickerList.put("AAPL", "Apple");
-        tickerList.put("BABA", "Alibaba");
-        tickerList.put("A", "Agilent");
-        tickerList.put("AA", "Alcoa");
-        tickerList.put("AAA", "Axis first");
-        tickerList.put("AAU", "Goldman Sachs");
-        tickerList.put("AAC", "some example");
-        tickerList.put("AAC-U", "some");
-        tickerList.put("AAC-WS", "Alibaba");
-        tickerList.put("AACG", "Alibaba");
-        tickerList.put("AACI", "Alibaba");
-        tickerList.put("AACIU", "Alibaba");
-        tickerList.put("AACIW", "Alibaba");
-        tickerList.put("AADI", "Alibaba");
-        tickerList.put("AADR", "Alibaba");
-        tickerList.put("AAIC-P-B", "Alibaba");
-        tickerList.put("AAIC-P-C", "Alibaba");
-        tickerList.put("AAIN", "Alibaba");
-        tickerList.put("AAL", "Alibaba");
-        tickerList.put("AAMC", "Alibaba");
-        tickerList.put("AAME", "Alibaba");
-        tickerList.put("AAN", "Alibaba");
-        tickerList.put("AAOI", "Alibaba");
-        return tickerList;
+        Map<String, String> moreItemsMap = new HashMap<>();
+        moreItemsMap.put("AMZN", "Amazon");
+        moreItemsMap.put("GOOG", "Google");
+        moreItemsMap.put("IBM", "IBM");
+        moreItemsMap.put("AAPL", "Apple");
+        moreItemsMap.put("BABA", "Alibaba");
+        moreItemsMap.put("A", "Agilent");
+        moreItemsMap.put("AA", "Alcoa");
+        moreItemsMap.put("AAA", "Axis first");
+        moreItemsMap.put("AAU", "Goldman Sachs");
+        moreItemsMap.put("AAC", "some example");
+        moreItemsMap.put("AAC-U", "some");
+        moreItemsMap.put("AAC-WS", "A test");
+        moreItemsMap.put("AACG", "AAC test");
+        moreItemsMap.put("AACI", "AACi test");
+        moreItemsMap.put("AACIU", "AACIU test");
+        moreItemsMap.put("AACIW", "AACIW test");
+        moreItemsMap.put("AADI", "AADi test");
+        moreItemsMap.put("AADR", "AADr test");
+        moreItemsMap.put("AAIC-P-B", "AAIC-P-B test");
+        moreItemsMap.put("AAIC-P-C", "AAIC-P-c test");
+        moreItemsMap.put("AAIN", "AAIN test");
+        moreItemsMap.put("AAL", "AAL test");
+        moreItemsMap.put("AAMC", "AAMC test");
+        moreItemsMap.put("AAME", "AAME test");
+        moreItemsMap.put("AAN", "AAn test");
+        moreItemsMap.put("AAOI", "AAOI test");
+        return moreItemsMap;
     }
 
     private Map<String, String> createTickerList() {
-        Map<String, String> tickerList = new HashMap<>();
-        tickerList.put("IBM", "IBM");
-        tickerList.put("AMZN", "Amazon");
-        tickerList.put("GOOG", "Google");
-        tickerList.put("AAPL", "Apple");
-        tickerList.put("BABA", "Alibaba");
-        return tickerList;
+        this.tickerList = new HashMap<>();
+        this.tickerList.put("IBM", "IBM");
+        this.tickerList.put("AMZN", "Amazon");
+        this.tickerList.put("GOOG", "Google");
+        this.tickerList.put("AAPL", "Apple");
+        this.tickerList.put("BABA", "Alibaba");
+        return this.tickerList;
     }
 
     private List<AlphaVantageNewsFeed> makeNewsFeeds() {
-        List<AlphaVantageNewsFeed> newsFeeds = new ArrayList<>();
+        newsFeeds = new ArrayList<>();
+        final String largeString =
+                "AMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's saysAMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's saysAMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's saysAMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's saysAMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's saysAMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's saysAMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says";
         AlphaVantageNewsTopic topics = new AlphaVantageNewsTopic("Technology");
-        newsFeeds.add(
+        this.newsFeeds.add(
                 new AlphaVantageNewsFeed(
                         "Alphabet CEO Sundar Pichai's pay soars to $226 mn on huge stock award IBM AAPL GOOG",
-                        "https://www.business-standard.com/world-news/alphabet-ceo-sundar-pichai-s-pay-soars-to-226-mn-on-huge-stock-award-123042200102_1.html",
-                        "20230422T022729",
-                        new String[] {"Business Standard"},
-                        "Alphabet CEO Sundar Pichai's pay soars to $226 mn on huge stock ... Business Standard ...",
+                        "https://www.financialexpress.com/market/asia-stocks-off-to-slow-start-in-earnings-rich-week/3059437/",
+                        "20230322T022729",
+                        new String[] {"Business Standard New"},
+                        "Alphabet CEO Sundar Pichai's pay soars to $226 mn on huge stock",
                         "null",
-                        "Business Standard",
-                        "www.business-standard.com",
-                        "www.business-standard.com",
-                        "0.009576",
-                        "Neutral",
+                        "Business Standard New",
+                        "www.businessstandard.com",
+                        "www.businessstandard.com",
+                        "0.00957",
+                        "Important",
                         List.of(topics)));
-        newsFeeds.add(
+        this.newsFeeds.add(
                 new AlphaVantageNewsFeed(
                         "AMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says",
                         "https://www.business-standard.com/world-news/alphabet-ceo-sundar-pichai-s-pay-soars-to-226-mn-on-huge-stock-award-123042200102_1.html",
                         "20230422T022729",
-                        new String[] {"Business Standard"},
+                        new String[] {"Business Standard Test"},
                         "Alphabet CEO Sundar Pichai's pay soars to $226 mn on huge stock ... Business Standard ...",
                         "https://bsmedia.business-standard.com/_media/bs/img/article/2023-04/22/full/1682130354-2122.jpg?im=FeatureCrop,width=826,height=465",
-                        "Business Standard",
-                        "www.business-standard.com",
-                        "www.business-standard.com",
+                        "Business Standard Test",
+                        "www.business-standardnew.com",
+                        "www.business-standardnew.com",
                         "0.009576",
                         "Neutral",
                         List.of(topics)));
-        newsFeeds.add(
+        this.newsFeeds.add(
                 new AlphaVantageNewsFeed(
-                        largeTitleString(),
+                        largeString,
                         "https://www.business-standard.com/world-news/alphabet-ceo-sundar-pichai-s-pay-soars-to-226-mn-on-huge-stock-award-123042200102_1.html",
                         "20230422T022729",
                         new String[] {"Business Standard"},
@@ -255,9 +253,5 @@ public class NewsCommandTest {
                         "Neutral",
                         List.of(topics)));
         return newsFeeds;
-    }
-
-    private String largeTitleString() {
-        return "AMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's saysAMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's saysAMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's saysAMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's saysAMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's saysAMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's saysAMZN BABA Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says Apple's new savings account is more bad news for banks, Moody's says";
     }
 }
