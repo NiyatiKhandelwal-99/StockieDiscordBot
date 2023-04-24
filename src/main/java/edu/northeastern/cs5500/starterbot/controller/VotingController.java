@@ -30,15 +30,20 @@ public class VotingController {
 
     public Document findDocument(MongoCollection<Document> collection, String ticker)
             throws RestException {
+
+        isTickerValid(ticker);
+
+        return collection.find(Filters.eq("ticker", ticker.toLowerCase())).first();
+    }
+
+    public void isTickerValid(String ticker) throws BadRequestException {
         if (ticker == null || ticker.length() == 0) {
             throw new BadRequestException("ticker cannot be null or empty");
         }
-
         ticker = ticker.strip().toUpperCase();
 
         if (!ticker.matches("^[A-Z]+(?:[.=\\-][A-Z]+)?$")) {
             throw new BadRequestException("ticker had invalid characters");
         }
-        return collection.find(Filters.eq("ticker", ticker.toLowerCase())).first();
     }
 }
