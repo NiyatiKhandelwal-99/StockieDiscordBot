@@ -64,7 +64,7 @@ public class IncomeStatementCommandTest {
     }
 
     @Test
-    void testRenderBalanceSheet() {
+    void testRenderIncomeStatement() {
         IncomeStatementCommand incomeStatementCommand = new IncomeStatementCommand();
         MessageEmbed messageEmbded =
                 incomeStatementCommand.renderIncomeStatement(incomeStatements.get(0));
@@ -118,7 +118,7 @@ public class IncomeStatementCommandTest {
     }
 
     @Test
-    void testRenderBalanceSheets() {
+    void testRenderIncomeStatements() {
         IncomeStatementCommand incomeStatementCommand = new IncomeStatementCommand();
         List<MessageEmbed> incomeStatementEmbeds =
                 incomeStatementCommand.renderIncomeStatements(incomeStatements);
