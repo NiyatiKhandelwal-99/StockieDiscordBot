@@ -46,7 +46,7 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
 
     @Inject NewsFeedController newsFeedController;
     private static final int NUMBER_OF_DAYS = 1;
-    private static final String NUMBER_OF_DAYS_IN_WORDS = "two";
+    private static final String NUMBER_OF_DAYS_IN_WORDS = "one";
 
     @Inject
     public NewsCommand() {
