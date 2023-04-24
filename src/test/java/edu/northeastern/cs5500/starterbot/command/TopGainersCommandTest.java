@@ -3,6 +3,7 @@ package edu.northeastern.cs5500.starterbot.command;
 import static com.google.common.truth.Truth.assertThat;
 
 import java.util.Map;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,8 +40,9 @@ public class TopGainersCommandTest {
     }
 
     @Test
-    void testGetTopGainers() {}
-
-    @Test
-    void testRenderTopGainers() {}
+    void testRenderTopGainers() {
+        MessageEmbed messageEmbded = topGainersCommand.getTopGainersEmbed(topGainers);
+        assertThat(messageEmbded.isEmpty()).isFalse();
+        assertThat(messageEmbded.getTitle()).isNotEmpty();
+    }
 }

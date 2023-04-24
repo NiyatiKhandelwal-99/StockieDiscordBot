@@ -66,9 +66,6 @@ dependencies {
 
     // Web scraping library
     implementation 'org.jsoup:jsoup:1.14.3'
-
-    // Render a table on discord
-    implementation 'org.apache.commons:commons-text:1.9'
 }
 
 application {

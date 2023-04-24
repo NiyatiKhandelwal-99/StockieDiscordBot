@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -61,11 +62,12 @@ public class TopGainersCommand implements SlashCommandHandler {
         }
 
         event.reply("Top Gainers for the day...").queue();
-        renderTopGainers(gainers, event);
+
+        MessageEmbed messageEmbed = getTopGainersEmbed(gainers);
+        event.getChannel().sendMessageEmbeds(messageEmbed).queue();
     }
 
-    public void renderTopGainers(
-            Map<String, String> gainers, @Nonnull SlashCommandInteractionEvent event) {
+    public MessageEmbed getTopGainersEmbed(Map<String, String> gainers) {
         int numberOfGainersEmbedded = 0;
         EmbedBuilder embed = new EmbedBuilder();
 
@@ -80,7 +82,6 @@ public class TopGainersCommand implements SlashCommandHandler {
         }
 
         embed.setColor(Color.GREEN);
-
-        event.getChannel().sendMessageEmbeds(embed.build()).queue();
+        return embed.build();
     }
 }
