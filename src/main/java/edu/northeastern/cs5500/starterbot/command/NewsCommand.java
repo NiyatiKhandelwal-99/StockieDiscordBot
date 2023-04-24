@@ -1,6 +1,5 @@
 package edu.northeastern.cs5500.starterbot.command;
 
-import edu.northeastern.cs5500.starterbot.annotate.Generated;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.NewsFeedController;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
@@ -21,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -55,7 +55,6 @@ public class NewsCommand implements SlashCommandHandler {
                         true);
     }
 
-    @Generated
     public List<AlphaVantageNewsFeed> getNewsFeed(String ticker)
             throws RestException, AlphaVantageException {
         final String fromTime =
@@ -66,21 +65,26 @@ public class NewsCommand implements SlashCommandHandler {
         return newsFeedController.getNewsFeeds(ticker, fromTime);
     }
 
-    @Generated
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
 
         log.info("event: /latestnews");
-        var option = event.getOption("ticker");
+        var ticker = event.getOption("ticker", OptionMapping::getAsString);
 
-        if (option == null) {
+        if (ticker == null) {
             log.error(LogMessages.EMPTY_TICKER, event.getName());
             return;
         }
 
-        String ticker = option.getAsString();
-
         log.info("event: /latestnews ticker:" + ticker);
+
+        // try {
+        //     var message = renderMessage(ticker);
+        //     event.getChannel().sendMessageEmbeds(message);
+        // } catch (SomeRenderException exp) {
+        //     event.reply(exp.getMessage()).queue();
+        //     return;
+        // }
 
         List<AlphaVantageNewsFeed> newsFeeds = null;
         try {
@@ -105,7 +109,6 @@ public class NewsCommand implements SlashCommandHandler {
         }
     }
 
-    @Generated
     private List<MessageEmbed> renderEmbeds(List<AlphaVantageNewsFeed> newsFeeds) {
         List<MessageEmbed> newsEmbeds = new ArrayList<>();
         int TITLE_MAX_LENGTH = 255;
@@ -120,7 +123,6 @@ public class NewsCommand implements SlashCommandHandler {
         return newsEmbeds;
     }
 
-    @Generated
     private MessageEmbed renderEmbed(AlphaVantageNewsFeed newsFeed) {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle(newsFeed.getTitle());
