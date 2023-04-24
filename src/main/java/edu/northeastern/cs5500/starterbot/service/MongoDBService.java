@@ -50,8 +50,7 @@ public class MongoDBService implements Service {
                         .build();
 
         MongoClient mongoClient = MongoClients.create(mongoClientSettings);
-        mongoDatabase = mongoClient.getDatabase(connectionString.getDatabase());
-        // mongoDatabase = mongoClient.getDatabase(DB_NAME);
+        mongoDatabase = mongoClient.getDatabase(DB_NAME);
     }
 
     @Override
