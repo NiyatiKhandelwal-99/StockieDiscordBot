@@ -24,7 +24,7 @@ public class ServiceModule {
     }
 
     @Provides
-    public VotingService provideVotingService(MongoDBService service) {
+    public VotingService provideVotingService(VotingServiceImpl service) {
         return service;
     }
 }

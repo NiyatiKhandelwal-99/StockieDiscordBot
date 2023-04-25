@@ -7,23 +7,19 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
 import edu.northeastern.cs5500.starterbot.annotate.ExcludeClassFromGeneratedCoverage;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 @Singleton
 @Slf4j
 @ExcludeClassFromGeneratedCoverage
-public class MongoDBService implements VotingService {
+public class MongoDBService implements Service {
 
     private static final String DB_NAME = "stock";
 
@@ -40,6 +36,7 @@ public class MongoDBService implements VotingService {
 
     @Inject
     public MongoDBService() {
+        log.info("hello from mongo");
         CodecRegistry codecRegistry =
                 fromRegistries(
                         MongoClientSettings.getDefaultCodecRegistry(),
@@ -62,16 +59,17 @@ public class MongoDBService implements VotingService {
         log.info("MongoDBService > register");
     }
 
-    @Override
-    public void upVote(
-            MongoCollection<org.bson.Document> collection, String ticker, String userId) {
-        collection.updateOne(
-                Filters.eq("ticker", ticker),
-                Updates.combine(Updates.inc("votes", 1), Updates.addToSet("voters", userId)));
-    }
+    //     @Override
+    //     public void upVote(
+    //             MongoCollection<org.bson.Document> collection, String ticker, String userId) {
+    //         collection.updateOne(
+    //                 Filters.eq("ticker", ticker),
+    //                 Updates.combine(Updates.inc("votes", 1), Updates.addToSet("voters",
+    // userId)));
+    //     }
 
-    @Override
-    public Document findDocument(MongoCollection<Document> collection, String ticker) {
-        return collection.find(Filters.eq("ticker", ticker)).first();
-    }
+    //     @Override
+    //     public Document findDocument(MongoCollection<Document> collection, String ticker) {
+    //         return collection.find(Filters.eq("ticker", ticker)).first();
+    //     }
 }

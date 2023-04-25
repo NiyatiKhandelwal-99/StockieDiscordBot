@@ -1,7 +1,6 @@
 package edu.northeastern.cs5500.starterbot.command;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import edu.northeastern.cs5500.starterbot.annotate.ExcludeMethodFromGeneratedCoverage;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.VotingController;
@@ -67,31 +66,34 @@ public class UpVoteCommand implements SlashCommandHandler {
 
         log.info("event: /upvote ticker:" + ticker);
 
-        MongoDatabase mongoDatabase = votingController.getMongoDatabase();
+        votingController.upVote(ticker, userId);
 
-        MongoCollection<Document> collection = mongoDatabase.getCollection(VOTES);
+        // MongoDatabase mongoDatabase = votingController.getMongoDatabase();
 
-        Document document;
-        try {
-            document = findDocument(collection, ticker);
-        } catch (RestException exp) {
-            log.error(String.format(LogMessages.INVALID_TICKER, exp.getMessage()), exp);
-            event.reply(String.format(LogMessages.INVALID_TICKER, ticker)).queue();
-            return;
-        }
-        if (document == null) {
-            event.reply(LogMessages.INVALID_TICKER).queue();
-        } else {
-            boolean userHasVoted = hasUserVoted(document, userId);
+        // MongoCollection<Document> collection = mongoDatabase.getCollection(VOTES);
 
-            if (!userHasVoted) {
-                votingController.upVote(collection, ticker, userId);
-                event.reply("You have successfully upvoted for the ticker " + ticker + ".").queue();
+        // Document document;
+        // try {
+        //     document = findDocument(collection, ticker);
+        // } catch (RestException exp) {
+        //     log.error(String.format(LogMessages.INVALID_TICKER, exp.getMessage()), exp);
+        //     event.reply(String.format(LogMessages.INVALID_TICKER, ticker)).queue();
+        //     return;
+        // }
+        // if (document == null) {
+        //     event.reply(LogMessages.INVALID_TICKER).queue();
+        // } else {
+        //     boolean userHasVoted = hasUserVoted(document, userId);
 
-            } else {
-                event.reply("User has already voted for this ticker.").queue();
-            }
-        }
+        //     if (!userHasVoted) {
+        //         votingController.upVote(collection, ticker, userId);
+        //         event.reply("You have successfully upvoted for the ticker " + ticker +
+        // ".").queue();
+
+        //     } else {
+        //         event.reply("User has already voted for this ticker.").queue();
+        //     }
+        // }
     }
 
     public Document findDocument(MongoCollection<Document> collection, String ticker)

@@ -1,8 +1,6 @@
 package edu.northeastern.cs5500.starterbot.controller;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 import edu.northeastern.cs5500.starterbot.exception.rest.BadRequestException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.service.VotingService;
@@ -20,12 +18,8 @@ public class VotingController {
         this.votingService = votingService;
     }
 
-    public MongoDatabase getMongoDatabase() {
-        return votingService.getMongoDatabase();
-    }
-
-    public void upVote(MongoCollection<Document> collection, String ticker, String userId) {
-        votingService.upVote(collection, ticker, userId);
+    public void upVote(String ticker, String userId) {
+        votingService.upVote(ticker, userId);
     }
 
     public Document findDocument(MongoCollection<Document> collection, String ticker)
@@ -33,7 +27,7 @@ public class VotingController {
 
         isTickerValid(ticker);
 
-        return collection.find(Filters.eq("ticker", ticker.toLowerCase())).first();
+        return votingService.findDocument(collection, ticker);
     }
 
     public void isTickerValid(String ticker) throws BadRequestException {
