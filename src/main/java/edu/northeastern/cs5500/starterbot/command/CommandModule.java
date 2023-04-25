@@ -27,6 +27,12 @@ public class CommandModule {
 
     @Provides
     @IntoSet
+    public SlashCommandHandler provideGainersCommand(TopGainersCommand topGainersCommand) {
+        return topGainersCommand;
+    }
+
+    @Provides
+    @IntoSet
     public StringSelectHandler provideNewsStringSelectCommand(NewsCommand newsCommand) {
         return newsCommand;
     }
