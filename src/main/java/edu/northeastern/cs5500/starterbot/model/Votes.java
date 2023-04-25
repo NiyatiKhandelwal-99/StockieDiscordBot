@@ -13,6 +13,13 @@ public class Votes implements Model {
 
     public Votes() {}
 
+    public Votes(ObjectId _id, String ticker, int votes, ArrayList<String> voters) {
+        this._id = _id;
+        this.ticker = ticker;
+        this.votes = votes;
+        this.voters = voters;
+    }
+
     @Override
     public ObjectId getId() {
         return _id;

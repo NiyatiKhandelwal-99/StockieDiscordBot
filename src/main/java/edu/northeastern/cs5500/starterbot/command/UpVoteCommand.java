@@ -51,8 +51,8 @@ public class UpVoteCommand implements SlashCommandHandler {
         String userId = null;
 
         if (event.getMember() != null) {
-            Member m = event.getMember();
-            if (m != null) userId = m.getId();
+            Member member = event.getMember();
+            if (member != null) userId = member.getId();
         }
 
         if (option == null) {

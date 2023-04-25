@@ -15,7 +15,6 @@ public class VotingServiceImpl implements VotingService {
     @Inject
     public VotingServiceImpl(MongoDBService mongoDBService) {
         this.mongoDBRepository = new MongoDBRepository(Votes.class, mongoDBService);
-        log.info(Long.toString(mongoDBRepository.count()));
     }
 
     @Override
@@ -38,12 +37,13 @@ public class VotingServiceImpl implements VotingService {
                 if (votersList.contains(userId)) {
                     response = "You have already voted for " + votes.getTicker() + ".";
                 } else {
-                    Votes newVote = new Votes();
-                    newVote.setId(votes.getId());
-                    newVote.setTicker(votes.getTicker());
-                    newVote.setVotes(votes.getVotes() + 1);
                     votersList.add(userId);
-                    newVote.setVoters(votersList);
+                    Votes newVote =
+                            new Votes(
+                                    votes.getId(),
+                                    votes.getTicker(),
+                                    votes.getVotes() + 1,
+                                    votersList);
                     mongoDBRepository.update(newVote);
                     response =
                             "You have successfully upvoted for ticker " + votes.getTicker() + "!";
