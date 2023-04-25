@@ -1,6 +1,5 @@
 package edu.northeastern.cs5500.starterbot.command;
 
-import com.mongodb.client.MongoCollection;
 import edu.northeastern.cs5500.starterbot.annotate.ExcludeMethodFromGeneratedCoverage;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.VotingController;
@@ -14,7 +13,6 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import org.bson.Document;
 
 @Singleton
 @Slf4j
@@ -66,42 +64,14 @@ public class UpVoteCommand implements SlashCommandHandler {
 
         log.info("event: /upvote ticker:" + ticker);
 
-        votingController.upVote(ticker, userId);
-
-        // MongoDatabase mongoDatabase = votingController.getMongoDatabase();
-
-        // MongoCollection<Document> collection = mongoDatabase.getCollection(VOTES);
-
-        // Document document;
-        // try {
-        //     document = findDocument(collection, ticker);
-        // } catch (RestException exp) {
-        //     log.error(String.format(LogMessages.INVALID_TICKER, exp.getMessage()), exp);
-        //     event.reply(String.format(LogMessages.INVALID_TICKER, ticker)).queue();
-        //     return;
-        // }
-        // if (document == null) {
-        //     event.reply(LogMessages.INVALID_TICKER).queue();
-        // } else {
-        //     boolean userHasVoted = hasUserVoted(document, userId);
-
-        //     if (!userHasVoted) {
-        //         votingController.upVote(collection, ticker, userId);
-        //         event.reply("You have successfully upvoted for the ticker " + ticker +
-        // ".").queue();
-
-        //     } else {
-        //         event.reply("User has already voted for this ticker.").queue();
-        //     }
-        // }
-    }
-
-    public Document findDocument(MongoCollection<Document> collection, String ticker)
-            throws RestException {
-        return votingController.findDocument(collection, ticker);
-    }
-
-    public Boolean hasUserVoted(Document document, String userId) {
-        return document.getList(VOTERS, String.class).contains(userId);
+        String voteResult;
+        try {
+            voteResult = votingController.upVote(ticker, userId);
+        } catch (RestException e) {
+            log.error(String.format(LogMessages.INVALID_TICKER, e.getMessage()), e);
+            event.reply(String.format(LogMessages.INVALID_TICKER, ticker)).queue();
+            return;
+        }
+        event.reply(voteResult).queue();
     }
 }

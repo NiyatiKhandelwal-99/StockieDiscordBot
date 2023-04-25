@@ -1,21 +1,25 @@
 package edu.northeastern.cs5500.starterbot.model;
 
-import com.google.gson.annotations.SerializedName;
-import lombok.Data;
+import java.util.ArrayList;
+import lombok.Getter;
+import lombok.Setter;
 import org.bson.types.ObjectId;
 
-@Data
-public class Votes {
+public class Votes implements Model {
+    private ObjectId _id;
+    @Getter @Setter private String ticker;
+    @Getter @Setter private int votes;
+    @Getter @Setter private ArrayList<String> voters;
 
-    @SerializedName("_id")
-    private final ObjectId _id;
+    public Votes() {}
 
-    @SerializedName("ticker")
-    private final String ticker;
+    @Override
+    public ObjectId getId() {
+        return _id;
+    }
 
-    @SerializedName("votes")
-    private final Integer votes;
-
-    @SerializedName("voters")
-    private final String array[];
+    @Override
+    public void setId(ObjectId id) {
+        _id = id;
+    }
 }
