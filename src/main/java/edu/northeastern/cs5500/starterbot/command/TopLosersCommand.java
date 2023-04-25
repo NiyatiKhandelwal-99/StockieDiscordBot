@@ -44,7 +44,7 @@ public class TopLosersCommand implements SlashCommandHandler {
     @ExcludeMethodFromGeneratedCoverage
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
-        log.info("event: /gainers ");
+        log.info("event: /losers ");
 
         Map<String, String> losers = new HashMap<>();
 

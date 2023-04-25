@@ -81,8 +81,8 @@ public class YahooFinanceService implements TopGainersService, TopLosersService 
     }
 
     public Map<String, String> sortByPriceChangeFactor(
-            Map<String, String> gainers, boolean isAscending) {
-        List<Map.Entry<String, String>> list = new ArrayList<>(gainers.entrySet());
+            Map<String, String> tickerPriceChangeMapping, boolean isAscending) {
+        List<Map.Entry<String, String>> list = new ArrayList<>(tickerPriceChangeMapping.entrySet());
 
         Collections.sort(
                 list,
@@ -94,11 +94,11 @@ public class YahooFinanceService implements TopGainersService, TopLosersService 
                     }
                 });
 
-        Map<String, String> sortedGainers = new LinkedHashMap<>();
+        Map<String, String> sortedTickerPriceChangeMapping = new LinkedHashMap<>();
         for (Map.Entry<String, String> entry : list) {
-            sortedGainers.put(entry.getKey(), entry.getValue());
+            sortedTickerPriceChangeMapping.put(entry.getKey(), entry.getValue());
         }
 
-        return sortedGainers;
+        return sortedTickerPriceChangeMapping;
     }
 }
