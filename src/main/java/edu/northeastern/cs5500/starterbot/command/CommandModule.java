@@ -31,4 +31,10 @@ public class CommandModule {
     public SlashCommandHandler provideGainersCommand(TopGainersCommand topGainersCommand) {
         return topGainersCommand;
     }
+
+    @Provides
+    @IntoSet
+    public SlashCommandHandler provideLosersCommand(TopLosersCommand topLosersCommand) {
+        return topLosersCommand;
+    }
 }

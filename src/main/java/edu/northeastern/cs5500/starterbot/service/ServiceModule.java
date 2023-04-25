@@ -29,4 +29,9 @@ public class ServiceModule {
     public TopGainersService provideTopGainersService(YahooFinanceService service) {
         return service;
     }
+
+    @Provides
+    public TopLosersService provideTopLosersService(YahooFinanceService service) {
+        return service;
+    }
 }
