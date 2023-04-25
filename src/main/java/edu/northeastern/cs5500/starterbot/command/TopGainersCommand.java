@@ -56,8 +56,8 @@ public class TopGainersCommand implements SlashCommandHandler {
         try {
             gainers = getTopGainers();
         } catch (RestException | YahooFinanceException exp) {
-            log.error(String.format(LogMessages.ERROR_ALPHAVANTAGE_API, exp.getMessage()), exp);
-            event.reply(String.format(LogMessages.ERROR_ALPHAVANTAGE_API_REPLY)).queue();
+            log.error(String.format(LogMessages.ERROR_YAHOOFINANCE_API, exp.getMessage()), exp);
+            event.reply(String.format(LogMessages.ERROR_YAHOOFINANCE_API_REPLY)).queue();
             return;
         }
 
