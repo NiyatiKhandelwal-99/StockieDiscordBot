@@ -7,8 +7,7 @@ public class FakeVotingService implements VotingService {
     public FakeVotingService() {}
 
     @Override
-    public void register() {
-    }
+    public void register() {}
 
     @Override
     public String upVote(String ticker, String userId) {

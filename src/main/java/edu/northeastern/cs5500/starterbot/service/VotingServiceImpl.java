@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.service;
 
+import edu.northeastern.cs5500.starterbot.annotate.ExcludeClassFromGeneratedCoverage;
 import edu.northeastern.cs5500.starterbot.model.Votes;
 import edu.northeastern.cs5500.starterbot.repository.MongoDBRepository;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@ExcludeClassFromGeneratedCoverage
 public class VotingServiceImpl implements VotingService {
 
     private final MongoDBRepository mongoDBRepository;
