@@ -36,7 +36,6 @@ public class MongoDBService implements Service {
 
     @Inject
     public MongoDBService() {
-        log.info("hello from mongo");
         CodecRegistry codecRegistry =
                 fromRegistries(
                         MongoClientSettings.getDefaultCodecRegistry(),
@@ -58,18 +57,4 @@ public class MongoDBService implements Service {
     public void register() {
         log.info("MongoDBService > register");
     }
-
-    //     @Override
-    //     public void upVote(
-    //             MongoCollection<org.bson.Document> collection, String ticker, String userId) {
-    //         collection.updateOne(
-    //                 Filters.eq("ticker", ticker),
-    //                 Updates.combine(Updates.inc("votes", 1), Updates.addToSet("voters",
-    // userId)));
-    //     }
-
-    //     @Override
-    //     public Document findDocument(MongoCollection<Document> collection, String ticker) {
-    //         return collection.find(Filters.eq("ticker", ticker)).first();
-    //     }
 }
