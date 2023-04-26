@@ -36,6 +36,9 @@ public class IncomeStatementController {
 
     public List<AlphaVantageIncomeStatement> limitBalanceSheets(
             List<AlphaVantageIncomeStatement> incomeStatements) {
+        if (incomeStatements == null) {
+            return null;
+        }
         int numberOfReports = incomeStatements.size();
         if (numberOfReports <= NUMBER_OF_REPORTS) {
             return incomeStatements;

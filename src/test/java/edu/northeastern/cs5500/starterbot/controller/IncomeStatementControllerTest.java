@@ -129,4 +129,10 @@ public class IncomeStatementControllerTest {
         int size = incomeStatementController.limitBalanceSheets(incomeStatements).size();
         assertThat(size).isEqualTo(incomeStatements.size());
     }
+
+    @Test
+    public void testLimitBalanceSheetsWithNullIncomeStatements() {
+        IncomeStatementController incomeStatementController = getIncomeStatementController();
+        assertThat(incomeStatementController.limitBalanceSheets(null)).isEqualTo(null);
+    }
 }
