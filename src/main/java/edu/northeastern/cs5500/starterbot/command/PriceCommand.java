@@ -18,7 +18,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
-/** This class represents PriceCommand, which implements SlashCommand handler. */
 @Singleton
 @Slf4j
 public class PriceCommand implements SlashCommandHandler {
@@ -29,22 +28,12 @@ public class PriceCommand implements SlashCommandHandler {
         // empty constructor required for injection
     }
 
-    /**
-     * Returns name of a command
-     *
-     * @return String
-     */
     @Nonnull
     @Override
     public String getName() {
         return "price";
     }
 
-    /**
-     * Returns the structure of a command
-     *
-     * @return CommandData
-     */
     @Nonnull
     @Override
     public CommandData getCommandData() {
@@ -56,11 +45,6 @@ public class PriceCommand implements SlashCommandHandler {
                         true);
     }
 
-    /**
-     * This method is triggered when /price command is entered
-     *
-     * @param event
-     */
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
         log.info("event: /price");
@@ -93,13 +77,6 @@ public class PriceCommand implements SlashCommandHandler {
         event.reply(message).queue();
     }
 
-    /**
-     * Returns formatted message based on timing of command triggered. Returns only Price when
-     * before market close time, otherwise also returns Market Price.
-     *
-     * @param quote
-     * @return String
-     */
     @Nonnull
     public static String formatMessage(AlphaVantageGlobalQuote quote) {
         String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
