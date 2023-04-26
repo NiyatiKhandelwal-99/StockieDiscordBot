@@ -28,7 +28,20 @@ public class CommandModule {
 
     @Provides
     @IntoSet
+    public SlashCommandHandler provideIncomeStatementCommand(
+            IncomeStatementCommand incomeStatementCommand) {
+        return incomeStatementCommand;
+    }
+
+    @Provides
+    @IntoSet
     public SlashCommandHandler provideGainersCommand(TopGainersCommand topGainersCommand) {
         return topGainersCommand;
+    }
+
+    @Provides
+    @IntoSet
+    public SlashCommandHandler provideLosersCommand(TopLosersCommand topLosersCommand) {
+        return topLosersCommand;
     }
 }

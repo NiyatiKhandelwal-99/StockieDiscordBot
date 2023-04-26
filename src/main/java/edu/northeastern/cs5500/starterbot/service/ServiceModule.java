@@ -21,12 +21,22 @@ public class ServiceModule {
     }
 
     @Provides
+    public IncomeStatementService provideIncomeStatementService(AlphaVantageService service) {
+        return service;
+    }
+
+    @Provides
     public BalanceSheetService provideBalanceSheetService(AlphaVantageService service) {
         return service;
     }
 
     @Provides
     public TopGainersService provideTopGainersService(YahooFinanceService service) {
+        return service;
+    }
+
+    @Provides
+    public TopLosersService provideTopLosersService(YahooFinanceService service) {
         return service;
     }
 }
