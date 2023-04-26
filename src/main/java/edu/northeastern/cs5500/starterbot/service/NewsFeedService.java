@@ -9,21 +9,28 @@ import java.util.List;
 public interface NewsFeedService extends Service {
 
     /**
-     * Gets a quote for a given symbol; if a quote cannot be obtained, null is returned.
+     * Returns a list of latest news for a given ticker symbol and time period
      *
-     * <p>See https://www.alphavantage.co/documentation/#news-sentiment for more information.
+     * <p>See https://www.alphavantage.co/documentation/#news-sentiment for more information.</p>
      *
-     * @param symbol the symbol to get a quote for
-     * @return a quote for the given symbol, or null if a quote cannot be obtained
-     * @throws AlphaVantageException
+     * @param symbol
+     * @param fromTime
+     * @return List<AlphaVantageNewsFeed>
+     * @throws RestException
+     * @throws AlphaVantageException, RestException
      */
     List<AlphaVantageNewsFeed> getNewsSentiment(String symbol, String fromTime)
             throws RestException, AlphaVantageException;
 
     /**
-     * Gets a quote for a given symbol; if a quote cannot be obtained, null is returned.
+     * Returns an active list of tickers from an AlphaVantage API
      *
-     * <p>See https://www.alphavantage.co/documentation/#listing-status for more information.
+     * <p>See https://www.alphavantage.co/documentation/#listing-status for more information.</p>
+     *
+     * @param symbol
+     * @return List<AlphaVantageBalanceSheet>
+     * @throws RestException
+     * @throws AlphaVantageException
      */
     List<String> getTickers() throws RestException, AlphaVantageException, IOException;
 }

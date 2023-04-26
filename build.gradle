@@ -109,19 +109,6 @@ jacocoTestReport {
                 '**/*InstanceHolder.class' ])
         })
     }
-    afterEvaluate { // (optional) : to exclude classes / packages from coverage
-        classDirectories.from = files(classDirectories.files.collect {
-            fileTree(
-                dir: it,
-                exclude: [ 'edu/northeastern/cs5500/starterbot/DaggerBotComponent.class',
-                '**/Dagger*BotComponentImpl.class',
-                'edu/northeastern/cs5500/starterbot/Builder.class',
-                '**/*_MembersInjector.class',
-                '**/Dagger*Component.class',
-                '**/Dagger*Component$Builder.class',
-                '**/*Module_*Factory.class' ])
-        })
-        }
 }
 
 jacocoTestCoverageVerification {

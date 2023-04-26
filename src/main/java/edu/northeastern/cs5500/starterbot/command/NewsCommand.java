@@ -118,7 +118,14 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
 
         log.info("event: /latestnews ticker:" + ticker);
 
-        List<AlphaVantageNewsFeed> newsFeeds = fetchNewsFeeds(ticker);
+        List<AlphaVantageNewsFeed> newsFeeds = null;
+        try {
+            newsFeeds = getNewsFeed(ticker);
+        } catch (RestException | AlphaVantageException e) {
+            log.error(String.format(LogMessages.ERROR_ALPHAVANTAGE_API, e.getMessage()), e);
+            event.reply("Error occurred while processing the request for " + ticker).queue();
+            return;
+        }
 
         if (checkNewsFeeds(newsFeeds)) {
             event.reply("No response found for " + ticker).queue();
@@ -175,22 +182,6 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
             e.printStackTrace();
         }
         return menu;
-    }
-
-    /**
-     * Fetch news feeds for a given ticker
-     *
-     * @param ticker
-     * @return List<AlphaVantageNewsFeed>
-     */
-    private List<AlphaVantageNewsFeed> fetchNewsFeeds(String ticker) {
-        List<AlphaVantageNewsFeed> newsFeeds = null;
-        try {
-            newsFeeds = getNewsFeed(ticker);
-        } catch (RestException | AlphaVantageException exp) {
-            log.error(String.format(LogMessages.ERROR_ALPHAVANTAGE_API, exp.getMessage()), exp);
-        }
-        return newsFeeds;
     }
 
     /**
@@ -376,7 +367,14 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
         if (ticker.isEmpty() || ticker.length() == 0) {
             throw new MissingRequiredParameterException(LogMessages.EMPTY_TICKER);
         }
-        List<AlphaVantageNewsFeed> newsFeeds = fetchNewsFeeds(ticker);
+        List<AlphaVantageNewsFeed> newsFeeds = null;
+        try {
+            newsFeeds = getNewsFeed(ticker);
+        } catch (RestException | AlphaVantageException e) {
+            log.error(String.format(LogMessages.ERROR_ALPHAVANTAGE_API, e.getMessage()), e);
+            event.reply("Error occurred while processing the request for " + ticker).queue();
+            return;
+        }
 
         if (checkNewsFeeds(newsFeeds)) {
             event.reply("No reponse found for " + ticker).queue();
