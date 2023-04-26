@@ -32,4 +32,10 @@ public class CommandModule {
             IncomeStatementCommand incomeStatementCommand) {
         return incomeStatementCommand;
     }
+
+    @Provides
+    @IntoSet
+    public SlashCommandHandler provideGainersCommand(TopGainersCommand topGainersCommand) {
+        return topGainersCommand;
+    }
 }
