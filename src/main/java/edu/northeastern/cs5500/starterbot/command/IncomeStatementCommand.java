@@ -24,8 +24,6 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 @Slf4j
 public class IncomeStatementCommand implements SlashCommandHandler {
 
-    public static final int NUMBER_OF_REPORTS = 3;
-
     @Inject IncomeStatementController incomeStatementController;
 
     @Inject
@@ -87,11 +85,7 @@ public class IncomeStatementCommand implements SlashCommandHandler {
             List<AlphaVantageIncomeStatement> incomeStatements) {
         List<MessageEmbed> messageEmbeds = new ArrayList<>();
 
-        int numberOfReports = incomeStatements.size();
-        if (numberOfReports > NUMBER_OF_REPORTS) {
-            numberOfReports = NUMBER_OF_REPORTS;
-        }
-        for (int i = 0; i < numberOfReports; i++) {
+        for (int i = 0; i < incomeStatements.size(); i++) {
             AlphaVantageIncomeStatement alphaVantageIncomeStatement = incomeStatements.get(i);
             messageEmbeds.add(renderIncomeStatement(alphaVantageIncomeStatement));
         }

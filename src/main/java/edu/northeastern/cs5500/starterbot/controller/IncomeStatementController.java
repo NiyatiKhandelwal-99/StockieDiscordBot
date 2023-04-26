@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 
 @Singleton
 public class IncomeStatementController {
+    public static final int NUMBER_OF_REPORTS = 3;
     IncomeStatementService incomeStatementService;
 
     @Inject
@@ -30,6 +31,16 @@ public class IncomeStatementController {
             throw new BadRequestException("ticker had invalid characters");
         }
 
-        return incomeStatementService.getIncomeStatement(ticker);
+        return limitBalanceSheets(incomeStatementService.getIncomeStatement(ticker));
+    }
+
+    public List<AlphaVantageIncomeStatement> limitBalanceSheets(
+            List<AlphaVantageIncomeStatement> incomeStatements) {
+        int numberOfReports = incomeStatements.size();
+        if (numberOfReports <= NUMBER_OF_REPORTS) {
+            return incomeStatements;
+        } else {
+            return incomeStatements.subList(0, NUMBER_OF_REPORTS);
+        }
     }
 }
