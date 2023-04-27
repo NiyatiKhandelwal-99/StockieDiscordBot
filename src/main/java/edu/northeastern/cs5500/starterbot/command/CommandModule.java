@@ -25,4 +25,23 @@ public class CommandModule {
     public SlashCommandHandler provideBalanceSheetCommand(BalanceSheetCommand balanceSheetCommand) {
         return balanceSheetCommand;
     }
+
+    @Provides
+    @IntoSet
+    public SlashCommandHandler provideIncomeStatementCommand(
+            IncomeStatementCommand incomeStatementCommand) {
+        return incomeStatementCommand;
+    }
+
+    @Provides
+    @IntoSet
+    public SlashCommandHandler provideGainersCommand(TopGainersCommand topGainersCommand) {
+        return topGainersCommand;
+    }
+
+    @Provides
+    @IntoSet
+    public SlashCommandHandler provideLosersCommand(TopLosersCommand topLosersCommand) {
+        return topLosersCommand;
+    }
 }

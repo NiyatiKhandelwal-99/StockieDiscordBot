@@ -74,6 +74,8 @@ public class BalanceSheetCommand implements SlashCommandHandler {
             return;
         }
 
+        event.reply("Latest balance sheets for " + ticker).queue();
+
         List<MessageEmbed> balanceSheetEmbeds = renderBalanceSheets(balanceSheets);
         for (MessageEmbed embed : balanceSheetEmbeds) {
             event.getChannel().sendMessageEmbeds(embed).queue();
