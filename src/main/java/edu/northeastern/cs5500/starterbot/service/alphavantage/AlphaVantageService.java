@@ -12,9 +12,12 @@ import edu.northeastern.cs5500.starterbot.model.AlphaVantageBalanceSheet;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageBalanceSheetResponse;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuote;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuoteResponse;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageIncomeStatement;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageIncomeStatementResponse;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsResponse;
 import edu.northeastern.cs5500.starterbot.service.BalanceSheetService;
+import edu.northeastern.cs5500.starterbot.service.IncomeStatementService;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
 import edu.northeastern.cs5500.starterbot.service.QuoteService;
 import java.io.BufferedReader;
@@ -32,7 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 @Singleton
 @Slf4j
 @ExcludeClassFromGeneratedCoverage
-public class AlphaVantageService implements QuoteService, NewsFeedService, BalanceSheetService {
+public class AlphaVantageService
+        implements QuoteService, NewsFeedService, BalanceSheetService, IncomeStatementService {
     private static final String BASE_URL = "https://www.alphavantage.co/query?";
     private final String apiKey;
     private static final String LIMITS_EXCEEDED =
@@ -157,5 +161,19 @@ public class AlphaVantageService implements QuoteService, NewsFeedService, Balan
         }
 
         return balanceSheet;
+    }
+
+    @Override
+    public List<AlphaVantageIncomeStatement> getIncomeStatement(String symbol)
+            throws RestException, AlphaVantageException {
+        String queryUrl = "function=INCOME_STATEMENT&symbol=" + symbol;
+        String response = getRequest(queryUrl);
+
+        var incomeStatement =
+                new Gson().fromJson(response, AlphaVantageIncomeStatementResponse.class).getFeed();
+        if (incomeStatement == null) {
+            log.error(String.format(LogMessages.EMPTY_RESPONSE, symbol), symbol);
+        }
+        return incomeStatement;
     }
 }

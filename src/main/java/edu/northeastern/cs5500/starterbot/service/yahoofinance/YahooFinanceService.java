@@ -4,6 +4,7 @@ import edu.northeastern.cs5500.starterbot.annotate.ExcludeClassFromGeneratedCove
 import edu.northeastern.cs5500.starterbot.exception.YahooFinanceException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.service.TopGainersService;
+import edu.northeastern.cs5500.starterbot.service.TopLosersService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,10 +24,11 @@ import org.jsoup.select.Elements;
 @Singleton
 @Slf4j
 @ExcludeClassFromGeneratedCoverage
-public class YahooFinanceService implements TopGainersService {
+public class YahooFinanceService implements TopGainersService, TopLosersService {
 
     private static final String BASE_URL = "https://finance.yahoo.com";
     private static final String GAINERS_URL = "/gainers";
+    private static final String LOSERS_URL = "/losers";
     private static final String TABLE_ROW = "tr";
     private static final String TABLE_COLUMN = "td";
     private static final int TABLE_SYMBOL_INDEX = 0;
@@ -43,10 +45,24 @@ public class YahooFinanceService implements TopGainersService {
     @Override
     public Map<String, String> getTopGainers() throws RestException, YahooFinanceException {
 
-        Map<String, String> gainers = new HashMap<>();
         String gainersUrl = BASE_URL + GAINERS_URL;
+        Map<String, String> gainers = fetchTickerPriceChangeMappings(gainersUrl);
+
+        return sortByPriceChangeFactor(gainers, false);
+    }
+
+    @Override
+    public Map<String, String> getTopLosers() throws RestException, YahooFinanceException {
+        String losersUrl = BASE_URL + LOSERS_URL;
+        Map<String, String> losers = fetchTickerPriceChangeMappings(losersUrl);
+
+        return sortByPriceChangeFactor(losers, true);
+    }
+
+    public Map<String, String> fetchTickerPriceChangeMappings(String url) {
+        Map<String, String> tickerPriceChangeMapping = new HashMap<>();
         try {
-            Document doc = Jsoup.connect(gainersUrl).get();
+            Document doc = Jsoup.connect(url).get();
             Element table = doc.select("table[class=\"W(100%)\"]").first();
             Elements rows = table.select(TABLE_ROW);
 
@@ -56,17 +72,17 @@ public class YahooFinanceService implements TopGainersService {
 
                 String symbol = cols.get(TABLE_SYMBOL_INDEX).text();
                 String priceChange = cols.get(TABLE_PRICE_CHANGE_INDEX).text();
-                gainers.put(symbol, priceChange);
+                tickerPriceChangeMapping.put(symbol, priceChange);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return sortByPriceChangeFactor(gainers);
+        return tickerPriceChangeMapping;
     }
 
-    public Map<String, String> sortByPriceChangeFactor(Map<String, String> gainers) {
-        List<Map.Entry<String, String>> list = new ArrayList<>(gainers.entrySet());
+    public Map<String, String> sortByPriceChangeFactor(
+            Map<String, String> tickerPriceChangeMapping, boolean isAscending) {
+        List<Map.Entry<String, String>> list = new ArrayList<>(tickerPriceChangeMapping.entrySet());
 
         Collections.sort(
                 list,
@@ -74,15 +90,15 @@ public class YahooFinanceService implements TopGainersService {
                     public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
                         double v1 = Double.parseDouble(o1.getValue());
                         double v2 = Double.parseDouble(o2.getValue());
-                        return Double.compare(v1, v2) * -1;
+                        return Double.compare(v1, v2) * (isAscending ? 1 : -1);
                     }
                 });
 
-        Map<String, String> sortedGainers = new LinkedHashMap<>();
+        Map<String, String> sortedTickerPriceChangeMapping = new LinkedHashMap<>();
         for (Map.Entry<String, String> entry : list) {
-            sortedGainers.put(entry.getKey(), entry.getValue());
+            sortedTickerPriceChangeMapping.put(entry.getKey(), entry.getValue());
         }
 
-        return sortedGainers;
+        return sortedTickerPriceChangeMapping;
     }
 }
