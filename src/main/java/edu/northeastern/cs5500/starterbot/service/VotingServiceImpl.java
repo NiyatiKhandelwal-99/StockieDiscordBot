@@ -26,6 +26,15 @@ public class VotingServiceImpl implements VotingService {
 
     @Override
     public String upVote(String ticker, String userId) {
+        return vote(ticker, userId, 1);
+    }
+
+    @Override
+    public String downVote(String ticker, String userId) {
+        return vote(ticker, userId, -1);
+    }
+
+    public String vote(String ticker, String userId, int vote) {
         String response = "";
         Collection<Votes> mongoCollection = mongoDBRepository.getAll();
         Boolean doesTickerExist = false;
@@ -44,11 +53,10 @@ public class VotingServiceImpl implements VotingService {
                             new Votes(
                                     votes.getId(),
                                     votes.getTicker(),
-                                    votes.getVotes() + 1,
+                                    votes.getVotes() + vote,
                                     votersList);
                     mongoDBRepository.update(newVote);
-                    response =
-                            "You have successfully upvoted for ticker " + votes.getTicker() + "!";
+                    response = "You have successfully voted for ticker " + votes.getTicker() + "!";
                 }
                 break;
             }

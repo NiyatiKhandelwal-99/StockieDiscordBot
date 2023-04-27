@@ -20,6 +20,11 @@ public class VotingController {
         return votingService.upVote(ticker, userId);
     }
 
+    public String downVote(String ticker, String userId) throws BadRequestException {
+        isTickerValid(ticker);
+        return votingService.downVote(ticker, userId);
+    }
+
     public void isTickerValid(String ticker) throws BadRequestException {
         if (ticker == null || ticker.length() == 0) {
             throw new BadRequestException("ticker cannot be null or empty");

@@ -22,6 +22,12 @@ public class CommandModule {
 
     @Provides
     @IntoSet
+    public SlashCommandHandler provideDownVoteCommand(DownVoteCommand downVoteCommand) {
+        return downVoteCommand;
+    }
+
+    @Provides
+    @IntoSet
     public SlashCommandHandler provideNewsCommand(NewsCommand newsCommand) {
         return newsCommand;
     }
