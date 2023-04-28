@@ -13,4 +13,9 @@ public class FakeVotingService implements VotingService {
     public String upVote(String ticker, String userId) {
         return "test";
     }
+
+    @Override
+    public String downVote(String ticker, String userId) {
+        return "test";
+    }
 }
