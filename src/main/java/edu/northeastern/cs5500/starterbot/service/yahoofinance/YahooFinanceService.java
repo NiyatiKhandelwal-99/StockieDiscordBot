@@ -22,8 +22,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 /**
- * YahooFinanceService is responsible for handling the api calls to yahoo finance service
- * and scraping the details on the web page and transform them to a response model.
+ * YahooFinanceService is responsible for handling the api calls to yahoo finance service and
+ * scraping the details on the web page and transform them to a response model.
  */
 @Singleton
 @Slf4j
@@ -47,9 +47,9 @@ public class YahooFinanceService implements TopGainersService, TopLosersService 
     }
 
     /**
-     * getTopGainers function is responsible for constructing the URL 
-     * for gainers command call to the Yahoo Service. 
-     * This function calls the mapping function to map the response to the model class.
+     * getTopGainers function is responsible for constructing the URL for gainers command call to
+     * the Yahoo Service. This function calls the mapping function to map the response to the model
+     * class.
      *
      * @return Map<String, String>
      * @throws RestException
@@ -65,9 +65,9 @@ public class YahooFinanceService implements TopGainersService, TopLosersService 
     }
 
     /**
-     * getTopLosers function is responsible for constructing the URL 
-     * for losers command call to the Yahoo Service. 
-     * This function calls the mapping function to map the response to the model class.
+     * getTopLosers function is responsible for constructing the URL for losers command call to the
+     * Yahoo Service. This function calls the mapping function to map the response to the model
+     * class.
      *
      * @return Map<String, String>
      * @throws RestException
@@ -82,8 +82,8 @@ public class YahooFinanceService implements TopGainersService, TopLosersService 
     }
 
     /**
-     * fetchTickerPriceChangeMappings function is responsible for deconstructing the response
-     * and mapping it into ticker and their coreesponding price changes.
+     * fetchTickerPriceChangeMappings function is responsible for deconstructing the response and
+     * mapping it into ticker and their coreesponding price changes.
      *
      * @return Map<String, String>
      * @throws RestException
@@ -110,16 +110,16 @@ public class YahooFinanceService implements TopGainersService, TopLosersService 
         return tickerPriceChangeMapping;
     }
 
-     /**
-      * sortByPriceChangeFactor fubnction is responsible for sorting the ticker and price change mappings 
-      * based on the price change value. The function also takes in a parameter to decide if the mappings 
-      * need to be sorted in either an ascen ding or descending fashion based on the 
-      * gainers or losers command being called.
-
-      * @param tickerPriceChangeMapping
-      * @param isAscending
-      * @return Map<String, String> : sorted mapping of ticker and price changes based on price
-      */
+    /**
+     * sortByPriceChangeFactor fubnction is responsible for sorting the ticker and price change
+     * mappings based on the price change value. The function also takes in a parameter to decide if
+     * the mappings need to be sorted in either an ascen ding or descending fashion based on the
+     * gainers or losers command being called.
+     *
+     * @param tickerPriceChangeMapping
+     * @param isAscending
+     * @return Map<String, String> : sorted mapping of ticker and price changes based on price
+     */
     public Map<String, String> sortByPriceChangeFactor(
             Map<String, String> tickerPriceChangeMapping, boolean isAscending) {
         List<Map.Entry<String, String>> list = new ArrayList<>(tickerPriceChangeMapping.entrySet());

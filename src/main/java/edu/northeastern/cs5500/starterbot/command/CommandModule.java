@@ -32,9 +32,9 @@ public class CommandModule {
     }
 
     /**
-     * provideBalanceSheetCommand function is responsible for providing the balanceSheetCommand object when
-     * the /balance command is executed by the user.
-     * 
+     * provideBalanceSheetCommand function is responsible for providing the balanceSheetCommand
+     * object when the /balance command is executed by the user.
+     *
      * @param balanceSheetCommand
      * @return SlashCommandHandler
      */
@@ -54,7 +54,7 @@ public class CommandModule {
     /**
      * provideGainersCommand function is responsible for providing the topGainersCommand object when
      * the /gainers command is executed by the user.
-     * 
+     *
      * @param topGainersCommand
      * @return SlashCommandHandler
      */
@@ -67,7 +67,7 @@ public class CommandModule {
     /**
      * provideLosersCommand function is responsible for providing the topLosersCommand object when
      * the /losers command is executed by the user.
-     * 
+     *
      * @param topGainersCommand
      * @return SlashCommandHandler
      */

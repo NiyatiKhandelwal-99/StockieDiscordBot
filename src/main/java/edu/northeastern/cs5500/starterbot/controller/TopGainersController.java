@@ -7,9 +7,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * TopGainersController is responsible for calling the service to perform the business logic.
- */
+/** TopGainersController is responsible for calling the service to perform the business logic. */
 @Singleton
 public class TopGainersController {
 
@@ -21,9 +19,9 @@ public class TopGainersController {
     }
 
     /**
-     * getTopGainers trsansfer control to the service to perform the business logic.
-     * There is event verification required for this method since there are no parameters passed by the user.
-     * 
+     * getTopGainers trsansfer control to the service to perform the business logic. There is event
+     * verification required for this method since there are no parameters passed by the user.
+     *
      * @return Map<String, String>
      * @throws RestException
      * @throws YahooFinanceException

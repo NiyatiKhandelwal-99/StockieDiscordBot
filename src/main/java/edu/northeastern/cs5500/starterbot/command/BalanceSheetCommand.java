@@ -20,9 +20,11 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
-/** BalanceSheetCommand is responsible for handling the /balance:ticker commands and rendering them on the Discord UI
- * The BalanceSheetCommand transfers the event details to the controller for further processing.
-*/
+/**
+ * BalanceSheetCommand is responsible for handling the /balance:ticker commands and rendering them
+ * on the Discord UI The BalanceSheetCommand transfers the event details to the controller for
+ * further processing.
+ */
 @Singleton
 @Slf4j
 public class BalanceSheetCommand implements SlashCommandHandler {
@@ -34,7 +36,6 @@ public class BalanceSheetCommand implements SlashCommandHandler {
     @Inject
     public BalanceSheetCommand() {}
 
-    
     /**
      * Returns the name of a command
      *
@@ -60,7 +61,8 @@ public class BalanceSheetCommand implements SlashCommandHandler {
     }
 
     /**
-     * GetBalanceSheet function is responsible for calling the controller method for further processiong of the event details
+     * GetBalanceSheet function is responsible for calling the controller method for further
+     * processiong of the event details
      *
      * @param ticker : ticker symbol entered buy the user
      * @return List<AlphaVantageBalanceSheet> : The list of balance sheets to be rendered on UI

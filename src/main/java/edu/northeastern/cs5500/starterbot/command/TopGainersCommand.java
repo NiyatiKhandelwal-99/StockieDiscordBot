@@ -18,9 +18,11 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
-/** TopGainersCommand is responsible for handling the /gainers commands and rendering them on the Discord UI
- * The TopGainersCommand transfers the event details to the controller for further processing.
-*/
+/**
+ * TopGainersCommand is responsible for handling the /gainers commands and rendering them on the
+ * Discord UI The TopGainersCommand transfers the event details to the controller for further
+ * processing.
+ */
 @Singleton
 @Slf4j
 public class TopGainersCommand implements SlashCommandHandler {
@@ -55,7 +57,8 @@ public class TopGainersCommand implements SlashCommandHandler {
     }
 
     /**
-     * getTopGainers function is responsible for calling the controller method for further processiong of the event details
+     * getTopGainers function is responsible for calling the controller method for further
+     * processiong of the event details
      *
      * @return Map<String, String> : Mapping of tickers and their corresponding price changes
      */
@@ -91,8 +94,8 @@ public class TopGainersCommand implements SlashCommandHandler {
     }
 
     /**
-     * getTopGainersEmbed function is responsible for creating MessageEmbed suitable for displaying 
-     * on discord from the mapping of ticker and price change 
+     * getTopGainersEmbed function is responsible for creating MessageEmbed suitable for displaying
+     * on discord from the mapping of ticker and price change
      *
      * @param gainers
      * @return MessageEmbed

@@ -18,9 +18,11 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
-/** TopLosersCommand is responsible for handling the /losers commands and rendering them on the Discord UI
- * The TopLosersCommand transfers the event details to the controller for further processing.
-*/
+/**
+ * TopLosersCommand is responsible for handling the /losers commands and rendering them on the
+ * Discord UI The TopLosersCommand transfers the event details to the controller for further
+ * processing.
+ */
 @Slf4j
 @Singleton
 public class TopLosersCommand implements SlashCommandHandler {
@@ -81,8 +83,8 @@ public class TopLosersCommand implements SlashCommandHandler {
     }
 
     /**
-     * getTopLosersEmbed function is responsible for creating MessageEmbed suitable for displaying 
-     * on discord from the mapping of ticker and price change 
+     * getTopLosersEmbed function is responsible for creating MessageEmbed suitable for displaying
+     * on discord from the mapping of ticker and price change
      *
      * @param gainers
      * @return MessageEmbed
@@ -106,7 +108,8 @@ public class TopLosersCommand implements SlashCommandHandler {
     }
 
     /**
-     * getTopLosers function is responsible for calling the controller method for further processiong of the event details
+     * getTopLosers function is responsible for calling the controller method for further
+     * processiong of the event details
      *
      * @return Map<String, String> : Mapping of tickers and their corresponding price changes
      */
