@@ -31,6 +31,11 @@ public class ServiceModule {
     }
 
     @Provides
+    public VotingService provideVotingService(VotingServiceImpl service) {
+        return service;
+    }
+
+    @Provides
     public TopGainersService provideTopGainersService(YahooFinanceService service) {
         return service;
     }
