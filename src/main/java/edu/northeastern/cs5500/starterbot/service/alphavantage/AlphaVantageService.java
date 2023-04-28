@@ -192,7 +192,8 @@ public class AlphaVantageService
     }
 
     /**
-     * Returns a balance sheet for a given ticker symbol
+     * getBalanceSheet function is responsible for making API call to the AlphaVantage service and
+     * mapping the response to the AlphaVantageBalanceSheetResponse class.
      *
      * @param symbol
      * @return List<AlphaVantageBalanceSheet>

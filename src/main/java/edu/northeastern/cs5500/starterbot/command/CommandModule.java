@@ -31,6 +31,13 @@ public class CommandModule {
         return newsCommand;
     }
 
+    /**
+     * provideBalanceSheetCommand function is responsible for providing the balanceSheetCommand
+     * object when the /balance command is executed by the user.
+     *
+     * @param balanceSheetCommand
+     * @return SlashCommandHandler
+     */
     @Provides
     @IntoSet
     public SlashCommandHandler provideBalanceSheetCommand(BalanceSheetCommand balanceSheetCommand) {
@@ -44,12 +51,26 @@ public class CommandModule {
         return incomeStatementCommand;
     }
 
+    /**
+     * provideGainersCommand function is responsible for providing the topGainersCommand object when
+     * the /gainers command is executed by the user.
+     *
+     * @param topGainersCommand
+     * @return SlashCommandHandler
+     */
     @Provides
     @IntoSet
     public SlashCommandHandler provideGainersCommand(TopGainersCommand topGainersCommand) {
         return topGainersCommand;
     }
 
+    /**
+     * provideLosersCommand function is responsible for providing the topLosersCommand object when
+     * the /losers command is executed by the user.
+     *
+     * @param topGainersCommand
+     * @return SlashCommandHandler
+     */
     @Provides
     @IntoSet
     public SlashCommandHandler provideLosersCommand(TopLosersCommand topLosersCommand) {

@@ -9,6 +9,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+/**
+ * BalanceSheetController is responsible for processing and verifying the event details passed by
+ * the user and calling the service to perform the business logic.
+ */
 @Singleton
 public class BalanceSheetController {
 
@@ -19,6 +23,14 @@ public class BalanceSheetController {
         this.balanceSheetService = balanceSheetService;
     }
 
+    /**
+     * getBalanceSheet verifies the ticker validity and calls the service to perform the logic
+     *
+     * @param ticker
+     * @return List<AlphaVantageBalanceSheet>
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
     public List<AlphaVantageBalanceSheet> getBalanceSheet(String ticker)
             throws RestException, AlphaVantageException {
         if (ticker == null || ticker.length() == 0) {

@@ -18,6 +18,11 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
+/**
+ * TopLosersCommand is responsible for handling the /losers commands and rendering them on the
+ * Discord UI The TopLosersCommand transfers the event details to the controller for further
+ * processing.
+ */
 @Slf4j
 @Singleton
 public class TopLosersCommand implements SlashCommandHandler {
@@ -29,18 +34,33 @@ public class TopLosersCommand implements SlashCommandHandler {
     @Inject
     public TopLosersCommand() {}
 
+    /**
+     * Returns the name of a command
+     *
+     * @return String : Name of command
+     */
     @Override
     @Nonnull
     public String getName() {
         return "losers";
     }
 
+    /**
+     * Returns the structure of the command
+     *
+     * @return String : Format of the slash command
+     */
     @Override
     @Nonnull
     public CommandData getCommandData() {
         return Commands.slash(getName(), "Ask the bot to fetch the top losers in the market");
     }
 
+    /**
+     * onSlashCommandInteraction is triggered when /gainers command is entered by the user
+     *
+     * @param event
+     */
     @ExcludeMethodFromGeneratedCoverage
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
@@ -62,6 +82,13 @@ public class TopLosersCommand implements SlashCommandHandler {
         event.getChannel().sendMessageEmbeds(messageEmbed).queue();
     }
 
+    /**
+     * getTopLosersEmbed function is responsible for creating MessageEmbed suitable for displaying
+     * on discord from the mapping of ticker and price change
+     *
+     * @param gainers
+     * @return MessageEmbed
+     */
     public MessageEmbed getTopLosersEmbed(Map<String, String> losers) {
         int numberOfLosersEmbedded = 0;
         EmbedBuilder embed = new EmbedBuilder();
@@ -80,6 +107,12 @@ public class TopLosersCommand implements SlashCommandHandler {
         return embed.build();
     }
 
+    /**
+     * getTopLosers function is responsible for calling the controller method for further
+     * processiong of the event details
+     *
+     * @return Map<String, String> : Mapping of tickers and their corresponding price changes
+     */
     public Map<String, String> getTopLosers() throws RestException, YahooFinanceException {
         return topLosersController.getTopLosers();
     }
