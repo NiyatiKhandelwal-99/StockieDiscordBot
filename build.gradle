@@ -105,7 +105,8 @@ jacocoTestReport {
                 '**/*_MembersInjector.class',
                 '**/Dagger*Component.class', // covers component implementations
                 '**/Dagger*Component$Builder.class', // covers component builders
-                '**/*Module_*Factory.class' ])
+                '**/*Module_*Factory.class',
+                '**/*InstanceHolder.class' ])
         })
     }
 }

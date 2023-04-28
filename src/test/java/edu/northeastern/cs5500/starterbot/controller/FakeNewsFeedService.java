@@ -4,6 +4,7 @@ import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
+import java.io.IOException;
 import java.util.List;
 
 public class FakeNewsFeedService implements NewsFeedService {
@@ -77,5 +78,12 @@ public class FakeNewsFeedService implements NewsFeedService {
                             "neutral",
                             null));
         }
+    }
+
+    @Override
+    public List<String> getTickers() throws RestException, AlphaVantageException, IOException {
+        return List.of(
+                "AAPL,Apple Inc,NASDAQ,Stock,1980-12-12, ,Active",
+                "GOOGL,Alphabet Inc - Class A,NASDAQ,Stock,2004-08-19, ,Active");
     }
 }

@@ -3,15 +3,26 @@ package edu.northeastern.cs5500.starterbot.command;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
-import edu.northeastern.cs5500.starterbot.annotate.ExcludeClassFromGeneratedCoverage;
 
 @Module
-@ExcludeClassFromGeneratedCoverage
 public class CommandModule {
+
     @Provides
     @IntoSet
     public SlashCommandHandler providePriceCommand(PriceCommand priceCommand) {
         return priceCommand;
+    }
+
+    @Provides
+    @IntoSet
+    public SlashCommandHandler provideUpVoteCommand(UpVoteCommand upVoteCommand) {
+        return upVoteCommand;
+    }
+
+    @Provides
+    @IntoSet
+    public SlashCommandHandler provideDownVoteCommand(DownVoteCommand downVoteCommand) {
+        return downVoteCommand;
     }
 
     @Provides
@@ -43,5 +54,11 @@ public class CommandModule {
     @IntoSet
     public SlashCommandHandler provideLosersCommand(TopLosersCommand topLosersCommand) {
         return topLosersCommand;
+    }
+
+    @Provides
+    @IntoSet
+    public StringSelectHandler provideNewsStringSelectCommand(NewsCommand newsCommand) {
+        return newsCommand;
     }
 }
