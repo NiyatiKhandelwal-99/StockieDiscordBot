@@ -11,7 +11,7 @@ public interface NewsFeedService extends Service {
     /**
      * Returns a list of latest news for a given ticker symbol and time period
      *
-     * <p>See https://www.alphavantage.co/documentation/#news-sentiment for more information.</p>
+     * <p>See https://www.alphavantage.co/documentation/#news-sentiment for more information.
      *
      * @param symbol
      * @param fromTime
@@ -25,7 +25,7 @@ public interface NewsFeedService extends Service {
     /**
      * Returns an active list of tickers from an AlphaVantage API
      *
-     * <p>See https://www.alphavantage.co/documentation/#listing-status for more information.</p>
+     * <p>See https://www.alphavantage.co/documentation/#listing-status for more information.
      *
      * @param symbol
      * @return List<AlphaVantageBalanceSheet>

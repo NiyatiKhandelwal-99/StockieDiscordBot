@@ -123,7 +123,11 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
             newsFeeds = getNewsFeed(ticker);
         } catch (RestException | AlphaVantageException e) {
             log.error(String.format(LogMessages.ERROR_ALPHAVANTAGE_API, e.getMessage()), e);
-            event.reply("Error occurred while processing the request for " + ticker).queue();
+            String errorMsg =
+                    LogMessages.ERROR_ALPHAVANTAGE_API == null
+                            ? ""
+                            : LogMessages.ERROR_ALPHAVANTAGE_API;
+            event.reply(errorMsg + " " + ticker).queue();
             return;
         }
 
@@ -372,7 +376,11 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
             newsFeeds = getNewsFeed(ticker);
         } catch (RestException | AlphaVantageException e) {
             log.error(String.format(LogMessages.ERROR_ALPHAVANTAGE_API, e.getMessage()), e);
-            event.reply("Error occurred while processing the request for " + ticker).queue();
+            String errorMsg =
+                    LogMessages.ERROR_ALPHAVANTAGE_API == null
+                            ? ""
+                            : LogMessages.ERROR_ALPHAVANTAGE_API;
+            event.reply(errorMsg + " " + ticker).queue();
             return;
         }
 

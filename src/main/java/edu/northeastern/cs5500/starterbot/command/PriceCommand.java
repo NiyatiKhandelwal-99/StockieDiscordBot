@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.command;
 
+import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.QuoteController;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
 import edu.northeastern.cs5500.starterbot.exception.MissingRequiredParameterException;
@@ -61,17 +62,26 @@ public class PriceCommand implements SlashCommandHandler {
         try {
             quote = quoteController.getQuote(tickerSymbol);
         } catch (AlphaVantageException ave) {
-            event.reply("Error occurred while processing the request.").queue();
+            String errorMsg =
+                    LogMessages.ERROR_ALPHAVANTAGE_API == null
+                            ? ""
+                            : LogMessages.ERROR_ALPHAVANTAGE_API;
+            event.reply(errorMsg).queue();
             return;
         } catch (BadRequestException bre) {
-            event.reply("Invalid ticker symbol").queue();
+            String errorMsg = LogMessages.INVALID_TICKER == null ? "" : LogMessages.INVALID_TICKER;
+            event.reply(errorMsg).queue();
             return;
         } catch (NotFoundException nfe) {
             event.reply("Ticker symbol not found").queue();
             return;
         } catch (RestException e) {
-            log.error("Error getting quote", e);
-            event.reply("Error getting quote").queue();
+            String errorMsg =
+                    LogMessages.ERROR_ALPHAVANTAGE_API == null
+                            ? ""
+                            : LogMessages.ERROR_ALPHAVANTAGE_API;
+            log.error(errorMsg, e);
+            event.reply(errorMsg).queue();
             return;
         }
 
