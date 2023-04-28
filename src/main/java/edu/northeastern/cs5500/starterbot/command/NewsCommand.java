@@ -1,5 +1,6 @@
 package edu.northeastern.cs5500.starterbot.command;
 
+import edu.northeastern.cs5500.starterbot.annotate.ExcludeMethodFromGeneratedCoverage;
 import edu.northeastern.cs5500.starterbot.constants.LogMessages;
 import edu.northeastern.cs5500.starterbot.controller.NewsFeedController;
 import edu.northeastern.cs5500.starterbot.exception.AlphaVantageException;
@@ -104,6 +105,7 @@ public class NewsCommand implements SlashCommandHandler, StringSelectHandler {
      * @param event
      */
     @Override
+    @ExcludeMethodFromGeneratedCoverage
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
 
         log.info("event: /latestnews");
