@@ -18,6 +18,9 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
+/** TopGainersCommand is responsible for handling the /gainers commands and rendering them on the Discord UI
+ * The TopGainersCommand transfers the event details to the controller for further processing.
+*/
 @Singleton
 @Slf4j
 public class TopGainersCommand implements SlashCommandHandler {
@@ -29,22 +32,42 @@ public class TopGainersCommand implements SlashCommandHandler {
     @Inject
     public TopGainersCommand() {}
 
+    /**
+     * Returns the name of a command
+     *
+     * @return String : Name of command
+     */
     @Nonnull
     @Override
     public String getName() {
         return "gainers";
     }
 
+    /**
+     * Returns the structure of the command
+     *
+     * @return String : Format of the slash command
+     */
     @Override
     @Nonnull
     public CommandData getCommandData() {
         return Commands.slash(getName(), "Ask the bot to fetch the top gainers in the market");
     }
 
+    /**
+     * getTopGainers function is responsible for calling the controller method for further processiong of the event details
+     *
+     * @return Map<String, String> : Mapping of tickers and their corresponding price changes
+     */
     public Map<String, String> getTopGainers() throws RestException, YahooFinanceException {
         return topGainersController.getTopGainers();
     }
 
+    /**
+     * onSlashCommandInteraction is triggered when /gainers command is entered by the user
+     *
+     * @param event
+     */
     @ExcludeMethodFromGeneratedCoverage
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
@@ -67,6 +90,13 @@ public class TopGainersCommand implements SlashCommandHandler {
         event.getChannel().sendMessageEmbeds(messageEmbed).queue();
     }
 
+    /**
+     * getTopGainersEmbed function is responsible for creating MessageEmbed suitable for displaying 
+     * on discord from the mapping of ticker and price change 
+     *
+     * @param gainers
+     * @return MessageEmbed
+     */
     public MessageEmbed getTopGainersEmbed(Map<String, String> gainers) {
         int numberOfGainersEmbedded = 0;
         EmbedBuilder embed = new EmbedBuilder();

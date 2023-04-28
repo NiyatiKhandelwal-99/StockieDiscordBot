@@ -20,6 +20,9 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
+/** BalanceSheetCommand is responsible for handling the /balance:ticker commands and rendering them on the Discord UI
+ * The BalanceSheetCommand transfers the event details to the controller for further processing.
+*/
 @Singleton
 @Slf4j
 public class BalanceSheetCommand implements SlashCommandHandler {
@@ -31,12 +34,23 @@ public class BalanceSheetCommand implements SlashCommandHandler {
     @Inject
     public BalanceSheetCommand() {}
 
+    
+    /**
+     * Returns the name of a command
+     *
+     * @return String : Name of command
+     */
     @Override
     @Nonnull
     public String getName() {
         return "balance";
     }
 
+    /**
+     * Returns the structure of the command
+     *
+     * @return String : Format of the slash command
+     */
     @Override
     @Nonnull
     public CommandData getCommandData() {
@@ -45,11 +59,22 @@ public class BalanceSheetCommand implements SlashCommandHandler {
                         OptionType.STRING, "ticker", "The bot will return the balance sheet", true);
     }
 
+    /**
+     * GetBalanceSheet function is responsible for calling the controller method for further processiong of the event details
+     *
+     * @param ticker : ticker symbol entered buy the user
+     * @return List<AlphaVantageBalanceSheet> : The list of balance sheets to be rendered on UI
+     */
     public List<AlphaVantageBalanceSheet> getBalanceSheet(String ticker)
             throws RestException, AlphaVantageException {
         return balanceSheetController.getBalanceSheet(ticker);
     }
 
+    /**
+     * onSlashCommandInteraction is triggered when /balance command is entered by the user
+     *
+     * @param event
+     */
     @ExcludeMethodFromGeneratedCoverage
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
@@ -82,6 +107,13 @@ public class BalanceSheetCommand implements SlashCommandHandler {
         }
     }
 
+    /**
+     * renderBalanceSheets function is responsible for creating MessageEmbeds suitable for discord
+     * from the AlphaVantageBalanceSheets containing information about a ticker's balance sheet.
+     *
+     * @param balanceSheets
+     * @return List<MessageEmbed>
+     */
     public List<MessageEmbed> renderBalanceSheets(List<AlphaVantageBalanceSheet> balanceSheets) {
         List<MessageEmbed> messageEmbeds = new ArrayList<>();
         for (int i = 0;
@@ -93,6 +125,13 @@ public class BalanceSheetCommand implements SlashCommandHandler {
         return messageEmbeds;
     }
 
+    /**
+     * renderBalanceSheet function is responsible for creating a single embed from a single
+     * AlphaVantageBalanceSheet object and setting the title, necessary fields required.
+     *
+     * @param balanceSheet
+     * @return MessageEmbed
+     */
     public MessageEmbed renderBalanceSheet(AlphaVantageBalanceSheet balanceSheet) {
         EmbedBuilder embed = new EmbedBuilder();
 
