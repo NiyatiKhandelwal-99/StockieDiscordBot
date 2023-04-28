@@ -9,6 +9,7 @@ import edu.northeastern.cs5500.starterbot.exception.rest.NotFoundException;
 import edu.northeastern.cs5500.starterbot.exception.rest.RestException;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageBalanceSheet;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuote;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageIncomeStatement;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -89,5 +90,19 @@ class AlphaVantageServiceTest {
         assertThat(balanceSheets).isNotNull();
         assertTrue(balanceSheets.size() > 0);
         assertThat(balanceSheets.get(0).getFiscalDateEnding()).isNotNull();
+    }
+
+    @Test
+    void testGetIncomeStatement() throws RestException, AlphaVantageException {
+        final String EXAMPLE_SYMBOL = "AAPL";
+
+        assertThat(getAlphaVantageService()).isNotNull();
+
+        List<AlphaVantageIncomeStatement> incomeStatements =
+                getAlphaVantageService().getIncomeStatement(EXAMPLE_SYMBOL);
+
+        assertThat(incomeStatements).isNotNull();
+        assertTrue(incomeStatements.size() > 0);
+        assertThat(incomeStatements.get(0).getFiscalDateEnding()).isNotNull();
     }
 }
