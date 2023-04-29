@@ -104,7 +104,7 @@ public class IncomeStatementControllerTest {
                                 "1013000000",
                                 "-626000000"));
         IncomeStatementController incomeStatementController = getIncomeStatementController();
-        int size = incomeStatementController.limitBalanceSheets(incomeStatements).size();
+        int size = incomeStatementController.limitIncomeSheets(incomeStatements).size();
         assertThat(size).isEqualTo(NUMBER_OF_REPORTS);
     }
 
@@ -126,13 +126,13 @@ public class IncomeStatementControllerTest {
                                 "1013000000",
                                 "-626000000"));
         IncomeStatementController incomeStatementController = getIncomeStatementController();
-        int size = incomeStatementController.limitBalanceSheets(incomeStatements).size();
+        int size = incomeStatementController.limitIncomeSheets(incomeStatements).size();
         assertThat(size).isEqualTo(incomeStatements.size());
     }
 
     @Test
     public void testLimitBalanceSheetsWithNullIncomeStatements() {
         IncomeStatementController incomeStatementController = getIncomeStatementController();
-        assertThat(incomeStatementController.limitBalanceSheets(null)).isEqualTo(null);
+        assertThat(incomeStatementController.limitIncomeSheets(null)).isEqualTo(null);
     }
 }

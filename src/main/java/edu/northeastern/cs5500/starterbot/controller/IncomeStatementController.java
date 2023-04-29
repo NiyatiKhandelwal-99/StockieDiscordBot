@@ -43,17 +43,17 @@ public class IncomeStatementController {
             throw new BadRequestException("ticker had invalid characters");
         }
 
-        return limitBalanceSheets(incomeStatementService.getIncomeStatement(ticker));
+        return limitIncomeSheets(incomeStatementService.getIncomeStatement(ticker));
     }
 
     /**
-     * limitBalanceSheets makes sure that the list of income statements sent are till the MAX limit
-     * permitted.
+     * limitIncomeStatements makes sure that the list of income statements sent are till the MAX
+     * limit permitted.
      *
      * @param List<AlphaVantageIncomeStatement>
      * @return List<AlphaVantageIncomeStatement>
      */
-    public List<AlphaVantageIncomeStatement> limitBalanceSheets(
+    public List<AlphaVantageIncomeStatement> limitIncomeSheets(
             List<AlphaVantageIncomeStatement> incomeStatements) {
         if (incomeStatements == null) {
             return null;
