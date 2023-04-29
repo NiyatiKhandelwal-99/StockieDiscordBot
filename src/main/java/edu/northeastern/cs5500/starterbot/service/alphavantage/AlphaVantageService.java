@@ -215,6 +215,15 @@ public class AlphaVantageService
         return balanceSheet;
     }
 
+    /**
+     * getIncomeStatement function is responsible for making API call to the AlphaVantage service
+     * and mapping the response to the AlphaVantageIncomeStatementResponse class.
+     *
+     * @param symbol
+     * @return List<AlphaVantageIncomeStatement>
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
     @Override
     public List<AlphaVantageIncomeStatement> getIncomeStatement(String symbol)
             throws RestException, AlphaVantageException {
