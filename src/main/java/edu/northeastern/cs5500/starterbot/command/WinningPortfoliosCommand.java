@@ -22,9 +22,9 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 /**
- * WinningPortfoliosCommand is responsible for handling the /portfolio:date commands and rendering them
- * on the Discord UI The WinningPortfoliosCommand transfers the event details to the controller for
- * further processing.
+ * WinningPortfoliosCommand is responsible for handling the /portfolio:date commands and rendering
+ * them on the Discord UI The WinningPortfoliosCommand transfers the event details to the controller
+ * for further processing.
  */
 @Singleton
 @Slf4j
@@ -36,7 +36,7 @@ public class WinningPortfoliosCommand implements SlashCommandHandler {
 
     @Inject
     public WinningPortfoliosCommand() {}
-    
+
     /**
      * Returns the name of a command
      *
@@ -71,7 +71,8 @@ public class WinningPortfoliosCommand implements SlashCommandHandler {
      * processiong of the event details
      *
      * @param date : date entered buy the user
-     * @return List<AlphaVantageWinningPortfoliosRankings> : The list of winning portfolios to be rendered on UI
+     * @return List<AlphaVantageWinningPortfoliosRankings> : The list of winning portfolios to be
+     *     rendered on UI
      */
     public List<AlphaVantageWinningPortfoliosRankings> getWinningPortfolios(String date)
             throws RestException, AlphaVantageException {
@@ -115,8 +116,9 @@ public class WinningPortfoliosCommand implements SlashCommandHandler {
     }
 
     /**
-     * renderWinningPortfolios function is responsible for creating MessageEmbeds suitable for discord
-     * from the AlphaVantageWinningPortfoliosRankings containing information about a winning portfolio.
+     * renderWinningPortfolios function is responsible for creating MessageEmbeds suitable for
+     * discord from the AlphaVantageWinningPortfoliosRankings containing information about a winning
+     * portfolio.
      *
      * @param List<AlphaVantageWinningPortfoliosRankings>
      * @return List<MessageEmbed>

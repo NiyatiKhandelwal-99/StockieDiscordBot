@@ -99,8 +99,8 @@ public class CommandModule {
     }
 
     /**
-     * provideWinningPortfoliosCommand function is responsible for providing the winningPortfoliosCommand object when
-     * the /losers command is executed by the user.
+     * provideWinningPortfoliosCommand function is responsible for providing the
+     * winningPortfoliosCommand object when the /losers command is executed by the user.
      *
      * @param winningPortfoliosCommand
      * @return SlashCommandHandler

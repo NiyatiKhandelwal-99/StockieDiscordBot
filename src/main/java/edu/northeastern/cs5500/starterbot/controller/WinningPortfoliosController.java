@@ -10,8 +10,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * WinningPortfoliosController is responsible for processing and verifying the event details passed by
- * the user and calling the service to perform the business logic.
+ * WinningPortfoliosController is responsible for processing and verifying the event details passed
+ * by the user and calling the service to perform the business logic.
  */
 @Singleton
 public class WinningPortfoliosController {
