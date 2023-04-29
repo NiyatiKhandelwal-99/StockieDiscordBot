@@ -7,3 +7,5 @@ Main Google document link of documentation- https://docs.google.com/document/d/1
 Discord invite link - https://discord.gg/fShWj6jd
 
 Google drive link of additional small documents - https://drive.google.com/drive/folders/1a1yCKLMxh6EYejsMsNxttHrtJ0iEs9b_?usp=share_link
+
+Presentation YouTube Link - https://youtu.be/FQ8NTatkrKw
