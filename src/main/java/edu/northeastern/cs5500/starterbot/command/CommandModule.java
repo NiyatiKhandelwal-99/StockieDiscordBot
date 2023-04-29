@@ -100,7 +100,7 @@ public class CommandModule {
 
     @Provides
     @IntoSet
-    public SlashCommandHandler provideWinningPortfoliosCommand (
+    public SlashCommandHandler provideWinningPortfoliosCommand(
             WinningPortfoliosCommand winningPortfoliosCommand) {
         return winningPortfoliosCommand;
     }
