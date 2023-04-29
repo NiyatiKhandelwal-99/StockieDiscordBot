@@ -5,6 +5,7 @@ import edu.northeastern.cs5500.starterbot.model.AlphaVantageBalanceSheet;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuote;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageIncomeStatement;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageWinningPortfolios;
 import java.util.List;
 
 public interface AlphaVantageApi {
@@ -16,5 +17,8 @@ public interface AlphaVantageApi {
     List<AlphaVantageBalanceSheet> getBalanceSheet(String symbol) throws AlphaVantageException;
 
     List<AlphaVantageIncomeStatement> getIncomeStatement(String symbol)
+            throws AlphaVantageException;
+
+    List<AlphaVantageWinningPortfolios> getWinningPortfolios(String date)
             throws AlphaVantageException;
 }

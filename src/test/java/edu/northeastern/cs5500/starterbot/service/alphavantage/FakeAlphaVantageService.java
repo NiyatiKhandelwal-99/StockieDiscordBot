@@ -5,6 +5,7 @@ import edu.northeastern.cs5500.starterbot.model.AlphaVantageBalanceSheet;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageGlobalQuote;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageIncomeStatement;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageWinningPortfolios;
 import java.util.List;
 import java.util.Map;
 
@@ -94,5 +95,12 @@ public class FakeAlphaVantageService implements AlphaVantageApi {
             throw new AlphaVantageException("Raised exception by request");
         }
         return incomeStatements.get(symbol);
+    }
+
+    @Override
+    public List<AlphaVantageWinningPortfolios> getWinningPortfolios(String date)
+            throws AlphaVantageException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getWinningPortfolios'");
     }
 }

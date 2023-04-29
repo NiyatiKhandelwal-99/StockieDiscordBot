@@ -44,4 +44,11 @@ public class CommandModule {
     public SlashCommandHandler provideLosersCommand(TopLosersCommand topLosersCommand) {
         return topLosersCommand;
     }
+
+    @Provides
+    @IntoSet
+    public SlashCommandHandler provideWinningPortfoliosCommandf(
+            WinningPortfoliosCommand winningPortfoliosCommand) {
+        return winningPortfoliosCommand;
+    }
 }
