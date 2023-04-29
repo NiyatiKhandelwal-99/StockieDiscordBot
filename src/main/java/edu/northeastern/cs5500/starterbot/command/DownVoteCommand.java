@@ -14,6 +14,11 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
+/**
+ * DownVoteCommand is responsible for handling the /downvote commands and rendering them on the
+ * Discord UI The DownVoteCommand transfers the event details to the controller for further
+ * processing.
+ */
 @Singleton
 @Slf4j
 public class DownVoteCommand implements SlashCommandHandler {
@@ -25,14 +30,24 @@ public class DownVoteCommand implements SlashCommandHandler {
     @Inject VotingController votingController;
 
     @Inject
-    public DownVoteCommand() {}
+    public DownVoteCommand() {/* This constructor is required to facilitate injection. */}
 
+    /**
+     * Returns the name of a command
+     *
+     * @return String : Name of command
+     */
     @Nonnull
     @Override
     public String getName() {
         return "downvote";
     }
 
+    /**
+     * Returns the structure of the command
+     *
+     * @return String : Format of the slash command
+     */
     @Nonnull
     @Override
     public CommandData getCommandData() {
@@ -44,6 +59,11 @@ public class DownVoteCommand implements SlashCommandHandler {
                         true);
     }
 
+    /**
+     * onSlashCommandInteraction is triggered when /downvote command is entered by the user
+     *
+     * @param event
+     */
     @ExcludeMethodFromGeneratedCoverage
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {

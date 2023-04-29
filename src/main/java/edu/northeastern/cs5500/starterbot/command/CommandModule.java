@@ -13,12 +13,26 @@ public class CommandModule {
         return priceCommand;
     }
 
+    /**
+     * provideUpVoteCommand function is responsible for providing the upVoteCommand
+     * object when the /upvote command is executed by the user.
+     *
+     * @param upVoteCommand
+     * @return SlashCommandHandler
+     */
     @Provides
     @IntoSet
     public SlashCommandHandler provideUpVoteCommand(UpVoteCommand upVoteCommand) {
         return upVoteCommand;
     }
 
+    /**
+     * provideDownVoteCommand function is responsible for providing the downVoteCommand
+     * object when the /downvote command is executed by the user.
+     *
+     * @param downVoteCommand
+     * @return SlashCommandHandler
+     */
     @Provides
     @IntoSet
     public SlashCommandHandler provideDownVoteCommand(DownVoteCommand downVoteCommand) {
@@ -44,6 +58,13 @@ public class CommandModule {
         return balanceSheetCommand;
     }
 
+    /**
+     * provideIncomeStatementCommand function is responsible for providing the IncomeStatementCommand
+     * object when the /income command is executed by the user.
+     *
+     * @param incomeStatementCommand
+     * @return SlashCommandHandler
+     */
     @Provides
     @IntoSet
     public SlashCommandHandler provideIncomeStatementCommand(
