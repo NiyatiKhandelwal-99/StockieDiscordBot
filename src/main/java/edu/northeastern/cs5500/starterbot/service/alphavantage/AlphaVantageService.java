@@ -29,12 +29,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * This class represents a way to connect with AlphaVantahe API. It implements different services
+ * based on commands.
+ */
 @Singleton
 @Slf4j
 @ExcludeClassFromGeneratedCoverage
@@ -66,6 +71,14 @@ public class AlphaVantageService
         this(new ProcessBuilder().environment().get("ALPHA_VANTAGE_API_KEY"));
     }
 
+    /**
+     * Fetches and returns pricing for a given ticker symbol
+     *
+     * @param symbol
+     * @return AlphaVantageGlobalQuote
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
     @Override
     public AlphaVantageGlobalQuote getQuote(String symbol)
             throws RestException, AlphaVantageException {
@@ -81,6 +94,15 @@ public class AlphaVantageService
         return quote;
     }
 
+    /**
+     * This method represents back off logic when more than 5 requests are sent to AlphaVantage API
+     * and this response results in Limit exceeded issue.
+     *
+     * @param response
+     * @param queryUrl
+     * @throws AlphaVantageException
+     * @throws RestException
+     */
     @SneakyThrows({InterruptedException.class})
     private void backoffLogic(String response, String queryUrl)
             throws AlphaVantageException, RestException {
@@ -97,6 +119,14 @@ public class AlphaVantageService
         }
     }
 
+    /**
+     * Returns a string response from an AlphaVantage API based on query url.
+     *
+     * @param queryUrl
+     * @return String
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
     @SneakyThrows({MalformedURLException.class, IOException.class})
     private String getRequest(String queryUrl) throws RestException, AlphaVantageException {
         StringBuilder val = new StringBuilder();
@@ -128,13 +158,17 @@ public class AlphaVantageService
 
         checkLimitsExceed(val.toString(), queryUrl);
 
-        if (LIMITS_EXCEEDED.equals(val.toString())) {
-            backoffLogic(val.toString(), queryUrl);
-        }
-
         return val.toString();
     }
 
+    /**
+     * Checks is response resulted in Limit exceed issue
+     *
+     * @param val
+     * @param queryUrl
+     * @throws AlphaVantageException
+     * @throws RestException
+     */
     private void checkLimitsExceed(String val, String queryUrl)
             throws AlphaVantageException, RestException {
         if (LIMITS_EXCEEDED.equals(val)) {
@@ -142,6 +176,15 @@ public class AlphaVantageService
         }
     }
 
+    /**
+     * Returns a list of latest news for a given ticker symbol and time period
+     *
+     * @param symbol
+     * @param fromTime
+     * @return List<AlphaVantageNewsFeed>
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
     @Override
     public List<AlphaVantageNewsFeed> getNewsSentiment(String symbol, String fromTime)
             throws RestException, AlphaVantageException {
@@ -155,6 +198,15 @@ public class AlphaVantageService
         return newsFeed;
     }
 
+    /**
+     * getBalanceSheet function is responsible for making API call to the AlphaVantage service and
+     * mapping the response to the AlphaVantageBalanceSheetResponse class.
+     *
+     * @param symbol
+     * @return List<AlphaVantageBalanceSheet>
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
     @Override
     public List<AlphaVantageBalanceSheet> getBalanceSheet(String symbol)
             throws RestException, AlphaVantageException {
@@ -170,6 +222,15 @@ public class AlphaVantageService
         return balanceSheet;
     }
 
+    /**
+     * getIncomeStatement function is responsible for making API call to the AlphaVantage service
+     * and mapping the response to the AlphaVantageIncomeStatementResponse class.
+     *
+     * @param symbol
+     * @return List<AlphaVantageIncomeStatement>
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
     @Override
     public List<AlphaVantageIncomeStatement> getIncomeStatement(String symbol)
             throws RestException, AlphaVantageException {
@@ -182,6 +243,93 @@ public class AlphaVantageService
             log.error(String.format(LogMessages.EMPTY_RESPONSE, symbol), symbol);
         }
         return incomeStatement;
+    }
+
+    /**
+     * Returns an active list of tickers from an AlphaVantage API
+     *
+     * @return List<String>
+     * @throws RestException
+     * @throws AlphaVantageException
+     * @throws IOException
+     */
+    @Override
+    public List<String> getTickers() throws RestException, AlphaVantageException, IOException {
+        String queryUrl = "function=LISTING_STATUS";
+        List<String> tickerSymbolAndName = getFile(queryUrl);
+        if (tickerSymbolAndName.isEmpty()) {
+            log.error("Empty response found for getTickers service method");
+        }
+        return tickerSymbolAndName;
+    }
+
+    /**
+     * Returns file content as list of strings for a given query url
+     *
+     * @param queryUrl
+     * @return List<String>
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
+    @SneakyThrows({MalformedURLException.class, IOException.class})
+    private List<String> getFile(String queryUrl) throws RestException, AlphaVantageException {
+        URL url = new URL(BASE_URL + queryUrl + "&apikey=" + apiKey);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+
+        switch (conn.getResponseCode()) {
+            case HttpURLConnection.HTTP_OK:
+                break;
+            case HttpURLConnection.HTTP_BAD_REQUEST:
+                throw new BadRequestException();
+            case HttpURLConnection.HTTP_NOT_FOUND:
+                throw new NotFoundException();
+            case HttpURLConnection.HTTP_INTERNAL_ERROR:
+                throw new InternalServerErrorException();
+            default:
+                throw new RestException("unknown", conn.getResponseCode());
+        }
+
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+        List<String> tickers = new ArrayList<>();
+        String output;
+        br.readLine(); // skipping heading
+        while ((output = br.readLine()) != null) {
+            tickers.add(output);
+        }
+
+        if (tickers.isEmpty()) {
+            backoffLogicForTickers(tickers, queryUrl);
+        }
+        conn.disconnect();
+        return tickers;
+    }
+
+    /**
+     * * This method represents back off logic when more than 5 requests are sent to AlphaVantage
+     * API and this response results in Limit exceeded issue.
+     *
+     * @param tickers
+     * @param queryUrl
+     * @throws AlphaVantageException
+     * @throws RestException
+     * @throws IOException
+     */
+    @SneakyThrows({InterruptedException.class})
+    private void backoffLogicForTickers(List<String> tickers, String queryUrl)
+            throws AlphaVantageException, RestException, IOException {
+        long backoff = 1;
+        while (tickers.isEmpty()) {
+            backoff *= 2;
+            log.info("API limit exceeded; waiting {} seconds and trying again", backoff);
+            if (backoff > 64) {
+                throw new AlphaVantageException("Limit exceeded");
+            }
+            Thread.sleep(backoff * 1000);
+            tickers = getFile(queryUrl);
+        }
     }
 
     @Override

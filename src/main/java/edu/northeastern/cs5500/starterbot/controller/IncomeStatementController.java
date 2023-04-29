@@ -9,6 +9,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+/**
+ * IncomeStatementController is responsible for processing and verifying the event details passed by
+ * the user and calling the service to perform the business logic.
+ */
 @Singleton
 public class IncomeStatementController {
     public static final int NUMBER_OF_REPORTS = 3;
@@ -19,6 +23,14 @@ public class IncomeStatementController {
         this.incomeStatementService = incomeStatementService;
     }
 
+    /**
+     * getIncomeStatement verifies the ticker validity and calls the service to perform the logic
+     *
+     * @param ticker
+     * @return List<AlphaVantageIncomeStatement>
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
     public List<AlphaVantageIncomeStatement> getIncomeStatement(String ticker)
             throws RestException, AlphaVantageException {
         if (ticker == null || ticker.length() == 0) {
@@ -31,10 +43,17 @@ public class IncomeStatementController {
             throw new BadRequestException("ticker had invalid characters");
         }
 
-        return limitBalanceSheets(incomeStatementService.getIncomeStatement(ticker));
+        return limitIncomeSheets(incomeStatementService.getIncomeStatement(ticker));
     }
 
-    public List<AlphaVantageIncomeStatement> limitBalanceSheets(
+    /**
+     * limitIncomeStatements makes sure that the list of income statements sent are till the MAX
+     * limit permitted.
+     *
+     * @param List<AlphaVantageIncomeStatement>
+     * @return List<AlphaVantageIncomeStatement>
+     */
+    public List<AlphaVantageIncomeStatement> limitIncomeSheets(
             List<AlphaVantageIncomeStatement> incomeStatements) {
         if (incomeStatements == null) {
             return null;
