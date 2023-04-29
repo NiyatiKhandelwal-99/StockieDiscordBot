@@ -9,6 +9,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+/**
+ * WinningPortfoliosController is responsible for processing and verifying the event details passed by
+ * the user and calling the service to perform the business logic.
+ */
 @Singleton
 public class WinningPortfoliosController {
 
@@ -19,6 +23,14 @@ public class WinningPortfoliosController {
         this.winningPortfoliosService = winningPortfoliosService;
     }
 
+    /**
+     * getWinningPortfolios verifies the date validity and calls the service to perform the logic
+     *
+     * @param date
+     * @return List<AlphaVantageWinningPortfoliosRankings>
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
     public List<AlphaVantageWinningPortfoliosRankings> getWinningPortfolios(String date)
             throws RestException, AlphaVantageException {
 

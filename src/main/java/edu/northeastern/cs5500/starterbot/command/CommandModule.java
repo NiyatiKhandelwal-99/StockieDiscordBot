@@ -98,6 +98,13 @@ public class CommandModule {
         return topLosersCommand;
     }
 
+    /**
+     * provideWinningPortfoliosCommand function is responsible for providing the winningPortfoliosCommand object when
+     * the /losers command is executed by the user.
+     *
+     * @param winningPortfoliosCommand
+     * @return SlashCommandHandler
+     */
     @Provides
     @IntoSet
     public SlashCommandHandler provideWinningPortfoliosCommand(

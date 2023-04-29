@@ -21,6 +21,11 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
+/**
+ * WinningPortfoliosCommand is responsible for handling the /portfolio:date commands and rendering them
+ * on the Discord UI The WinningPortfoliosCommand transfers the event details to the controller for
+ * further processing.
+ */
 @Singleton
 @Slf4j
 public class WinningPortfoliosCommand implements SlashCommandHandler {
@@ -31,13 +36,23 @@ public class WinningPortfoliosCommand implements SlashCommandHandler {
 
     @Inject
     public WinningPortfoliosCommand() {}
-
+    
+    /**
+     * Returns the name of a command
+     *
+     * @return String : Name of command
+     */
     @Override
     @Nonnull
     public String getName() {
         return "portfolio";
     }
 
+    /**
+     * Returns the structure of the command
+     *
+     * @return String : Format of the slash command
+     */
     @Override
     @Nonnull
     public CommandData getCommandData() {
@@ -51,15 +66,27 @@ public class WinningPortfoliosCommand implements SlashCommandHandler {
                         true);
     }
 
+    /**
+     * getWinningPortfolios function is responsible for calling the controller method for further
+     * processiong of the event details
+     *
+     * @param date : date entered buy the user
+     * @return List<AlphaVantageWinningPortfoliosRankings> : The list of winning portfolios to be rendered on UI
+     */
     public List<AlphaVantageWinningPortfoliosRankings> getWinningPortfolios(String date)
             throws RestException, AlphaVantageException {
         return winningPortfoliosController.getWinningPortfolios(date);
     }
 
+    /**
+     * onSlashCommandInteraction is triggered when /portfolio:date command is entered by the user
+     *
+     * @param event
+     */
     @ExcludeMethodFromGeneratedCoverage
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
-        log.info("event: /balance");
+        log.info("event: /portfolio");
 
         var option = event.getOption("date");
         String date = option.getAsString();
@@ -87,6 +114,13 @@ public class WinningPortfoliosCommand implements SlashCommandHandler {
         }
     }
 
+    /**
+     * renderWinningPortfolios function is responsible for creating MessageEmbeds suitable for discord
+     * from the AlphaVantageWinningPortfoliosRankings containing information about a winning portfolio.
+     *
+     * @param List<AlphaVantageWinningPortfoliosRankings>
+     * @return List<MessageEmbed>
+     */
     public List<MessageEmbed> renderWinningPortfolios(
             List<AlphaVantageWinningPortfoliosRankings> winningPortfolios) {
         List<MessageEmbed> messageEmbeds = new ArrayList<>();

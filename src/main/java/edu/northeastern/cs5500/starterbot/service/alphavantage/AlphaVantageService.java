@@ -332,6 +332,15 @@ public class AlphaVantageService
         }
     }
 
+    /**
+     * getWinningPortfolios function is responsible for making API call to the AlphaVantage service
+     * and mapping the response to the AlphaVantageWinningPortfoliosResponse class.
+     *
+     * @param symbol
+     * @return List<AlphaVantageIncomeStatement>
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
     @Override
     public List<AlphaVantageWinningPortfoliosRankings> getWinningPortfolios(String date)
             throws RestException, AlphaVantageException {
