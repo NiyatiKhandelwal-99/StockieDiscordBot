@@ -16,10 +16,13 @@ import edu.northeastern.cs5500.starterbot.model.AlphaVantageIncomeStatement;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageIncomeStatementResponse;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsFeed;
 import edu.northeastern.cs5500.starterbot.model.AlphaVantageNewsResponse;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageWinningPortfoliosRankings;
+import edu.northeastern.cs5500.starterbot.model.AlphaVantageWinningPortfoliosResponse;
 import edu.northeastern.cs5500.starterbot.service.BalanceSheetService;
 import edu.northeastern.cs5500.starterbot.service.IncomeStatementService;
 import edu.northeastern.cs5500.starterbot.service.NewsFeedService;
 import edu.northeastern.cs5500.starterbot.service.QuoteService;
+import edu.northeastern.cs5500.starterbot.service.WinningPortfoliosService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -41,7 +44,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ExcludeClassFromGeneratedCoverage
 public class AlphaVantageService
-        implements QuoteService, NewsFeedService, BalanceSheetService, IncomeStatementService {
+        implements QuoteService,
+                NewsFeedService,
+                BalanceSheetService,
+                IncomeStatementService,
+                WinningPortfoliosService {
     private static final String BASE_URL = "https://www.alphavantage.co/query?";
     private final String apiKey;
     private static final String LIMITS_EXCEEDED =
@@ -323,5 +330,32 @@ public class AlphaVantageService
             Thread.sleep(backoff * 1000);
             tickers = getFile(queryUrl);
         }
+    }
+
+    /**
+     * getWinningPortfolios function is responsible for making API call to the AlphaVantage service
+     * and mapping the response to the AlphaVantageWinningPortfoliosResponse class.
+     *
+     * @param symbol
+     * @return List<AlphaVantageIncomeStatement>
+     * @throws RestException
+     * @throws AlphaVantageException
+     */
+    @Override
+    public List<AlphaVantageWinningPortfoliosRankings> getWinningPortfolios(String date)
+            throws RestException, AlphaVantageException {
+
+        String queryUrl = "function=TOURNAMENT_PORTFOLIO&season=" + date;
+        String response = getRequest(queryUrl);
+
+        var winningPortfolios =
+                new Gson()
+                        .fromJson(response, AlphaVantageWinningPortfoliosResponse.class)
+                        .getRankings();
+        if (winningPortfolios == null) {
+            log.error(String.format(LogMessages.EMPTY_RESPONSE, date), date);
+        }
+
+        return winningPortfolios;
     }
 }
