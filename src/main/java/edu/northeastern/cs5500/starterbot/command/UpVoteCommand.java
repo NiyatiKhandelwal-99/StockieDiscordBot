@@ -14,6 +14,10 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
+/**
+ * UpVoteCommand is responsible for handling the /upvote commands and rendering them on the Discord
+ * UI The UpVoteCommand transfers the event details to the controller for further processing.
+ */
 @Singleton
 @Slf4j
 public class UpVoteCommand implements SlashCommandHandler {
@@ -25,14 +29,26 @@ public class UpVoteCommand implements SlashCommandHandler {
     @Inject VotingController votingController;
 
     @Inject
-    public UpVoteCommand() {}
+    public UpVoteCommand() {
+        /* This constructor is required to facilitate injection. */
+    }
 
+    /**
+     * Returns the name of a command
+     *
+     * @return String : Name of command
+     */
     @Nonnull
     @Override
     public String getName() {
         return "upvote";
     }
 
+    /**
+     * Returns the structure of the command
+     *
+     * @return String : Format of the slash command
+     */
     @Nonnull
     @Override
     public CommandData getCommandData() {
@@ -41,6 +57,11 @@ public class UpVoteCommand implements SlashCommandHandler {
                         OptionType.STRING, TICKER, "The bot will upvote the provided ticker", true);
     }
 
+    /**
+     * onSlashCommandInteraction is triggered when /upvote command is entered by the user
+     *
+     * @param event
+     */
     @ExcludeMethodFromGeneratedCoverage
     @Override
     public void onSlashCommandInteraction(@Nonnull SlashCommandInteractionEvent event) {
