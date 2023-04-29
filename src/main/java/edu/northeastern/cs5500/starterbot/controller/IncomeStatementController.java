@@ -31,10 +31,10 @@ public class IncomeStatementController {
             throw new BadRequestException("ticker had invalid characters");
         }
 
-        return limitBalanceSheets(incomeStatementService.getIncomeStatement(ticker));
+        return limitIncomeSheets(incomeStatementService.getIncomeStatement(ticker));
     }
 
-    public List<AlphaVantageIncomeStatement> limitBalanceSheets(
+    public List<AlphaVantageIncomeStatement> limitIncomeSheets(
             List<AlphaVantageIncomeStatement> incomeStatements) {
         if (incomeStatements == null) {
             return null;
