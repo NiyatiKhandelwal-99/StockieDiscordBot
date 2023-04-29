@@ -34,7 +34,9 @@ public class BalanceSheetCommand implements SlashCommandHandler {
     @Inject BalanceSheetController balanceSheetController;
 
     @Inject
-    public BalanceSheetCommand() {/* This constructor is required to facilitate injection. */}
+    public BalanceSheetCommand() {
+        /* This constructor is required to facilitate injection. */
+    }
 
     /**
      * Returns the name of a command

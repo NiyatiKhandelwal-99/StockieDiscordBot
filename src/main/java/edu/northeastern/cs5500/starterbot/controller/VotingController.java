@@ -6,8 +6,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * VotingController is responsible for processing and verifying the event details passed by
- * the user and calling the service to perform the business logic.
+ * VotingController is responsible for processing and verifying the event details passed by the user
+ * and calling the service to perform the business logic.
  */
 @Singleton
 public class VotingController {
@@ -47,7 +47,7 @@ public class VotingController {
 
     /*
      * isTickerValid verifies if the ticker is valid
-     * 
+     *
      * @param ticker
      * @throws BadRequestException
      */

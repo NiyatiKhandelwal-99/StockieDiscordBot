@@ -15,9 +15,8 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 /**
- * UpVoteCommand is responsible for handling the /upvote commands and rendering them on the
- * Discord UI The UpVoteCommand transfers the event details to the controller for further
- * processing.
+ * UpVoteCommand is responsible for handling the /upvote commands and rendering them on the Discord
+ * UI The UpVoteCommand transfers the event details to the controller for further processing.
  */
 @Singleton
 @Slf4j
@@ -30,8 +29,9 @@ public class UpVoteCommand implements SlashCommandHandler {
     @Inject VotingController votingController;
 
     @Inject
-    public UpVoteCommand() { /* This constructor is required to facilitate injection. */ }
-
+    public UpVoteCommand() {
+        /* This constructor is required to facilitate injection. */
+    }
 
     /**
      * Returns the name of a command

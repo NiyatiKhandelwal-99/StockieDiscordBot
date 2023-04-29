@@ -32,7 +32,9 @@ public class IncomeStatementCommand implements SlashCommandHandler {
     @Inject IncomeStatementController incomeStatementController;
 
     @Inject
-    public IncomeStatementCommand() {/* This constructor is required to facilitate injection. */}
+    public IncomeStatementCommand() {
+        /* This constructor is required to facilitate injection. */
+    }
 
     /**
      * Returns the name of a command
@@ -66,7 +68,8 @@ public class IncomeStatementCommand implements SlashCommandHandler {
      * processiong of the event details
      *
      * @param ticker : ticker symbol entered buy the user
-     * @return List<AlphaVantageIncomeStatement> : The list of income statements to be rendered on UI
+     * @return List<AlphaVantageIncomeStatement> : The list of income statements to be rendered on
+     *     UI
      */
     public List<AlphaVantageIncomeStatement> getIncomeStatement(String ticker)
             throws RestException, AlphaVantageException {
@@ -109,8 +112,9 @@ public class IncomeStatementCommand implements SlashCommandHandler {
     }
 
     /**
-     * renderIncomeStatements function is responsible for creating MessageEmbeds suitable for discord
-     * from the AlphaVantageIncomeStatement containing information about a ticker's income statement.
+     * renderIncomeStatements function is responsible for creating MessageEmbeds suitable for
+     * discord from the AlphaVantageIncomeStatement containing information about a ticker's income
+     * statement.
      *
      * @param incomeStatements
      * @return List<MessageEmbed>
@@ -126,7 +130,7 @@ public class IncomeStatementCommand implements SlashCommandHandler {
         return messageEmbeds;
     }
 
-     /**
+    /**
      * renderIncomeStatement function is responsible for creating a single embed from a single
      * AlphaVantageIncomeStatement object and setting the title, necessary fields required.
      *

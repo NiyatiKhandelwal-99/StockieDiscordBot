@@ -30,7 +30,9 @@ public class DownVoteCommand implements SlashCommandHandler {
     @Inject VotingController votingController;
 
     @Inject
-    public DownVoteCommand() {/* This constructor is required to facilitate injection. */}
+    public DownVoteCommand() {
+        /* This constructor is required to facilitate injection. */
+    }
 
     /**
      * Returns the name of a command

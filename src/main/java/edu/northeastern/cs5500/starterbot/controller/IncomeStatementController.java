@@ -47,7 +47,8 @@ public class IncomeStatementController {
     }
 
     /**
-     * limitBalanceSheets makes sure that the list of income statements sent are till the MAX limit permitted.
+     * limitBalanceSheets makes sure that the list of income statements sent are till the MAX limit
+     * permitted.
      *
      * @param List<AlphaVantageIncomeStatement>
      * @return List<AlphaVantageIncomeStatement>

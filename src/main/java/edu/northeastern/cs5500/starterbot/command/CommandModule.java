@@ -14,8 +14,8 @@ public class CommandModule {
     }
 
     /**
-     * provideUpVoteCommand function is responsible for providing the upVoteCommand
-     * object when the /upvote command is executed by the user.
+     * provideUpVoteCommand function is responsible for providing the upVoteCommand object when the
+     * /upvote command is executed by the user.
      *
      * @param upVoteCommand
      * @return SlashCommandHandler
@@ -27,8 +27,8 @@ public class CommandModule {
     }
 
     /**
-     * provideDownVoteCommand function is responsible for providing the downVoteCommand
-     * object when the /downvote command is executed by the user.
+     * provideDownVoteCommand function is responsible for providing the downVoteCommand object when
+     * the /downvote command is executed by the user.
      *
      * @param downVoteCommand
      * @return SlashCommandHandler
@@ -59,8 +59,8 @@ public class CommandModule {
     }
 
     /**
-     * provideIncomeStatementCommand function is responsible for providing the IncomeStatementCommand
-     * object when the /income command is executed by the user.
+     * provideIncomeStatementCommand function is responsible for providing the
+     * IncomeStatementCommand object when the /income command is executed by the user.
      *
      * @param incomeStatementCommand
      * @return SlashCommandHandler
