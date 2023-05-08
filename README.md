@@ -1,4 +1,4 @@
-# team-lion
+# Stockie Discord Bot
 
 Document - https://docs.google.com/document/d/1_Ss7qqCcavaCdsAf0EeRts235pEcgZINvh1Q_fFDGno/edit
 
